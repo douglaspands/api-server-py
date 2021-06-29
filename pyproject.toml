@@ -1,0 +1,42 @@
+[tool.poetry]
+name = "api_server"
+version = "0.1.0"
+description = "API SERVER REST"
+authors = ["Douglas Panhota <douglaspands@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+fastapi = "^0.65.2"
+uvicorn = {extras = ["standard"], version = "^0.14.0"}
+alembic = "^1.6.5"
+ormar = {extras = ["postgresql"], version = "^0.10.12"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pydantic = {extras = ["email"], version = "^1.8.2"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-multipart = "^0.0.5"
+pydash = "^5.0.1"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.5.7"
+toml = "^0.10.2"
+pytest-asyncio = "^0.15.1"
+pytest-cov = "^2.12.1"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+runserver = "scripts:runserver"
+test = "scripts:test"
+coverage = "scripts:coverage"
+testcov = "scripts:testcov"
+lint = "scripts:lint"
+migrate = "scripts:migrate"
+makemigrations = "scripts:makemigrations"
+requirements = "scripts:requirements"
+pycacheremove = "scripts:pycacheremove"
+migrateremove = "scripts:migrateremove"
+migrate_head = "scripts:migrate_head"
+script_test = "scripts:script_test"
