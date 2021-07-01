@@ -1,11 +1,12 @@
 from datetime import timedelta
 
 from auth import services
-from fastapi import Depends, APIRouter, HTTPException, status
-from auth.schemas import TokenOut
+from fastapi import Depends, APIRouter, status
 from core.config import settings
+from auth.schemas import TokenOut
 from auth.utils.token import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
+from core.exceptions.http import HTTPException
 
 router = APIRouter(
     prefix='/auth',
@@ -19,8 +20,7 @@ async def login_for_access_token(tokenIn: OAuth2PasswordRequestForm = Depends())
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Incorrect username or password',
-            headers={'WWW-Authenticate': 'Bearer'},
+            message='Incorrect username or password',
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
