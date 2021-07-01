@@ -1,6 +1,8 @@
 from typing import Optional
+from fastapi.param_functions import Query
 
 from pydantic import EmailStr, SecretStr, validator
+from pydantic.main import BaseModel
 from core.schema import BaseSchema
 
 
@@ -166,4 +168,10 @@ class UserOut(BaseSchema):
         }
 
 
-__all__ = ('CreateUserIn', 'UpdateUserIn', 'UserOut')
+class UserQuery(BaseModel):
+    active: Optional[bool] = Query(None,
+                                   title='Active Users',
+                                   description='List of the active users.')
+
+
+__all__ = ('CreateUserIn', 'UpdateUserIn', 'UserOut', 'UserQuery')

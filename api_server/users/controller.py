@@ -1,15 +1,11 @@
 from typing import List
 
+from users import doc, model, service
+from fastapi import Depends, APIRouter, status
 from core.schema import ResponseOK
-from fastapi import APIRouter, status, Depends
-
-from users import doc
-from users.schema import CreateUserIn, UpdateUserIn, UserOut
-from users import service
+from users.schema import UserOut, UserQuery, CreateUserIn, UpdateUserIn
 from auth.middleware import get_current_active_user
-from users import model
 from core.exception.http import HTTPException
-
 
 router = APIRouter(
     prefix='/users',
@@ -21,8 +17,8 @@ router = APIRouter(
             status_code=status.HTTP_200_OK,
             response_model=ResponseOK[List[UserOut]],
             **doc.list_users)
-async def list_users(current_user: model.User = Depends(get_current_active_user)):
-    users = await service.all_users()
+async def list_users(query: UserQuery = Depends(), current_user: model.User = Depends(get_current_active_user)):
+    users = await service.all_users(**query.dict(exclude_none=True))
     if users:
         return ResponseOK(data=users)
     else:
