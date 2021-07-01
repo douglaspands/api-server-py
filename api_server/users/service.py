@@ -51,6 +51,7 @@ async def get_user(id: int) -> Optional[model.User]:
     """
     return await model.User.objects.get_or_none(id=id)
 
+
 async def create_user(user_input: Union[Dict[str, Any], schema.CreateUserIn]) -> model.User:
     """Create user.
 
