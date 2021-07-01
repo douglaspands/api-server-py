@@ -33,8 +33,8 @@ class Settings(BaseSettings):
         )
 
     ROUTERS: List[str] = [
-        'auth.controller',
-        'users.controller'
+        'auth.controllers',
+        'users.controllers'
     ]
 
     class Config:

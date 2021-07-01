@@ -1,16 +1,16 @@
 from typing import Optional
 from jose import JWTError, jwt
-from users import model, service
+from users import models, services
 from fastapi import Depends, status
 from core.config import settings
 from fastapi.security import OAuth2PasswordBearer
 from core.utils.password import verify_password
-from core.exception.http import HTTPException
+from core.exceptions.http import HTTPException
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
 
 
-async def authenticate_user(username: str, password: str) -> Optional[model.User]:
+async def authenticate_user(username: str, password: str) -> Optional[models.User]:
     """Authenticated user.
 
     Args:
@@ -18,9 +18,9 @@ async def authenticate_user(username: str, password: str) -> Optional[model.User
         password (str): Password.
 
     Returns:
-        Optional[model.User]: User data.
+        Optional[models.User]: User data.
     """
-    user = await service.get_user_by_username(username=username)
+    user = await services.get_user_by_username(username=username)
     if not user:
         return None
     if not verify_password(password, user.password):
@@ -28,7 +28,7 @@ async def authenticate_user(username: str, password: str) -> Optional[model.User
     return user
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> model.User:
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
     """Get current user.
 
     Args:
@@ -38,7 +38,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> model.User:
         credentials_exception: Token is invalid.
 
     Returns:
-        model.User: User data.
+        models.User: User data.
     """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -51,7 +51,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> model.User:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = await service.get_user_by_username(username=username)
+    user = await services.get_user_by_username(username=username)
     if user is None:
         raise credentials_exception
     return user

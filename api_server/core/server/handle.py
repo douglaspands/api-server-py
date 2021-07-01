@@ -4,7 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from core.exception.http import HTTPException as CoreHTTPException
+from core.exceptions.http import HTTPException as CoreHTTPException
 from core.server.bootstrap import app
 
 
@@ -39,7 +39,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
 
 @app.exception_handler(CoreHTTPException)
 async def http_core_exception_handler(request: Request, exc: CoreHTTPException):
-    data = {'status_code': exc.status_code, 'content': {}}
+    data = {'status_code': exc.status_code}
     if getattr(exc, 'error', None):
         data['content'] = jsonable_encoder({'error': exc.error})
     return JSONResponse(**data)

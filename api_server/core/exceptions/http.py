@@ -1,10 +1,5 @@
-import http
-
-
 class HTTPException(Exception):
     def __init__(self, status_code: int, message: str = None) -> None:
-        if message is None:
-            message = http.HTTPStatus(status_code).phrase
         self.status_code = status_code
         self.error = message
 

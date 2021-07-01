@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from core.config import settings
-from core.database.sqlalchemy import database
+from core.databases.sqlalchemy import database
 
 app = FastAPI(
     openapi_url=f'{settings.API_PREFIX}/openapi.json',

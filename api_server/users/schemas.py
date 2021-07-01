@@ -3,7 +3,7 @@ from fastapi.param_functions import Query
 
 from pydantic import EmailStr, SecretStr, validator
 from pydantic.main import BaseModel
-from core.schema import BaseSchema
+from core.schemas import BaseSchema
 
 
 class CreateUserIn(BaseSchema):

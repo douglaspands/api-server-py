@@ -1,5 +1,5 @@
 import ormar
-from core.database.sqlalchemy import database, metadata
+from core.databases.sqlalchemy import database, metadata
 
 
 class BaseMeta(ormar.ModelMeta):

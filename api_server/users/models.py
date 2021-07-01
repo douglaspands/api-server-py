@@ -1,5 +1,5 @@
 import ormar
-from core.model.ormar import BaseMeta
+from core.models.ormar import BaseMeta
 from datetime import datetime
 from sqlalchemy import func
 

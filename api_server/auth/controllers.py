@@ -1,8 +1,8 @@
 from datetime import timedelta
 
-from auth import service
+from auth import services
 from fastapi import Depends, APIRouter, HTTPException, status
-from auth.schema import TokenOut
+from auth.schemas import TokenOut
 from core.config import settings
 from auth.utils.token import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
@@ -15,7 +15,7 @@ router = APIRouter(
 
 @router.post('/v1/token', response_model=TokenOut)
 async def login_for_access_token(tokenIn: OAuth2PasswordRequestForm = Depends()):
-    user = await service.authenticate_user(username=tokenIn.username, password=tokenIn.password)
+    user = await services.authenticate_user(username=tokenIn.username, password=tokenIn.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

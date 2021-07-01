@@ -25,7 +25,7 @@ fileConfig(config.config_file_name)
 # ... etc.
 from core.server import app  # noqa
 from core.config import settings
-from core.database.sqlalchemy import metadata
+from core.databases.sqlalchemy import metadata
 
 target_metadata = metadata
 sqlalchemy_url = settings.SQLALCHEMY_DATABASE_URI
