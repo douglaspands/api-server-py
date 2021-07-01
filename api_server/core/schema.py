@@ -1,4 +1,4 @@
-from typing import Generic, List, TypeVar
+from typing import Generic, TypeVar
 
 from pydantic import Field, BaseModel
 from pydantic.generics import GenericModel
@@ -20,9 +20,6 @@ class BaseSchema(BaseModel):
 class ResponseOK(GenericModel, Generic[T]):
     data: T = Field(..., title='Envelope', description='Data envelope.')
 
-
-class ResponseListOK(GenericModel, Generic[List[T]]):
-    data: T = Field(..., title='Envelope', description='Data envelope.')
 
 class ResponseError(BaseSchema):
     error: str = Field(..., title='Error Message', description='Error message.')
