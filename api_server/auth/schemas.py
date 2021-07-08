@@ -10,21 +10,13 @@ class TokenOut(BaseModel):
             'access_token': {
                 'title': 'Access token',
                 'description': 'Access token.',
-                'example': ''
+                'example': 'sahdlkhahsldjhajshldhakhsdhkahsjdhahshdljashdashdjhajlhsdjahkhsdkhalkdhskshdajhjshdk4'
             },
             'token_type': {
                 'title': 'Token type',
                 'description': 'Token type.',
-                'example': ''
+                'example': 'bearer'
             },
-        }
-        schema_extra = {
-            'application/json': {
-                'examples': {
-                    'access_token': '',
-                    'token_type': '',
-                }
-            }
         }
 
 

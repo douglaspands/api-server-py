@@ -60,7 +60,7 @@ async def create_user(user_input: Union[Dict[str, Any], schemas.CreateUserIn]) -
     Returns:
         models.User: User created.
     """
-    values = user_input.dict() if isinstance(user_input, pydantic.BaseModels) else user_input
+    values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
     values['username'] = values['email'].split('@')[0]
     values['password'] = get_password_hash(values['password_1'])
     values['active'] = True
@@ -83,9 +83,9 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], schemas.UpdateU
     user = await models.User.objects.get_or_none(id=id)
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
-    values = user_input.dict() if isinstance(user_input, pydantic.BaseModels) else user_input
+    values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
     if values.get('password_old'):
-        if verify_password(values['password_old'], user.password):
+        if not verify_password(values['password_old'], user.password):
             raise HTTPException(status_code=422, detail='Old password do not match')
         values['password'] = get_password_hash(values['password_new_1'])
         del values['password_old']
@@ -93,7 +93,7 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], schemas.UpdateU
         del values['password_new_2']
     for k, v in values.items():
         setattr(user, k, v)
-    user.updated_at = datetime.utcnow()
+    # user.updated_at = datetime.utcnow()
     return await user.update()
 
 
