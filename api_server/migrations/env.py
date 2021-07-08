@@ -26,7 +26,7 @@ fileConfig(config.config_file_name)
 import os
 from main import create_app
 
-create_app(os.environ.get('PYTHON_ENV', 'development'))
+create_app(os.getenv('PYTHON_ENV', 'development'))
 
 from core.config import settings
 from core.databases.sqlalchemy import metadata

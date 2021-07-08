@@ -1,11 +1,13 @@
+import os
+
 from fastapi import FastAPI
 
 
-def create_app(config: str = 'development') -> FastAPI:
+def create_app(config_env: str = os.getenv('PYTHON_ENV', 'development')) -> FastAPI:
 
     from core.config import create_config
 
-    settings = create_config(config)
+    settings = create_config(config_env)
 
     from core import openapi, routers, handlers
     from core.databases.sqlalchemy import database
