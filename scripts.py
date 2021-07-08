@@ -76,6 +76,14 @@ def makemigrations():
     shell_run(cmd)
 
 
+def makemigrationsempty():
+    cmd = 'alembic revision --autogenerate'
+    message = sys.argv[1] if len(sys.argv) > 1 else ''
+    if message:
+        cmd = cmd + f' -m "{message}"'
+    shell_run(cmd)
+
+
 def migrate():
     cmd = 'alembic upgrade head'
     shell_run(cmd)

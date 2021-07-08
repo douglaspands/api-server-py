@@ -1,17 +1,18 @@
 from typing import Optional
-from fastapi.param_functions import Query
+import re
 
-from pydantic import EmailStr, SecretStr, validator
+from pydantic import EmailStr, validator
+from core.schemas import BaseConfig, BaseSchema
 from pydantic.main import BaseModel
-from core.schemas import BaseSchema
+from fastapi.param_functions import Query
 
 
 class CreateUserIn(BaseSchema):
     email: EmailStr
-    password_1: SecretStr
-    password_2: SecretStr
+    password_1: str
+    password_2: str
 
-    class Config:
+    class Config(BaseConfig):
         fields = {
             'email': {
                 'title': 'Email',
@@ -41,20 +42,20 @@ class CreateUserIn(BaseSchema):
 
     @validator('password_2')
     def passwords_match(cls, v, values, **kwargs):
-        if 'password_1' in values and v != values['password_1']:
+        if 'password_1' not in values or v != values['password_1']:
             raise ValueError('passwords do not match')
         return v
 
 
 class UpdateUserIn(BaseSchema):
     email: EmailStr
-    password_old: Optional[SecretStr]
-    password_new_1: Optional[SecretStr]
-    password_new_2: Optional[SecretStr]
+    password_old: Optional[str]
+    password_new_1: Optional[str]
+    password_new_2: Optional[str]
     username: str
-    active: bool
+    is_active: bool
 
-    class Config:
+    class Config(BaseConfig):
         fields = {
             'email': {
                 'title': 'Email',
@@ -69,58 +70,40 @@ class UpdateUserIn(BaseSchema):
             'password_new_1': {
                 'title': 'New first password',
                 'description': 'New first password.',
-                'example': '123456'
+                'example': '654321'
             },
             'password_new_2': {
                 'title': 'New second password',
-                'description': 'New second password.',
-                'example': '123456'
+                'description': 'New second password (Need to be the same as the passwordNew1).',
+                'example': '654321'
             },
             'username': {
                 'title': 'Username',
                 'description': 'Username.',
                 'example': 'joao.silva'
             },
-            'active': {
+            'is_active': {
                 'title': 'Active',
                 'description': 'User is active.',
                 'example': True
             },
         }
-        schema_extra = {
-            'application/json': {
-                'examples': {
-                    'email': 'joao.silva@email.com',
-                    'password1': '123456',
-                    'password2': '123456',
-                    'username': 'joao.silva',
-                    'active': True
-                }
-            }
-        }
 
     @validator('username')
-    def username_alphanumeric(cls, v):
-        assert v.isalnum(), 'must be alphanumeric'
-        return v
-
-    @validator('password_old')
-    def old_password_fill(cls, v, values, **kwargs):
-        if 'password_old' in values:
-            raise ValueError('old password is required')
+    def username_valid(cls, v):
+        if not re.search(r'^[a-zA-Z0-9._]+$', v):
+            raise ValueError('must be alphanumeric')
         return v
 
     @validator('password_new_1')
     def passwords_match_1(cls, v, values, **kwargs):
-        if 'password_old' in values:
+        if 'password_old' not in values:
             raise ValueError('old password is required')
-        if 'password_new_2' in values and v != values['password_new_2']:
-            raise ValueError('passwords do not match')
         return v
 
     @validator('password_new_2')
     def passwords_match_2(cls, v, values, **kwargs):
-        if 'password_new_1' in values and v != values['password_new_1']:
+        if 'password_new_1' not in values or v != values['password_new_1']:
             raise ValueError('passwords do not match')
         return v
 
@@ -129,9 +112,9 @@ class UserOut(BaseSchema):
     id: int
     username: str
     email: str
-    active: bool
+    is_active: bool
 
-    class Config:
+    class Config(BaseConfig):
         fields = {
             'id': {
                 'title': 'User ID',
@@ -148,30 +131,18 @@ class UserOut(BaseSchema):
                 'description': 'Username.',
                 'example': 'joao.silva'
             },
-            'active': {
+            'is_active': {
                 'title': 'Active',
                 'description': 'User is active.',
                 'example': True
             }
         }
-        schema_extra = {
-            'application/json': {
-                'examples': {
-                    'data': {
-                        'id': 1,
-                        'email': 'joao.silva@email.com',
-                        'username': 'joao.silva',
-                        'active': True
-                    }
-                },
-            }
-        }
 
 
 class UserQuery(BaseModel):
-    active: Optional[bool] = Query(None,
-                                   title='Active Users',
-                                   description='List of the active users.')
+    is_active: Optional[bool] = Query(None,
+                                      title='Ask if is active users',
+                                      description='List of the active users.')
 
 
 __all__ = ('CreateUserIn', 'UpdateUserIn', 'UserOut', 'UserQuery')
