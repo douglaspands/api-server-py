@@ -5,6 +5,8 @@ WORKDIR /usr/src
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./topaz_test ./topaz_test
+COPY ./api_server ./
 
-CMD [ "python", "topaz_test" ]
+ENV PYTHON_ENV=production
+EXPOSE 5000
+CMD [ "uvicorn", "--factory", "main:create_app" ]
