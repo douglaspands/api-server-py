@@ -42,8 +42,8 @@ def list_all_dirs_files() -> Tuple[List[str], List[str]]:
 
 
 def shell_run(command: Union[str, List[str]]):
-    and_ = " & " if platform.system() == "Windows" else " && "
-    folder = f"cd {get_app_path()}"
+    and_ = ' & ' if platform.system() == 'Windows' else ' && '
+    folder = f'cd {get_app_path()}'
     args_cmd = and_.join(command if isinstance(command, list) else [command])
     final_cmd = folder + and_ + args_cmd
     print(args_cmd)
@@ -56,7 +56,7 @@ def shell_run(command: Union[str, List[str]]):
 
 def runserver():
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 5000
-    shell_run(f'uvicorn main:app --port {port} --reload')
+    shell_run(f'uvicorn --factory main:create_app --port {port} --reload')
 
 
 def test():
@@ -82,31 +82,31 @@ def migrate():
 
 
 def requirements():
-    os.system("poetry export -f requirements.txt --output requirements.txt")
+    os.system('poetry export -f requirements.txt --output requirements.txt')
 
 
 def pycacheremove():
-    REGEX_DIR = re.compile(r"^.+[\/]__pycache__$")
+    REGEX_DIR = re.compile(r'^.+[\/]__pycache__$')
     dirs, files = list_all_dirs_files()
     count = 0
     for d in dirs:
         if REGEX_DIR.search(d):
             shutil.rmtree(d)
             count += 1
-    print(f"{count} folders have been removed")
+    print(f'{count} folders have been removed')
 
 
 def migrateremove():
-    REGEX_DB = re.compile(r"^.+db\.sqlite3$")
-    REGEX_FILE = re.compile(r"^.*[\/]migrations[\/].*$")
-    REGEX_INITIAL = re.compile(r"^.*[\/]migrations[\/]__init__\.py$")
+    REGEX_DB = re.compile(r'^.+db\.sqlite3$')
+    REGEX_FILE = re.compile(r'^.*[\/]migrations[\/].*$')
+    REGEX_INITIAL = re.compile(r'^.*[\/]migrations[\/]__init__\.py$')
     dirs, files = list_all_dirs_files()
     count = 0
     for f in files:
         if (REGEX_FILE.search(f) and not REGEX_INITIAL.search(f)) or REGEX_DB.search(f):
             os.remove(f)
             count += 1
-    print(f"{count} files have been removed")
+    print(f'{count} files have been removed')
 
 
 def script_test():

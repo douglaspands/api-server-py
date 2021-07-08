@@ -9,8 +9,9 @@ services:
           - dpands-pgdata:/var/lib/postgresql/data
         environment:
           POSTGRES_HOST_AUTH_METHOD: trust
-        env_file: 
-          - ./local.env
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: docker
+          POSTGRES_DB: apiserver
         ports:
           - 5432:5432
 

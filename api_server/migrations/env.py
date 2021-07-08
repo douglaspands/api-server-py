@@ -23,7 +23,11 @@ fileConfig(config.config_file_name)
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-from core.server import app  # noqa
+import os
+from main import create_app
+
+create_app(os.environ.get('PYTHON_ENV', 'development'))
+
 from core.config import settings
 from core.databases.sqlalchemy import metadata
 
@@ -48,7 +52,7 @@ def run_migrations_offline():
         url=url,
         target_metadata=target_metadata,
         literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
+        dialect_opts={'paramstyle': 'named'},
     )
 
     with context.begin_transaction():
@@ -66,7 +70,7 @@ def run_migrations_online():
     alembic_config ['sqlalchemy.url'] = sqlalchemy_url
     connectable = engine_from_config(
         alembic_config,
-        prefix="sqlalchemy.",
+        prefix='sqlalchemy.',
         poolclass=pool.NullPool,
     )
 
