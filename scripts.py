@@ -3,6 +3,7 @@ import re
 import sys
 import shutil
 import platform
+from time import sleep
 from typing import Any, Dict, List, Tuple, Union
 
 import toml
@@ -35,7 +36,7 @@ def get_app_path() -> str:
 def list_all_dirs_files() -> Tuple[List[str], List[str]]:
     listdirs = []
     listfiles = []
-    for root, subdirs, files in os.walk(get_app_path()):
+    for root, subdirs, files in os.walk(os.getcwd()):
         listfiles += [os.path.join(root, f) for f in files]
         listdirs += [os.path.join(root, s) for s in subdirs]
     return listdirs, listfiles
@@ -43,11 +44,9 @@ def list_all_dirs_files() -> Tuple[List[str], List[str]]:
 
 def shell_run(command: Union[str, List[str]]):
     and_ = ' & ' if platform.system() == 'Windows' else ' && '
-    folder = f'cd {get_app_path()}'
-    cmd_req = and_.join(command if isinstance(command, list) else [command])
-    folder_cmd_req = folder + and_ + cmd_req
-    print(cmd_req)
-    os.system(folder_cmd_req)
+    join_cmd = and_.join(command if isinstance(command, list) else [command])
+    print(join_cmd)
+    os.system(join_cmd)
 
 
 # ===================================================
@@ -55,19 +54,20 @@ def shell_run(command: Union[str, List[str]]):
 # ===================================================
 
 def deps():
-    cmd = 'docker-compose up -d postgres'
-    os.system(cmd)
+    cmd = 'docker-compose up -d apiserver-postgres apiserver-pgbouncer'
+    shell_run(cmd)
+    sleep(2)
 
 
 def runserver():
     deps()
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
-    cmd = f'uvicorn --factory main:create_app --port {port} --reload'
+    cmd = f'uvicorn --factory apiserver.main:create_app --port {port} --reload'
     shell_run(cmd)
 
 
 def test():
-    cmd = f'pytest --cov={get_app_basename()} tests/'
+    cmd = f'pytest --cov=./{get_app_basename()} tests/'
     shell_run(cmd)
 
 
@@ -93,13 +93,13 @@ def migrate():
 
 def requirements():
     cmd = 'poetry export -f requirements.txt --without-hashes --output requirements.txt'
-    os.system(cmd)
+    shell_run(cmd)
 
 
 def dbshell():
     deps()
     cmd = f'pgcli postgres://postgres:docker@localhost:5432/apiserver'
-    os.system(cmd)
+    shell_run(cmd)
 
 
 def pycacheremove():
@@ -111,20 +111,3 @@ def pycacheremove():
             shutil.rmtree(d)
             count += 1
     print(f'{count} folders have been removed')
-
-
-def migrateremove():
-    REGEX_DB = re.compile(r'^.+db\.sqlite3$')
-    REGEX_FILE = re.compile(r'^.*[\/]migrations[\/].*$')
-    REGEX_INITIAL = re.compile(r'^.*[\/]migrations[\/]__init__\.py$')
-    dirs, files = list_all_dirs_files()
-    count = 0
-    for f in files:
-        if (REGEX_FILE.search(f) and not REGEX_INITIAL.search(f)) or REGEX_DB.search(f):
-            os.remove(f)
-            count += 1
-    print(f'{count} files have been removed')
-
-
-def script_test():
-    os.system('pwd')

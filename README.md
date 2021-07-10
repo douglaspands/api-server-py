@@ -1,29 +1,20 @@
 # API SERVER PY -- EM DESENVOLVIMENTO
 Servidor de API REST desenvolvido em FastAPI/Python.
 
-## IMAGEM DOCKER
-Gerar imagem da aplicação:
+## INICIAR A APLICAÇÃO
+
+Vamos iniciar a aplicação com o Docker e Docker Compose, vamos executar o seguinte comando:
 ```bash
-docker-compose build fastapi
+docker-compose up -d
 ```
-ou gerar a imagem e iniciar:
-```bash
-docker-compose up -d --build
-```
-Na imagem contem a aplicação e a ferramenta [Alembic](https://alembic.sqlalchemy.org/en/latest/) para execução dos scripts de migrate.   
-Para executar o script de migrate no banco de dados é necessario 2 passos:
-1. Acessar o container da aplicação:
-```bash
-docker exec -it apiserver-fastapi sh
-```
-2. Executar `Alembic` dentro do container para atualizar o banco de dados:
-```sh
-alembic upgrade head
-```
-> Para mais informações sobre o [Alembic](https://alembic.sqlalchemy.org/en/latest/), acessar a documentação.
+Algumas observações:
+- Na imagem contem a ferramenta [Alembic](https://alembic.sqlalchemy.org/en/latest/) para execução dos scripts de migrate;
+- A imagem da aplicação é preparada para o desenvolvimento, caso altere algum arquivo é reiniciado automaticamente;
+- Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 apiserver-postgres`
+- Para verificar se a aplicação esta no ar, acessar a documentação pela url: `http://localhost:8000/api/docs`;
 
 ## DESENVOLVIMENTO
-Foi usado a versão `3.9.5` do Python.
+Foi usado a versão `3.8` do Python.
 
 ### DOCKER E DOCKER-COMPOSE
 A instalação varia de acordo com o sistema operacional, então aconselho verificar no site do [Docker](https://docs.docker.com/).
