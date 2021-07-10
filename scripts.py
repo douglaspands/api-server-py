@@ -3,6 +3,7 @@ import re
 import sys
 import shutil
 import platform
+from time import sleep
 from typing import Any, Dict, List, Tuple, Union
 
 import toml
@@ -35,7 +36,7 @@ def get_app_path() -> str:
 def list_all_dirs_files() -> Tuple[List[str], List[str]]:
     listdirs = []
     listfiles = []
-    for root, subdirs, files in os.walk(get_app_path()):
+    for root, subdirs, files in os.walk(os.getcwd()):
         listfiles += [os.path.join(root, f) for f in files]
         listdirs += [os.path.join(root, s) for s in subdirs]
     return listdirs, listfiles
@@ -43,40 +44,40 @@ def list_all_dirs_files() -> Tuple[List[str], List[str]]:
 
 def shell_run(command: Union[str, List[str]]):
     and_ = ' & ' if platform.system() == 'Windows' else ' && '
-    folder = f'cd {get_app_path()}'
-    args_cmd = and_.join(command if isinstance(command, list) else [command])
-    final_cmd = folder + and_ + args_cmd
-    print(args_cmd)
-    os.system(final_cmd)
+    join_cmd = and_.join(command if isinstance(command, list) else [command])
+    print(join_cmd)
+    os.system(join_cmd)
 
 
 # ===================================================
 # POETRY SCRIPTS
 # ===================================================
 
+def deps():
+    cmd = 'docker-compose up -d apiserver-postgres apiserver-pgbouncer'
+    shell_run(cmd)
+    sleep(2)
+
+
 def runserver():
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 5000
-    shell_run(f'uvicorn --factory main:create_app --port {port} --reload')
+    deps()
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+    cmd = f'uvicorn --factory apiserver.main:create_app --port {port} --reload'
+    shell_run(cmd)
 
 
 def test():
-    cmd = f'pytest --cov={get_app_basename()} tests/'
+    cmd = f'pytest --cov=./{get_app_basename()} tests/'
     shell_run(cmd)
 
 
 def lint():
-    shell_run(['flake8 .'])
-
-
-def makemigrations():
-    cmd = 'alembic revision --autogenerate'
-    message = sys.argv[1] if len(sys.argv) > 1 else ''
-    if message:
-        cmd = cmd + f' -m "{message}"'
+    cmd = ['flake8 .']
     shell_run(cmd)
 
 
-def makemigrationsempty():
+def makemigrations():
+    deps()
     cmd = 'alembic revision --autogenerate'
     message = sys.argv[1] if len(sys.argv) > 1 else ''
     if message:
@@ -85,12 +86,20 @@ def makemigrationsempty():
 
 
 def migrate():
+    deps()
     cmd = 'alembic upgrade head'
     shell_run(cmd)
 
 
 def requirements():
-    os.system('poetry export -f requirements.txt --output requirements.txt')
+    cmd = 'poetry export -f requirements.txt --without-hashes --output requirements.txt'
+    shell_run(cmd)
+
+
+def dbshell():
+    deps()
+    cmd = f'pgcli postgres://postgres:docker@localhost:5432/apiserver'
+    shell_run(cmd)
 
 
 def pycacheremove():
@@ -102,20 +111,3 @@ def pycacheremove():
             shutil.rmtree(d)
             count += 1
     print(f'{count} folders have been removed')
-
-
-def migrateremove():
-    REGEX_DB = re.compile(r'^.+db\.sqlite3$')
-    REGEX_FILE = re.compile(r'^.*[\/]migrations[\/].*$')
-    REGEX_INITIAL = re.compile(r'^.*[\/]migrations[\/]__init__\.py$')
-    dirs, files = list_all_dirs_files()
-    count = 0
-    for f in files:
-        if (REGEX_FILE.search(f) and not REGEX_INITIAL.search(f)) or REGEX_DB.search(f):
-            os.remove(f)
-            count += 1
-    print(f'{count} files have been removed')
-
-
-def script_test():
-    os.system('pwd')

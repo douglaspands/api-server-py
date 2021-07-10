@@ -1,19 +1,52 @@
 version: "3"
 services:
 
-    postgres:
+    apiserver-fastapi:
+        image: apiserver-fastapi:latest
+        container_name: apiserver-fastapi
+        build: .
+        environment:
+            POSTGRES_SERVER: apiserver-pgbouncer
+            POSTGRES_PORT: 5432
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: docker
+            POSTGRES_DB: apiserver
+            WORKERS_PER_CORE: 0.5
+        ports:
+            - 8000:8000
+        depends_on:
+            - apiserver-pgbouncer
+        command: sh /app/start-reload.sh
+        volumes:
+            - ./apiserver:/app/apiserver
+            - ./migrations:/app/migrations
+ 
+    apiserver-pgbouncer:
+        image: edoburu/pgbouncer:1.15.0
+        container_name: apiserver-pgbouncer
+        environment:
+            DB_USER: postgres
+            DB_PASSWORD: docker
+            DB_HOST: apiserver-postgres
+            DB_NAME: apiserver
+        ports:
+            - 5432:5432
+        depends_on:
+            - apiserver-postgres
+
+    apiserver-postgres:
         image: postgres:13.3-alpine
         container_name: apiserver-postgres
         command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr", "-c", "log_duration=on"]
         volumes:
-          - dpands-pgdata:/var/lib/postgresql/data
+            - apiserver-pgdata:/var/lib/postgresql/data
         environment:
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: docker
-          POSTGRES_DB: apiserver
-        ports:
-          - 5432:5432
+            POSTGRES_HOST_AUTH_METHOD: trust
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: docker
+            POSTGRES_DB: apiserver
+        # ports:
+        #     - 5432:5432
 
 volumes:
-    dpands-pgdata:
+    apiserver-pgdata:
