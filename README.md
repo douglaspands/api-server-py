@@ -7,11 +7,14 @@ Vamos iniciar a aplicação com o Docker e Docker Compose, vamos executar o segu
 ```bash
 docker-compose up -d
 ```
+Acessar a documentação da aplicação pelas urls:
+- [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
+- [http://localhost:8000/api/redoc](http://localhost:8000/api/redoc)
+
 Algumas observações:
 - Na imagem contem a ferramenta [Alembic](https://alembic.sqlalchemy.org/en/latest/) para execução dos scripts de migrate;
 - A imagem da aplicação é preparada para o desenvolvimento, caso altere algum arquivo é reiniciado automaticamente;
 - Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 apiserver-postgres`
-- Para verificar se a aplicação esta no ar, acessar a documentação pela url: `http://localhost:8000/api/docs`;
 
 ## DESENVOLVIMENTO
 Foi usado a versão `3.8` do Python.

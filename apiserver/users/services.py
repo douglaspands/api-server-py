@@ -1,5 +1,4 @@
 from typing import Any, Dict, List, Union, Optional
-from datetime import datetime
 
 import pydantic
 from apiserver.users import models, schemas
@@ -63,7 +62,7 @@ async def create_user(user_input: Union[Dict[str, Any], schemas.CreateUserIn]) -
     values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
     values['username'] = values['email'].split('@')[0]
     values['password'] = get_password_hash(values['password_1'])
-    values['active'] = True
+    values['is_active'] = True
     del values['password_1']
     del values['password_2']
     user = models.User(**values)
