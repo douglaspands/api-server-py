@@ -22,6 +22,8 @@ toml = "^0.10.2"
 pytest-asyncio = "^0.15.1"
 pytest-cov = "^2.12.1"
 flake8 = "^3.9.2"
+pgcli = "^3.1.0"
+ipdb = "^0.13.9"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -36,6 +38,7 @@ lint = "scripts:lint"
 migrate = "scripts:migrate"
 makemigrations = "scripts:makemigrations"
 requirements = "scripts:requirements"
+dbshell = "scripts:dbshell"
 pycacheremove = "scripts:pycacheremove"
 migrateremove = "scripts:migrateremove"
 migrate_head = "scripts:migrate_head"

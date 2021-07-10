@@ -1,19 +1,34 @@
 version: "3"
 services:
 
+    fastapi:
+        image: apiserver:latest
+        container_name: apiserver-fastapi
+        build: .
+        environment:
+            POSTGRES_SERVER: postgres
+            POSTGRES_PORT: 5432
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: docker
+            POSTGRES_DB: apiserver
+        ports:
+            - 8000:8000
+        depends_on:
+            - postgres
+ 
     postgres:
         image: postgres:13.3-alpine
         container_name: apiserver-postgres
         command: ["postgres", "-c", "log_statement=all", "-c", "log_destination=stderr", "-c", "log_duration=on"]
         volumes:
-          - dpands-pgdata:/var/lib/postgresql/data
+            - apiserver-pgdata:/var/lib/postgresql/data
         environment:
-          POSTGRES_HOST_AUTH_METHOD: trust
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: docker
-          POSTGRES_DB: apiserver
+            POSTGRES_HOST_AUTH_METHOD: trust
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: docker
+            POSTGRES_DB: apiserver
         ports:
-          - 5432:5432
+            - 5432:5432
 
 volumes:
-    dpands-pgdata:
+    apiserver-pgdata:

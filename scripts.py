@@ -44,19 +44,26 @@ def list_all_dirs_files() -> Tuple[List[str], List[str]]:
 def shell_run(command: Union[str, List[str]]):
     and_ = ' & ' if platform.system() == 'Windows' else ' && '
     folder = f'cd {get_app_path()}'
-    args_cmd = and_.join(command if isinstance(command, list) else [command])
-    final_cmd = folder + and_ + args_cmd
-    print(args_cmd)
-    os.system(final_cmd)
+    cmd_req = and_.join(command if isinstance(command, list) else [command])
+    folder_cmd_req = folder + and_ + cmd_req
+    print(cmd_req)
+    os.system(folder_cmd_req)
 
 
 # ===================================================
 # POETRY SCRIPTS
 # ===================================================
 
+def deps():
+    cmd = 'docker-compose up -d postgres'
+    os.system(cmd)
+
+
 def runserver():
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else 5000
-    shell_run(f'uvicorn --factory main:create_app --port {port} --reload')
+    deps()
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
+    cmd = f'uvicorn --factory main:create_app --port {port} --reload'
+    shell_run(cmd)
 
 
 def test():
@@ -65,18 +72,12 @@ def test():
 
 
 def lint():
-    shell_run(['flake8 .'])
-
-
-def makemigrations():
-    cmd = 'alembic revision --autogenerate'
-    message = sys.argv[1] if len(sys.argv) > 1 else ''
-    if message:
-        cmd = cmd + f' -m "{message}"'
+    cmd = ['flake8 .']
     shell_run(cmd)
 
 
-def makemigrationsempty():
+def makemigrations():
+    deps()
     cmd = 'alembic revision --autogenerate'
     message = sys.argv[1] if len(sys.argv) > 1 else ''
     if message:
@@ -85,12 +86,20 @@ def makemigrationsempty():
 
 
 def migrate():
+    deps()
     cmd = 'alembic upgrade head'
     shell_run(cmd)
 
 
 def requirements():
-    os.system('poetry export -f requirements.txt --output requirements.txt')
+    cmd = 'poetry export -f requirements.txt --without-hashes --output requirements.txt'
+    os.system(cmd)
+
+
+def dbshell():
+    deps()
+    cmd = f'pgcli postgres://postgres:docker@localhost:5432/apiserver'
+    os.system(cmd)
 
 
 def pycacheremove():

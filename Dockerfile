@@ -1,12 +1,27 @@
-FROM python:3.8.10-alpine3.13
+ARG PYTHON_VERSION=3.9.5-alpine3.14
 
-WORKDIR /usr/src
+FROM python:${PYTHON_VERSION} as base
+
+RUN apk add postgresql-libs
+
+
+FROM base as builder
+
+RUN apk add alpine-sdk python3-dev gcc postgresql-dev musl-dev libc-dev linux-headers libffi-dev rust cargo
 
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --prefix="/install" -r /requirements.txt
 
+
+FROM base as release
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHON_ENV=production
+
+COPY --from=builder /install /usr/local
+
+WORKDIR /usr/src
 COPY ./api_server ./
-
-ENV PYTHON_ENV=production
-EXPOSE 5000
+    
+EXPOSE 8000
 CMD [ "uvicorn", "--factory", "main:create_app" ]
