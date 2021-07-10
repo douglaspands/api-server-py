@@ -1,10 +1,22 @@
 version: "3"
 services:
 
+    apiserver-nginx:
+        image: nginx:1.20.1-alpine
+        container_name: apiserver-nginx
+        ports: 
+            - 8000:80
+        depends_on:
+            - apiserver-fastapi
+        command: [nginx-debug, '-g', 'daemon off;']
+        volumes:
+            - ./scripts/nginx.conf:/etc/nginx/nginx.conf:ro
+
     apiserver-fastapi:
         image: apiserver-fastapi:latest
         container_name: apiserver-fastapi
         build: .
+        restart: on-failure
         environment:
             POSTGRES_SERVER: apiserver-pgbouncer
             POSTGRES_PORT: 5432
@@ -12,12 +24,12 @@ services:
             POSTGRES_PASSWORD: docker
             POSTGRES_DB: apiserver
             WORKERS_PER_CORE: 0.5
-        ports:
-            - 8000:8000
+        # ports:
+        #     - 8000:8000
         depends_on:
             - apiserver-pgbouncer
-        command: sh /app/start-reload.sh
         volumes:
+            - ./scripts/start-reload.sh:/app/start.sh:ro
             - ./apiserver:/app/apiserver
             - ./migrations:/app/migrations
  

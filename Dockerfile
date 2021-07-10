@@ -25,11 +25,9 @@ ENV PYTHONUNBUFFERED=1 \
 WORKDIR /app/
 EXPOSE 8000
 
-COPY ["asgi/start.sh", "asgi/start-reload.sh", "asgi/prestart.sh", "asgi/gunicorn_conf.py", "alembic.ini", "./"]
-RUN chmod +x ./start.sh && \
-    chmod +x ./start-reload.sh
+COPY ["scripts/start.sh", "scripts/prestart.sh", "scripts/gunicorn_conf.py", "alembic.ini", "./"]
 
 COPY ./apiserver ./apiserver
 COPY ./migrations ./migrations
 
-CMD ["./start.sh"]
+CMD ["sh", "./start.sh"]
