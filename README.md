@@ -58,3 +58,14 @@ Segue abaixo comandos para facilitar o desenvolvimento e a utilização de ferra
 
 > Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts.py` onde estão os comandos reais.
 
+
+## FONTES
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [ormar](https://github.com/collerek/ormar)
+- [Alembic](https://alembic.sqlalchemy.org/en/latest/)
+- [behave-restful](https://github.com/behave-restful/behave-restful)
+- [Poetry](https://python-poetry.org/)
+- [Pyenv](https://github.com/pyenv/pyenv)
+- [Docker](https://docs.docker.com/)
+- [uvicorn-gunicorn](https://github.com/tiangolo/uvicorn-gunicorn-docker)
