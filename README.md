@@ -17,7 +17,8 @@ Algumas observações:
 - Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 apiserver-postgres`
 
 ## DESENVOLVIMENTO
-Foi usado a versão `3.8` do Python.
+Foi usado o Python `3.8` para desenvolvimento. 
+> Python 3.8 foi a escolha devido a melhor compatibilidade entre todas as ferramentas e dependencias utilizadas. Foi identificado algumas incompatibilidades com a versão 3.9, mas acredito que seja algo temporario.
 
 ### DOCKER E DOCKER-COMPOSE
 A instalação varia de acordo com o sistema operacional, então aconselho verificar no site do [Docker](https://docs.docker.com/).
@@ -61,6 +62,9 @@ Segue abaixo comandos para facilitar o desenvolvimento e a utilização de ferra
 
 ## FONTES
 
+Fontes usadas ou que ajudaram no desenvolvimento desse projeto.
+
+- [Python](https://www.python.org/)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [ormar](https://github.com/collerek/ormar)
 - [Alembic](https://alembic.sqlalchemy.org/en/latest/)
@@ -69,3 +73,4 @@ Segue abaixo comandos para facilitar o desenvolvimento e a utilização de ferra
 - [Pyenv](https://github.com/pyenv/pyenv)
 - [Docker](https://docs.docker.com/)
 - [uvicorn-gunicorn](https://github.com/tiangolo/uvicorn-gunicorn-docker)
+- [pgcli](https://www.pgcli.com/)
