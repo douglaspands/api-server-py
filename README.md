@@ -50,27 +50,40 @@ curl https://pyenv.run | bash
 ### POETRY - AUTOMATIZAÇÕES
 Segue abaixo comandos para facilitar o desenvolvimento e a utilização de ferramentas:
 
-- `poetry install` : **(Somente na primeira vez)** vai instalar todas as dependencias (inclusive de desenvolvimento);
+- `poetry install` : **(Somente na primeira vez)** vai instalar todas as dependencias (inclusive de desenvolvimento). Antes de executar, eu construi o ambiente com o `Pyenv`:
+```bash
+pyenv install 3.8.10 && pyenv local 3.8.10
+```
 - `poetry run runserver` : Iniciar a aplicação;
 - `poetry run migrate` : Executa as migrations disponiveis;
 - `poetry run makemigrations` : Cria migrations de acordo com as models da aplicação;
 - `poetry run requirements` : Constroi o arquivo de `requirements.txt` para utilização no `Dockerfile`;
 - `poetry run dbshell` : Abre a ferramenta `pgcli` conectada no banco de dados local;
 
-> Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts.py` onde estão os comandos reais.
+> Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts/poetry.py` onde estão os comandos reais.
 
 
 ## FONTES
 
-Fontes usadas ou que ajudaram no desenvolvimento desse projeto.
+Fontes que ajudaram no desenvolvimento desse projeto:
 
 - [Python](https://www.python.org/)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [ormar](https://github.com/collerek/ormar)
+- [SQLAlchemy](https://www.sqlalchemy.org/)
 - [Alembic](https://alembic.sqlalchemy.org/en/latest/)
+- [Pytest](https://docs.pytest.org/en/6.2.x/)
+- [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio)
+- [pytest-cov](https://github.com/pytest-dev/pytest-cov)
 - [behave-restful](https://github.com/behave-restful/behave-restful)
 - [Poetry](https://python-poetry.org/)
 - [Pyenv](https://github.com/pyenv/pyenv)
 - [Docker](https://docs.docker.com/)
 - [uvicorn-gunicorn](https://github.com/tiangolo/uvicorn-gunicorn-docker)
 - [pgcli](https://www.pgcli.com/)
+- [Flask](https://flask.palletsprojects.com/en/2.0.x/)
+- [PgBouncer](https://www.pgbouncer.org/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Nginx](https://hub.docker.com/_/nginx)
+- [OpenBanking API Specifications](https://standards.openbanking.org.uk/api-specifications/)
+- [Domain Driven Design](https://martinfowler.com/tags/domain%20driven%20design.html)

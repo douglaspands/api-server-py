@@ -32,7 +32,7 @@ services:
             - ./scripts/start-reload.sh:/app/start.sh:ro
             - ./apiserver:/app/apiserver
             - ./migrations:/app/migrations
- 
+
     apiserver-pgbouncer:
         image: edoburu/pgbouncer:1.15.0
         container_name: apiserver-pgbouncer

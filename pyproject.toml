@@ -25,6 +25,7 @@ pytest-cov = "^2.12.1"
 flake8 = "^3.9.2"
 pgcli = "^3.1.0"
 ipdb = "^0.13.9"
+PyYAML = "^5.4.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -41,3 +42,4 @@ makemigrations = "scripts.poetry:makemigrations"
 requirements = "scripts.poetry:requirements"
 dbshell = "scripts.poetry:dbshell"
 pycacheremove = "scripts.poetry:pycacheremove"
+cmd_test = "scripts.poetry:cmd_test"
