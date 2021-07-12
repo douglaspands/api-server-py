@@ -7,6 +7,7 @@ from time import sleep
 from typing import Any, Dict, List, Tuple, Union
 
 import toml
+import yaml
 
 cache = {}
 
@@ -21,6 +22,14 @@ def import_pyproject() -> Dict[str, Any]:
         with open('pyproject.toml', 'r') as file_input:
             cache['pyproject'] = toml.loads(file_input.read())
     return cache['pyproject']
+
+
+def import_dockercompose() -> Dict[str, Any]:
+    global cache
+    if not cache.get('docker-compose'):
+        with open('docker-compose.yaml', 'r') as file_input:
+            cache['docker-compose'] = yaml.load(file_input.read(), Loader=yaml.FullLoader)
+    return cache['docker-compose']
 
 
 def get_app_basename() -> str:
@@ -80,8 +89,9 @@ def makemigrations():
     deps()
     cmd = 'alembic revision --autogenerate'
     message = sys.argv[1] if len(sys.argv) > 1 else ''
-    if message:
-        cmd = cmd + f' -m "{message}"'
+    if not message:
+        raise Exception('Required message about the change!')
+    cmd = cmd + f' -m "{message}"'
     shell_run(cmd)
 
 
@@ -98,7 +108,11 @@ def requirements():
 
 def dbshell():
     deps()
-    cmd = f'pgcli postgres://postgres:docker@localhost:5432/apiserver'
+    data = import_dockercompose()
+    dbenv = data['services']['apiserver-pgbouncer']['environment']
+    dbenv['DB_HOST'] = 'localhost'
+    dbenv['DB_PORT'] = data['services']['apiserver-pgbouncer']['ports'][0].split(':')[0]
+    cmd = f"pgcli postgres://{dbenv['DB_USER']}:{dbenv['DB_PASSWORD']}@{dbenv['DB_HOST']}:{dbenv['DB_PORT']}/{dbenv['DB_NAME']}"
     shell_run(cmd)
 
 
@@ -111,3 +125,13 @@ def pycacheremove():
             shutil.rmtree(d)
             count += 1
     print(f'{count} folders have been removed')
+
+
+def cmd_test():
+    """Command for tests
+    """
+    data = import_dockercompose()
+    dbenv = data['services']['apiserver-pgbouncer']['environment']
+    dbenv['DB_HOST'] = 'localhost'
+    dbenv['DB_PORT'] = data['services']['apiserver-pgbouncer']['ports'][0].split(':')[0]
+    print(dbenv)

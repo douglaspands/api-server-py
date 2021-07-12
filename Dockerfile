@@ -1,16 +1,16 @@
 ARG PYTHON_VERSION=3.8.11-alpine3.14
 
+
 FROM python:${PYTHON_VERSION} as base
 
-RUN apk add postgresql-libs && \
-    pip install --no-cache-dir gunicorn
+RUN apk add postgresql-libs
 
 
 FROM base as builder
 
 RUN apk add alpine-sdk python3-dev gcc postgresql-dev musl-dev libc-dev linux-headers libffi-dev rust cargo make 
 COPY requirements.txt ./
-RUN pip install --prefix="/install" -r /requirements.txt
+RUN pip install --no-cache-dir --prefix="/install" -r /requirements.txt
 
 
 FROM base as release
