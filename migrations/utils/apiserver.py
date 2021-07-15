@@ -4,22 +4,26 @@ import os
 import asyncio
 from typing import Any, Tuple, Callable, Coroutine
 
+import nest_asyncio
+from databases import Database
 from sqlalchemy import MetaData
 
+nest_asyncio.apply()
 
-def get_alembic_config() -> Tuple[MetaData, str]:
+
+def get_alembic_config() -> Tuple[MetaData, str, Database]:
     """Get apiserver configurations for Alembic.
 
     Returns:
-        Tuple[MetaData, str]: sqlalchemy.MetaData instance, sqlalchemy_url
+        Tuple[MetaData, str]: sqlalchemy.MetaData instance, sqlalchemy_url, databases.Database
     """
     from apiserver.main import create_app
     create_app(os.getenv('PYTHON_ENV', 'development'))
 
     from apiserver.core.config import settings
-    from apiserver.core.databases.sqlalchemy import metadata
+    from apiserver.core.databases.sqlalchemy import database, metadata
 
-    return metadata, settings.SQLALCHEMY_DATABASE_URI
+    return metadata, settings.SQLALCHEMY_DATABASE_URI, database
 
 
 def use_db_async(func: Callable) -> Any:
@@ -31,24 +35,13 @@ def use_db_async(func: Callable) -> Any:
     Returns:
         Any: Return result of the function.
     """
-    from apiserver.main import create_app
-    create_app(os.getenv('PYTHON_ENV', 'development'))
+    from apiserver.core.databases.sqlalchemy import database
     def wrapper(*args, **kwargs) -> Any:
-        async def wrapper_async() -> Coroutine:
-            from apiserver.core.databases.sqlalchemy import database
-            res = None
-            error = None
-            try:
-                await database.connect()
+        async def awrapper() -> Coroutine:
+            async with database.transaction():
                 res = await func(*args, **kwargs)
-            except Exception as err:
-                error = err
-            finally:
-                await database.disconnect()
-            if error:
-                raise error
             return res
-        return asyncio.run(wrapper_async())
+        return asyncio.run(awrapper())
     return wrapper
 
 
