@@ -15,6 +15,16 @@
                 "--reload"
             ],
             "jinja": false
+        },
+        {
+            "name": "Python: Alembic",
+            "type": "python",
+            "request": "launch",
+            "module": "alembic",
+            "args": [
+                "upgrade",
+                "head",
+            ],
         }
     ]
 }

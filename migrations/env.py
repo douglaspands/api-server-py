@@ -1,3 +1,5 @@
+import asyncio
+
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -25,7 +27,19 @@ fileConfig(config.config_file_name)
 # ... etc.
 from migrations.utils.apiserver import get_alembic_config
 
-target_metadata, sqlalchemy_url = get_alembic_config()
+target_metadata, sqlalchemy_url, database = get_alembic_config()
+
+
+async def arun_migrations(context):
+    """Executor migrations sync/async.
+
+    Args:
+        context: Alembic's context.
+    """
+    await database.connect()
+    with context.begin_transaction():
+        context.run_migrations()
+    await database.disconnect()
 
 
 def run_migrations_offline():
@@ -46,10 +60,10 @@ def run_migrations_offline():
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={'paramstyle': 'named'},
+        transaction_per_migration=True,
     )
 
-    with context.begin_transaction():
-        context.run_migrations()
+    asyncio.run(arun_migrations(context))
 
 
 def run_migrations_online():
@@ -69,11 +83,12 @@ def run_migrations_online():
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            transaction_per_migration=True
         )
 
-        with context.begin_transaction():
-            context.run_migrations()
+        asyncio.run(arun_migrations(context))
 
 
 if context.is_offline_mode():
