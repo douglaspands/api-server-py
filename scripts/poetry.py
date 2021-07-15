@@ -97,7 +97,13 @@ def makemigrations():
 
 def migrate():
     deps()
-    cmd = 'alembic upgrade head'
+    version = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+    if version < 0:
+        cmd = f'alembic downgrade {str(version)}'
+    elif version > 0:
+        cmd = f'alembic upgrade +{str(version)}'
+    else:
+        cmd = 'alembic upgrade head'
     shell_run(cmd)
 
 
