@@ -23,16 +23,9 @@ fileConfig(config.config_file_name)
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-import os
-from apiserver.main import create_app
+from migrations.utils.apiserver import get_alembic_config
 
-create_app(os.getenv('PYTHON_ENV', 'development'))
-
-from apiserver.core.config import settings
-from apiserver.core.databases.sqlalchemy import metadata
-
-target_metadata = metadata
-sqlalchemy_url = settings.SQLALCHEMY_DATABASE_URI
+target_metadata, sqlalchemy_url = get_alembic_config()
 
 
 def run_migrations_offline():
