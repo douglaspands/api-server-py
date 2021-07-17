@@ -59,7 +59,7 @@ pyenv install 3.8.10 && pyenv local 3.8.10
 - **poetry run makemigrations** : Cria migrations de acordo com as models da aplicação;
 - **poetry run requirements** : Constroi o arquivo de `requirements.txt` para utilização no `Dockerfile`;
 - **poetry run dbshell** : Abre a ferramenta `pgcli` conectada no banco de dados local;
-- **poetry run lint** : Verifica se o código não contem erros ou complexidade excessiva (em resumo, valida qualidade do código);
+- **poetry run lint** : Verifica se o código não contem erros e/ou complexidade excessiva (em resumo, valida a qualidade do código);
 - **poetry run test** : Executa os testes unitarios e a cobertura de testes gerando o relatorio no `htmlcov/index.html`;
 - **poetry run quality** : Executa os comandos `lint` e `test` na sequencia para verificação da qualidade do código;
 
