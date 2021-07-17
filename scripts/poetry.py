@@ -75,14 +75,27 @@ def runserver():
     shell_run(cmd)
 
 
-def test():
-    cmd = f'pytest --cov=./{get_app_basename()} tests/'
-    shell_run(cmd)
-
-
 def lint():
-    cmd = ['flake8 .']
+    cmd = 'flake8 .'
     shell_run(cmd)
+
+
+def test():
+    cmd = 'pytest -vv'
+    shell_run(cmd)
+
+
+def quality():
+    print('#===========================================#')
+    print('#                 L I N T                   #')
+    print('#===========================================#')
+    lint()
+    print('')
+    print('#===========================================#')
+    print('#       T E S T   &   C O V E R A G E       #')
+    print('#===========================================#')
+    test()
+    print('')
 
 
 def makemigrations():

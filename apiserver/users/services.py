@@ -92,7 +92,6 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], schemas.UpdateU
         del values['password_new_2']
     for k, v in values.items():
         setattr(user, k, v)
-    # user.updated_at = datetime.utcnow()
     return await user.update()
 
 

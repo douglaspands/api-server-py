@@ -27,6 +27,7 @@ flake8 = "^3.9.2"
 pgcli = "^3.1.0"
 ipdb = "^0.13.9"
 PyYAML = "^5.4.1"
+httpx = "^0.18.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -34,10 +35,9 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 runserver = "scripts.poetry:runserver"
-test = "scripts.poetry:test"
-coverage = "scripts.poetry:coverage"
-testcov = "scripts.poetry:testcov"
 lint = "scripts.poetry:lint"
+test = "scripts.poetry:test"
+quality = "scripts.poetry:quality"
 migrate = "scripts.poetry:migrate"
 makemigrations = "scripts.poetry:makemigrations"
 requirements = "scripts.poetry:requirements"
