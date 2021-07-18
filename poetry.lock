@@ -533,14 +533,6 @@ optional = false
 python-versions = "*"
 
 [[package]]
-name = "nest-asyncio"
-version = "1.5.1"
-description = "Patch asyncio to allow nested event loops"
-category = "main"
-optional = false
-python-versions = ">=3.5"
-
-[[package]]
 name = "ormar"
 version = "0.10.14"
 description = "A simple async ORM with fastapi in mind and pydantic validation."
@@ -1149,7 +1141,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<3.9"
-content-hash = "4d9591415503228c769b89735528fd6fe523130b59440147056b7edc78131795"
+content-hash = "d969be93aab6ea18a29a2906086b92f4cc6eb66dffb107f4d5404346ef2bb2b7"
 
 [metadata.files]
 alembic = [
@@ -1474,10 +1466,6 @@ matplotlib-inline = [
 mccabe = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
-]
-nest-asyncio = [
-    {file = "nest_asyncio-1.5.1-py3-none-any.whl", hash = "sha256:76d6e972265063fe92a90b9cc4fb82616e07d586b346ed9d2c89a4187acea39c"},
-    {file = "nest_asyncio-1.5.1.tar.gz", hash = "sha256:afc5a1c515210a23c461932765691ad39e8eba6551c055ac8d5546e69250d0aa"},
 ]
 ormar = [
     {file = "ormar-0.10.14-py3-none-any.whl", hash = "sha256:f0ea918eb04ab64dc16a34448126a099090153129ca8572555ae92732c6461de"},
