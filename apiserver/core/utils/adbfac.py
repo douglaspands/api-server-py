@@ -2,7 +2,7 @@ from typing import Any, Callable, Coroutine
 
 from sqlalchemy import MetaData
 
-from apiserver.core.utils.event_loop import EventLoopThreadSafe
+from apiserver.core.utils.eventloop import EventLoopThreadSafe
 
 
 class AsyncDatabaseFromAppCreated(EventLoopThreadSafe):
