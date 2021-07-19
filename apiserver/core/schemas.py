@@ -24,5 +24,4 @@ class ResponseOK(GenericModel, Generic[T]):
     data: T = Field(..., title='Envelope', description='Data envelope.')
 
 
-
 __all__ = ('ResponseOK', 'BaseSchema', 'BaseConfig', 'to_camel')
