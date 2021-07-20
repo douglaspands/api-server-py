@@ -1,17 +1,18 @@
-"""add superuser
+"""create admin user
 
-Revision ID: 6e653c68eb31
-Revises: ce12920f8334
-Create Date: 2021-07-09 20:17:12.036308
+Revision ID: 3cce72e4cea7
+Revises: 2665c0e20674
+Create Date: 2021-07-20 11:51:27.485233
 
 """
 from migrations.adb import adb
 from apiserver.core.utils.password import get_password_hash
 from apiserver.users.models import User
 
+
 # revision identifiers, used by Alembic.
-revision = '6e653c68eb31'
-down_revision = 'ce12920f8334'
+revision = '3cce72e4cea7'
+down_revision = '2665c0e20674'
 branch_labels = None
 depends_on = None
 

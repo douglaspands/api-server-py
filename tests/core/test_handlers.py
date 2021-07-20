@@ -84,7 +84,7 @@ async def test_exception_handler_422_business_error():
 
 
 @pytest.mark.asyncio
-async def test_StarletteHTTPException_500_internal_error():
+async def test_exception_handler_500_internal_error():
     from apiserver.core.handlers import init_app
     from starlette.exceptions import HTTPException as StarletteHTTPException
 

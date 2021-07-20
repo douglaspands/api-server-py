@@ -31,15 +31,6 @@ class CreateUserIn(BaseSchema):
                 'example': '123456'
             }
         }
-        schema_extra = {
-            'application/json': {
-                'examples': {
-                    'email': 'joao.silva@email.com',
-                    'password1': '123456',
-                    'password2': '123456',
-                }
-            }
-        }
 
     @validator('password_2')
     def passwords_match(cls, v, values, **kwargs):
@@ -120,7 +111,7 @@ class UserOut(BaseSchema):
             'id': {
                 'title': 'User ID',
                 'description': 'User ID.',
-                'example': 1
+                'example': 2
             },
             'email': {
                 'title': 'Email',
