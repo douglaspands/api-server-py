@@ -1,9 +1,6 @@
 from importlib import import_module
-import logging
 
 from pydantic import BaseSettings as PydanticBaseSettings
-
-logger = logging.getLogger(__name__)
 
 settings: PydanticBaseSettings = None
 
@@ -14,9 +11,8 @@ def create_config(config_env: str = 'development') -> PydanticBaseSettings:
         _module = config_env.lower()
         Settings = import_module(f'apiserver.core.config.{_module}').Settings
 
-    except Exception as err:
-        logger.error(f'Environment "{config_env}" not found!')
-        raise err
+    except BaseException:
+        raise Exception(f'Environment "{config_env}" not found!')
 
     settings = Settings()
     return settings
