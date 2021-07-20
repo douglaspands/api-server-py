@@ -25,15 +25,6 @@
                 "upgrade",
                 "head",
             ],
-        },
-        {
-            "name": "Python: Pytest",
-            "type": "python",
-            "request": "launch",
-            "module": "pytest",
-            "args": [
-                "-vv"
-            ],
         }
     ]
 }
