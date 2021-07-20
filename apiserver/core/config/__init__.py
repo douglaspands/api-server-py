@@ -5,7 +5,7 @@ from pydantic import BaseSettings as PydanticBaseSettings
 
 logger = logging.getLogger(__name__)
 
-settings: PydanticBaseSettings
+settings: PydanticBaseSettings = None
 
 
 def create_config(config_env: str = 'development') -> PydanticBaseSettings:
