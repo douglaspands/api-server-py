@@ -1,4 +1,4 @@
-from typing import List
+from typing import Any, Dict, List
 
 from fastapi import Depends, APIRouter, status
 
@@ -18,7 +18,8 @@ router = APIRouter(
             status_code=status.HTTP_200_OK,
             response_model=ResponseOK[List[UserOut]],
             **docs.list_users)
-async def list_users(query: UserQuery = Depends(), current_user: models.User = Depends(get_current_active_user)):
+async def list_users(query: UserQuery = Depends(),
+                     current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[List[UserOut]]:
     users = await services.all_users(**query.dict(exclude_none=True))
     if users:
         return ResponseOK(data=users)
@@ -30,7 +31,8 @@ async def list_users(query: UserQuery = Depends(), current_user: models.User = D
             status_code=status.HTTP_200_OK,
             response_model=ResponseOK[UserOut],
             **docs.get_user)
-async def get_user(id: int, current_user: models.User = Depends(get_current_active_user)):
+async def get_user(id: int,
+                   current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
     user = await services.get_user_by_id(id=id)
     if user:
         return ResponseOK(data=user)
@@ -42,7 +44,9 @@ async def get_user(id: int, current_user: models.User = Depends(get_current_acti
             status_code=status.HTTP_200_OK,
             response_model=ResponseOK[UserOut],
             **docs.update_user)
-async def update_user(id: int, user_input: UpdateUserIn, current_user: models.User = Depends(get_current_active_user)):
+async def update_user(id: int,
+                      user_input: UpdateUserIn,
+                      current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
     user = await services.update_user(id=id, user_input=user_input)
     if user:
         return ResponseOK(data=user)
@@ -54,7 +58,7 @@ async def update_user(id: int, user_input: UpdateUserIn, current_user: models.Us
              status_code=status.HTTP_201_CREATED,
              response_model=ResponseOK[UserOut],
              **docs.create_user)
-async def create_user(user_input: CreateUserIn):
+async def create_user(user_input: CreateUserIn) -> ResponseOK[UserOut]:
     user = await services.create_user(user_input=user_input)
     return ResponseOK(data=user)
 
@@ -62,7 +66,8 @@ async def create_user(user_input: CreateUserIn):
 @router.delete('/v1/users/{id}',
                status_code=status.HTTP_200_OK,
                **docs.delete_user)
-async def delete_user(id: int, current_user: models.User = Depends(get_current_active_user)):
+async def delete_user(id: int,
+                      current_user: models.User = Depends(get_current_active_user)) -> Dict[str, Any]:
     await services.delete_user(id=id)
     return {}
 

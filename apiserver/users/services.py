@@ -7,7 +7,7 @@ from apiserver.users import models, schemas
 from apiserver.core.utils.password import verify_password, get_password_hash
 
 
-async def all_users(**kwargs) -> List[models.User]:
+async def all_users(**kwargs: Any) -> List[models.User]:
     """Get all users.
 
     Returns:

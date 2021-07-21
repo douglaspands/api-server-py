@@ -574,7 +574,7 @@ python-versions = "*"
 
 [[package]]
 name = "ormar"
-version = "0.10.14"
+version = "0.10.15"
 description = "A simple async ORM with fastapi in mind and pydantic validation."
 category = "main"
 optional = false
@@ -801,7 +801,7 @@ email = ["email-validator (>=1.0.3)"]
 
 [[package]]
 name = "pydash"
-version = "5.0.1"
+version = "5.0.2"
 description = "The kitchen sink of Python utility libraries for doing \"stuff\" in a functional way. Based on the Lo-Dash Javascript library."
 category = "main"
 optional = false
@@ -1561,8 +1561,8 @@ mypy-extensions = [
     {file = "mypy_extensions-0.4.3.tar.gz", hash = "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"},
 ]
 ormar = [
-    {file = "ormar-0.10.14-py3-none-any.whl", hash = "sha256:f0ea918eb04ab64dc16a34448126a099090153129ca8572555ae92732c6461de"},
-    {file = "ormar-0.10.14.tar.gz", hash = "sha256:a51653c58b895b6ae524331ee15432f04dbdd17825e0a1ea82d4cbfeb4a0af7c"},
+    {file = "ormar-0.10.15-py3-none-any.whl", hash = "sha256:f9c5ee58f1e9f5535bb2a8e46b9652d84cd70f1fba5dbc43ba2b2c25d5d223d8"},
+    {file = "ormar-0.10.15.tar.gz", hash = "sha256:ca9825ccf933e00d13b93c2100cd7831c3cf80c9d3908839891ffb3c6e4533b6"},
 ]
 packaging = [
     {file = "packaging-21.0-py3-none-any.whl", hash = "sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14"},
@@ -1721,8 +1721,8 @@ pydantic = [
     {file = "pydantic-1.8.2.tar.gz", hash = "sha256:26464e57ccaafe72b7ad156fdaa4e9b9ef051f69e175dbbb463283000c05ab7b"},
 ]
 pydash = [
-    {file = "pydash-5.0.1-py3-none-any.whl", hash = "sha256:70ac35e71722c50e8444675e2446d6b81f412efeee52765aae86c84a9f3a7a94"},
-    {file = "pydash-5.0.1.tar.gz", hash = "sha256:95234efc2f4bc11d32a9f7f9b7199a54ea46a596e842d0df645d3401f5393d50"},
+    {file = "pydash-5.0.2-py3-none-any.whl", hash = "sha256:a0dfc36087b491653c7fbff4a04a52e1b58b67d3aa751d15e0dbb96fb7e09833"},
+    {file = "pydash-5.0.2.tar.gz", hash = "sha256:7c02f5c27524abbd90743c4b60fd8c8c8e846ee0439642704f77a3cf21f7c371"},
 ]
 pyflakes = [
     {file = "pyflakes-2.3.1-py2.py3-none-any.whl", hash = "sha256:7893783d01b8a89811dd72d7dfd4d84ff098e5eed95cfa8905b22bbffe52efc3"},
