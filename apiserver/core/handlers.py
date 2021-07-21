@@ -4,8 +4,9 @@ from fastapi import FastAPI, Request, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from apiserver.core.exceptions.http import HTTPException as CoreHTTPException
 from starlette.exceptions import HTTPException as StarletteHTTPException
+
+from apiserver.core.exceptions.http import HTTPException as CoreHTTPException
 
 
 def init_app(app: FastAPI):

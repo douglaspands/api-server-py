@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+from typing import Any
 from datetime import datetime
 
 import ormar
@@ -18,7 +21,7 @@ class BaseModel(ormar.Model):
     created_at: datetime = ormar.DateTime(default=datetime.utcnow)
     updated_at: datetime = ormar.DateTime(default=datetime.utcnow)
 
-    async def update(self, *args, **kwargs):
+    async def update(self, *args: Any, **kwargs: Any) -> BaseModel:
         self.updated_at = datetime.utcnow()
         return await super().update(*args, **kwargs)
 

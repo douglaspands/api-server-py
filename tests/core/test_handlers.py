@@ -24,6 +24,7 @@ async def test_validation_exception_handler_400_bad_request_1():
 @pytest.mark.asyncio
 async def test_validation_exception_handler_400_bad_request_2():
     from pydantic import BaseModel
+
     from apiserver.core.handlers import init_app
     
     app = FastAPI()
@@ -85,8 +86,9 @@ async def test_exception_handler_422_business_error():
 
 @pytest.mark.asyncio
 async def test_exception_handler_500_internal_error():
-    from apiserver.core.handlers import init_app
     from starlette.exceptions import HTTPException as StarletteHTTPException
+
+    from apiserver.core.handlers import init_app
 
     app = FastAPI()
     init_app(app)

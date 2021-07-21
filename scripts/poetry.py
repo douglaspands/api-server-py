@@ -54,7 +54,7 @@ def list_all_dirs_files() -> Tuple[List[str], List[str]]:
 def shell_run(command: Union[str, List[str]]):
     and_ = ' & ' if platform.system() == 'Windows' else ' && '
     join_cmd = and_.join(command if isinstance(command, list) else [command])
-    print(join_cmd)
+    print(f'$ {join_cmd}')
     os.system(join_cmd)
 
 
@@ -76,7 +76,14 @@ def runserver():
 
 
 def lint():
-    cmd = 'flake8 .'
+    app_basename = get_app_basename()
+    cmd = [f'flake8 {app_basename}', f'mypy {app_basename}']
+    shell_run(cmd)
+
+
+def isort():
+    app_basename = get_app_basename()
+    cmd = f'isort {app_basename}'
     shell_run(cmd)
 
 
@@ -85,7 +92,7 @@ def test():
     shell_run(cmd)
 
 
-def quality():
+def build():
     print('#===============================================#')
     print('#                   L I N T                     #')
     print('#===============================================#')

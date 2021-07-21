@@ -1,4 +1,4 @@
-from typing import Any, Callable, Coroutine
+from typing import Any, Callable, Optional
 
 from sqlalchemy import MetaData
 
@@ -7,7 +7,7 @@ from apiserver.core.utils.eventloop import EventLoopThreadSafe
 
 class AsyncDatabaseFromAppCreated(EventLoopThreadSafe):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.start()
         from apiserver.main import create_app
@@ -26,26 +26,26 @@ class AsyncDatabaseFromAppCreated(EventLoopThreadSafe):
         from apiserver.core.config import settings
         return settings.SQLALCHEMY_DATABASE_URI
 
-    def connect(self):
-        async def wrapper():
+    def connect(self) -> None:
+        async def wrapper() -> None:
             await self._database.connect()
         if self._has_connect is False:
             self.run_coroutine(wrapper())
             self._has_connect = True
 
-    def disconnect(self):
-        async def wrapper():
+    def disconnect(self) -> None:
+        async def wrapper() -> None:
             await self._database.disconnect()
         if self._has_connect is True:
             self.run_coroutine(wrapper())
             self._has_connect = False
         self.stop()
 
-    def async_migration(self, func: Callable) -> Any:
+    def async_migration(self, func: Callable) -> Callable:
         """Asynchronous migration decorator.
         """
-        def wrapper(*args, **kwargs) -> Any:
-            async def awrapper() -> Coroutine:
+        def wrapper(*args: Any, **kwargs: Any) -> Optional[Any]:
+            async def awrapper() -> Optional[Any]:
                 async with self._database.transaction():
                     res = await func(*args, **kwargs)
                 return res

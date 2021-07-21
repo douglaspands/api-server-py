@@ -1,9 +1,11 @@
 from typing import Optional
+
 from jose import JWTError, jwt
-from apiserver.users import models, services
 from fastapi import Depends, status
-from apiserver.core.config import settings
 from fastapi.security import OAuth2PasswordBearer
+
+from apiserver.users import models, services
+from apiserver.core.config import settings
 from apiserver.core.utils.password import verify_password
 from apiserver.core.exceptions.http import HTTPException
 

@@ -1,10 +1,13 @@
+from typing import Any, Dict
+
 from pydash import _
 from fastapi import FastAPI
-from apiserver.core.config import settings
 from fastapi.openapi.utils import get_openapi
 
+from apiserver.core.config import settings
 
-def custom_openapi(app: FastAPI):
+
+def custom_openapi(app: FastAPI) -> Dict[str, Any]:
 
     if app.openapi_schema:
         return app.openapi_schema
@@ -48,8 +51,8 @@ def custom_openapi(app: FastAPI):
     return app.openapi_schema
 
 
-def init_app(app: FastAPI):
-    app.openapi = lambda: custom_openapi(app)
+def init_app(app: FastAPI) -> None:
+    app.openapi = lambda: custom_openapi(app)  # type: ignore
 
 
 __all__ = ('init_app',)

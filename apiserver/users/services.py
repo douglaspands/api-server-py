@@ -1,9 +1,10 @@
 from typing import Any, Dict, List, Union, Optional
 
 import pydantic
-from apiserver.users import models, schemas
 from fastapi.exceptions import HTTPException
-from apiserver.core.utils.password import get_password_hash, verify_password
+
+from apiserver.users import models, schemas
+from apiserver.core.utils.password import verify_password, get_password_hash
 
 
 async def all_users(**kwargs) -> List[models.User]:

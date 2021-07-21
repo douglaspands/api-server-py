@@ -1,7 +1,8 @@
 from typing import List
 
-from apiserver.users import docs, models, services
 from fastapi import Depends, APIRouter, status
+
+from apiserver.users import docs, models, services
 from apiserver.core.schemas import ResponseOK
 from apiserver.users.schemas import UserOut, UserQuery, CreateUserIn, UpdateUserIn
 from apiserver.auth.middlewares import get_current_active_user
