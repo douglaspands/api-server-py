@@ -1,4 +1,5 @@
 from fastapi import Depends
+
 from apiserver.users.models import User
 from apiserver.auth.services import get_current_user
 from apiserver.core.exceptions.http import HTTPException

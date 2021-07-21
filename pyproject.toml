@@ -16,7 +16,6 @@ python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 python-multipart = "^0.0.5"
 pydash = "^5.0.1"
 gunicorn = "^20.1.0"
-nest-asyncio = "^1.5.1"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.7"
@@ -27,6 +26,10 @@ flake8 = "^3.9.2"
 pgcli = "^3.1.0"
 ipdb = "^0.13.9"
 PyYAML = "^5.4.1"
+httpx = "^0.18.2"
+mypy = "^0.910"
+sqlalchemy-stubs = "^0.4"
+isort = "^5.9.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -34,10 +37,10 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 runserver = "scripts.poetry:runserver"
-test = "scripts.poetry:test"
-coverage = "scripts.poetry:coverage"
-testcov = "scripts.poetry:testcov"
 lint = "scripts.poetry:lint"
+test = "scripts.poetry:test"
+build = "scripts.poetry:build"
+sortimport = "scripts.poetry:sortimport"
 migrate = "scripts.poetry:migrate"
 makemigrations = "scripts.poetry:makemigrations"
 requirements = "scripts.poetry:requirements"

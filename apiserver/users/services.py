@@ -1,12 +1,13 @@
 from typing import Any, Dict, List, Union, Optional
 
 import pydantic
-from apiserver.users import models, schemas
 from fastapi.exceptions import HTTPException
-from apiserver.core.utils.password import get_password_hash, verify_password
+
+from apiserver.users import models, schemas
+from apiserver.core.utils.password import verify_password, get_password_hash
 
 
-async def all_users(**kwargs) -> List[models.User]:
+async def all_users(**kwargs: Any) -> List[models.User]:
     """Get all users.
 
     Returns:
@@ -92,7 +93,6 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], schemas.UpdateU
         del values['password_new_2']
     for k, v in values.items():
         setattr(user, k, v)
-    # user.updated_at = datetime.utcnow()
     return await user.update()
 
 

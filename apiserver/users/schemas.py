@@ -1,5 +1,5 @@
 import re
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import EmailStr, validator
 from pydantic.main import BaseModel
@@ -31,18 +31,9 @@ class CreateUserIn(BaseSchema):
                 'example': '123456'
             }
         }
-        schema_extra = {
-            'application/json': {
-                'examples': {
-                    'email': 'joao.silva@email.com',
-                    'password1': '123456',
-                    'password2': '123456',
-                }
-            }
-        }
 
     @validator('password_2')
-    def passwords_match(cls, v, values, **kwargs):
+    def passwords_match(cls, v: Any, values: Any, **kwargs: Any) -> Any:
         if 'password_1' not in values or v != values['password_1']:
             raise ValueError('passwords do not match')
         return v
@@ -91,19 +82,19 @@ class UpdateUserIn(BaseSchema):
         }
 
     @validator('username')
-    def username_valid(cls, v):
+    def username_valid(cls, v: Any) -> Any:
         if not re.search(r'^[a-zA-Z0-9._]+$', v):
             raise ValueError('must be alphanumeric')
         return v
 
     @validator('password_new_1')
-    def passwords_match_1(cls, v, values, **kwargs):
+    def passwords_match_1(cls, v: Any, values: Any, **kwargs: Any) -> Any:
         if 'password_old' not in values:
             raise ValueError('old password is required')
         return v
 
     @validator('password_new_2')
-    def passwords_match_2(cls, v, values, **kwargs):
+    def passwords_match_2(cls, v: Any, values: Any, **kwargs: Any) -> Any:
         if 'password_new_1' not in values or v != values['password_new_1']:
             raise ValueError('passwords do not match')
         return v
@@ -120,7 +111,7 @@ class UserOut(BaseSchema):
             'id': {
                 'title': 'User ID',
                 'description': 'User ID.',
-                'example': 1
+                'example': 2
             },
             'email': {
                 'title': 'Email',

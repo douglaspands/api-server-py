@@ -19,12 +19,9 @@ class BaseSchema(BaseModel):
     class Config(BaseConfig):
         pass
 
+
 class ResponseOK(GenericModel, Generic[T]):
     data: T = Field(..., title='Envelope', description='Data envelope.')
-
-
-class ResponseError(BaseSchema):
-    error: str = Field(..., title='Error Message', description='Error message.')
 
 
 __all__ = ('ResponseOK', 'BaseSchema', 'BaseConfig', 'to_camel')

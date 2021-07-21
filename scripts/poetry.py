@@ -4,7 +4,7 @@ import sys
 import shutil
 import platform
 from time import sleep
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import toml
 import yaml
@@ -54,7 +54,7 @@ def list_all_dirs_files() -> Tuple[List[str], List[str]]:
 def shell_run(command: Union[str, List[str]]):
     and_ = ' & ' if platform.system() == 'Windows' else ' && '
     join_cmd = and_.join(command if isinstance(command, list) else [command])
-    print(join_cmd)
+    print(f'$ {join_cmd}')
     os.system(join_cmd)
 
 
@@ -75,13 +75,29 @@ def runserver():
     shell_run(cmd)
 
 
-def test():
-    cmd = f'pytest --cov=./{get_app_basename()} tests/'
+def lint(only_cmd: bool = False) -> Optional[List[str]]:
+    app_basename = get_app_basename()
+    cmd = [f'flake8 {app_basename}', f'mypy {app_basename}']
+    if not only_cmd:
+        return shell_run(cmd)
+    return cmd
+
+
+def sortimport():
+    app_basename = get_app_basename()
+    cmd = f'isort {app_basename}'
     shell_run(cmd)
 
 
-def lint():
-    cmd = ['flake8 .']
+def test(only_cmd: bool = False) -> Optional[List[str]]:
+    cmd = ['pytest -vv']
+    if not only_cmd:
+        return shell_run(cmd)
+    return cmd
+
+
+def build():
+    cmd = lint(True) + test(True)
     shell_run(cmd)
 
 

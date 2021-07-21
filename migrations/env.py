@@ -1,4 +1,4 @@
-import asyncio
+from migrations.adb import adb
 
 from logging.config import fileConfig
 
@@ -25,21 +25,8 @@ fileConfig(config.config_file_name)
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-from migrations.utils.apiserver import get_alembic_config
-
-target_metadata, sqlalchemy_url, database = get_alembic_config()
-
-
-async def arun_migrations(context):
-    """Executor migrations sync/async.
-
-    Args:
-        context: Alembic's context.
-    """
-    await database.connect()
-    with context.begin_transaction():
-        context.run_migrations()
-    await database.disconnect()
+target_metadata = adb.metadata
+sqlalchemy_url = adb.sqlalchemy_url
 
 
 def run_migrations_offline():
@@ -63,7 +50,8 @@ def run_migrations_offline():
         transaction_per_migration=True,
     )
 
-    asyncio.run(arun_migrations(context))
+    with context.begin_transaction():
+        context.run_migrations()
 
 
 def run_migrations_online():
@@ -73,8 +61,8 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    alembic_config  = config.get_section(config.config_ini_section)
-    alembic_config ['sqlalchemy.url'] = sqlalchemy_url
+    alembic_config = config.get_section(config.config_ini_section)
+    alembic_config['sqlalchemy.url'] = sqlalchemy_url
     connectable = engine_from_config(
         alembic_config,
         prefix='sqlalchemy.',
@@ -88,10 +76,15 @@ def run_migrations_online():
             transaction_per_migration=True
         )
 
-        asyncio.run(arun_migrations(context))
+        with context.begin_transaction():
+            context.run_migrations()
 
+
+adb.connect()
 
 if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
+adb.disconnect()
