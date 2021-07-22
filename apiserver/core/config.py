@@ -28,7 +28,7 @@ class Settings(BaseSettings):
 
     AUTH_TOKEN_URL: str = '/auth/v1/token'
 
-    @validator('SQLALCHEMY_DATABASE_URI', pre=True)
+    @validator('SQLALCHEMY_DATABASE_URI', pre=True, allow_reuse=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
         if isinstance(v, str):
             return v
@@ -51,20 +51,23 @@ class Settings(BaseSettings):
 
     @classmethod
     def from_env(cls) -> Settings:
+
         env = os.getenv('PYTHON_ENV', 'development')
+        env_fields: Dict[str, Any] = {}
 
-        if env.upper() == 'DEVELOPMENT':
-            return cls(POSTGRES_SERVER='localhost',
-                       POSTGRES_USER='postgres',
-                       POSTGRES_PASSWORD='docker',
-                       POSTGRES_DB='apiserver',
-                       SECRET_KEY='09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7')
+        if env.upper() in ('DEVELOPMENT', 'PRODUCTION'):
 
-        elif env.upper() == 'PRODUCTION':
-            return cls()
+            if env.upper() == 'DEVELOPMENT':
+                env_fields['POSTGRES_SERVER'] = 'localhost'
+                env_fields['POSTGRES_USER'] = 'postgres'
+                env_fields['POSTGRES_PASSWORD'] = 'docker'
+                env_fields['POSTGRES_DB'] = 'apiserver'
+                env_fields['SECRET_KEY'] = '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
 
         else:
             raise Exception(f'Environment "{env}" not found!')
+
+        return cls(**env_fields)
 
 
 settings = Settings.from_env()

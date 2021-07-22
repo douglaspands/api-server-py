@@ -1,40 +1,31 @@
-from importlib import reload
-from unittest.mock import patch
+from importlib import import_module, reload
+from unittest import mock
 
 from databases import Database
 from sqlalchemy import MetaData
 
 
-def test_module_ok():
+def test_module_ok(settings):
 
-    postgres_url = 'postgresql://scott:tiger@localhost:5432/mydatabase'
+    expect_url = str(settings.SQLALCHEMY_DATABASE_URI).replace('tiger', '********')
 
-    class MockSetting:
-        SQLALCHEMY_DATABASE_URI = postgres_url
-
-    with patch('apiserver.core.config.settings', MockSetting) as mock:
-        from apiserver.core.databases import sqlalchemy
+    with mock.patch('apiserver.core.config.settings', settings):
+        sqlalchemy = import_module('apiserver.core.databases.sqlalchemy')
         reload(sqlalchemy)
-
         assert isinstance(sqlalchemy.database, Database)
         assert isinstance(sqlalchemy.metadata, MetaData)
-        assert sqlalchemy.database.url == postgres_url
+        database_url = repr(sqlalchemy.database.url).replace("DatabaseURL('", "").replace("')", "")
+        assert database_url == expect_url
 
 
-def test_module_error():
+def test_module_error(settings):
 
-    postgres_url = 'xxxxxxxxx'
+    settings.SQLALCHEMY_DATABASE_URI = 'xxxxxxxxx'
 
-    class MockSetting:
-        SQLALCHEMY_DATABASE_URI = postgres_url
-
-    with patch('apiserver.core.config.settings', MockSetting) as mock:
-        mock.settings = MockSetting
-
+    with mock.patch('apiserver.core.config.settings', settings):
         try:
-            from apiserver.core.databases import sqlalchemy
+            sqlalchemy = import_module('apiserver.core.databases.sqlalchemy')
             reload(sqlalchemy)
             assert False
-
         except BaseException:
             assert True

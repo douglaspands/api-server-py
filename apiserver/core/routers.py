@@ -24,7 +24,7 @@ def init_app(app: FastAPI) -> List[APIRouter]:
                 routers.append(router)
 
         except ModuleNotFoundError:
-            pass
+            logger.warning(f"Router '{router_path}' not found!")
 
         except Exception as err:
             logger.error(err, exc_info=True)
