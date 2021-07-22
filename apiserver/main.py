@@ -3,11 +3,11 @@ import os
 from fastapi import FastAPI
 
 
-def create_app(settings_env: str = os.getenv('PYTHON_ENV', 'development')) -> FastAPI:
+def create_app(config_env: str = os.getenv('PYTHON_ENV', 'development')) -> FastAPI:
 
     from apiserver.core import config
 
-    config.settings = config.Settings.from_env(settings_env)
+    config.settings = config.Settings.from_env(config_env)
     settings = config.settings
 
     from apiserver.core import openapi, routers, handlers
