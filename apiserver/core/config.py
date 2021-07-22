@@ -1,12 +1,12 @@
+from __future__ import annotations
+
 import secrets
 from typing import Any, Dict, List, Optional
 
-from pydantic import PostgresDsn
-from pydantic import BaseSettings as PydanticBaseSettings
-from pydantic import validator
+from pydantic import PostgresDsn, BaseSettings, validator
 
 
-class BaseSettings(PydanticBaseSettings):
+class Settings(BaseSettings):
 
     SERVER_TITLE: str = 'API Manager'
     SERVER_VERSION: str = '1.0.0'
@@ -45,8 +45,25 @@ class BaseSettings(PydanticBaseSettings):
         'users.controllers'
     ]
 
-    class Config:
+    class settings:
         case_sensitive = True
 
+    @classmethod
+    def from_env(cls, env: str = 'development') -> Settings:
+        if env == 'development':
+            return cls(POSTGRES_SERVER='localhost',
+                       POSTGRES_USER='postgres',
+                       POSTGRES_PASSWORD='docker',
+                       POSTGRES_DB='apiserver',
+                       SECRET_KEY='09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7')
 
-__all__ = ('BaseSettings',)
+        elif env == 'production':
+            return cls()
+
+        else:
+            raise Exception(f'Environment "{env}" not found!')
+
+
+settings: Optional[Settings] = None
+
+__all__ = ('settings', 'Settings')
