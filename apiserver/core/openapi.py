@@ -29,30 +29,30 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
                       '#/components/schemas/HTTPBadRequest')
                 _.get(openapi_schema, f'paths.{path}.{method}.responses').pop('422')
 
-    _.set(openapi_schema, 'components.schemas.HTTPBadRequest',
-          _.get(openapi_schema, 'components.schemas.HTTPValidationError'))
-    _.set(openapi_schema, 'components.schemas.HTTPBadRequest.title', 'HTTPBadRequest')
-    _.set(openapi_schema, 'components.schemas.HTTPBadRequest.properties.error',
-          _.get(openapi_schema, 'components.schemas.HTTPValidationError.properties.detail'))
-    _.set(openapi_schema, 'components.schemas.HTTPBadRequest.properties.error.title', 'Error Detail')
-    if _.get(openapi_schema, 'components.schemas.HTTPBadRequest.properties.detail'):
-        _.get(openapi_schema, 'components.schemas.HTTPBadRequest.properties').pop('detail')
-    if _.get(openapi_schema, 'components.schemas.HTTPValidationError'):
-        _.get(openapi_schema, 'components.schemas').pop('HTTPValidationError')
-
     for schema in _.get(openapi_schema, 'components.schemas', []):
         if _.get(openapi_schema, f'components.schemas.{schema}.properties.detail'):
             _.set(openapi_schema, f'components.schemas.{schema}.properties.error',
                   _.get(openapi_schema, f'components.schemas.{schema}.properties.detail'))
-            if _.get(openapi_schema, f'components.schemas.{schema}.properties.detail'):
-                _.get(openapi_schema, f'components.schemas.{schema}.properties').pop('detail')
+            _.get(openapi_schema, f'components.schemas.{schema}.properties').pop('detail')
+
+    if _.get(openapi_schema, 'components.schemas.HTTPValidationError'):
+        _.set(openapi_schema,
+              'components.schemas.HTTPBadRequest',
+              _.get(openapi_schema, 'components.schemas.HTTPValidationError'))
+        _.set(openapi_schema,
+              'components.schemas.HTTPBadRequest.title',
+              'HTTPBadRequest')
+        _.set(openapi_schema,
+              'components.schemas.HTTPBadRequest.properties.error.title',
+              'Error Detail')
+        _.get(openapi_schema, 'components.schemas').pop('HTTPValidationError')
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
 
 def init_app(app: FastAPI) -> None:
-    app.openapi = lambda: custom_openapi(app)  # type: ignore
+    setattr(app, 'openapi', lambda: custom_openapi(app))
 
 
 __all__ = ('init_app',)
