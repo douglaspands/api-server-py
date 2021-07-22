@@ -5,9 +5,10 @@ from fastapi import FastAPI
 
 def create_app(config_env: str = os.getenv('PYTHON_ENV', 'development')) -> FastAPI:
 
-    from apiserver.core.config import create_config
+    from apiserver.core import config
 
-    settings = create_config(config_env)
+    config.settings = config.Settings.from_env(config_env)
+    settings = config.settings
 
     from apiserver.core import openapi, routers, handlers
     from apiserver.core.databases.sqlalchemy import database
