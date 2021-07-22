@@ -45,7 +45,7 @@ class Settings(BaseSettings):
         'users.controllers'
     ]
 
-    class settings:
+    class Config:
         case_sensitive = True
 
     @classmethod
