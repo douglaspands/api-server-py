@@ -69,7 +69,7 @@ pyenv install 3.8.10 && pyenv local 3.8.10
 
 ## FONTES
 
-Fontes que ajudaram no desenvolvimento desse projeto:
+Fontes que ajudaram (ou ajudarão) no desenvolvimento desse projeto:
 
 - [Python](https://www.python.org/)
 - [FastAPI](https://fastapi.tiangolo.com/)
@@ -91,3 +91,4 @@ Fontes que ajudaram no desenvolvimento desse projeto:
 - [Nginx](https://hub.docker.com/_/nginx)
 - [OpenBanking API Specifications](https://standards.openbanking.org.uk/api-specifications/)
 - [Domain Driven Design](https://martinfowler.com/tags/domain%20driven%20design.html)
+- [MailHog](https://github.com/mailhog/MailHog)
