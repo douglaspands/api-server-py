@@ -13,7 +13,7 @@ def test_to_camel_error():
     try:
         schemas.to_camel(string)
         assert False
-    except expect as err:
+    except expect:
         assert True
 
 
