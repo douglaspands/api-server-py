@@ -1,29 +1,29 @@
 from typing import Any, Callable, Optional
 
 from sqlalchemy import MetaData
+from fastapi.applications import FastAPI
 
+from apiserver.core.config import settings
 from apiserver.core.utils.eventloop import EventLoopThreadSafe
+from apiserver.core.databases.sqlalchemy import database as db
+from apiserver.core.databases.sqlalchemy import metadata as md
 
 
-class AsyncDatabaseFromAppCreated(EventLoopThreadSafe):
+class AsyncDatabaseByApp(EventLoopThreadSafe):
 
-    def __init__(self) -> None:
+    def __init__(self, app: Optional[FastAPI] = None) -> None:
         super().__init__()
         self.start()
-        from apiserver.main import create_app
-        self._app = create_app()
-        from apiserver.core.databases.sqlalchemy import database
-        self._database = database
+        self._app = app
+        self._database = db
         self._has_connect = False
 
     @property
     def metadata(self) -> MetaData:
-        from apiserver.core.databases.sqlalchemy import metadata
-        return metadata
+        return md
 
     @property
     def sqlalchemy_url(self) -> str:
-        from apiserver.core.config import settings
         return settings.SQLALCHEMY_DATABASE_URI
 
     def connect(self) -> None:
@@ -54,4 +54,4 @@ class AsyncDatabaseFromAppCreated(EventLoopThreadSafe):
         return wrapper
 
 
-__all__ = ('AsyncDatabaseFromAppCreated',)
+__all__ = ('AsyncDatabaseByApp',)

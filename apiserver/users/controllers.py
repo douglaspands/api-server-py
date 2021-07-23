@@ -58,7 +58,8 @@ async def update_user(id: int,
              status_code=status.HTTP_201_CREATED,
              response_model=ResponseOK[UserOut],
              **docs.create_user)
-async def create_user(user_input: CreateUserIn) -> ResponseOK[UserOut]:
+async def create_user(user_input: CreateUserIn,
+                      current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
     user = await services.create_user(user_input=user_input)
     return ResponseOK(data=user)
 

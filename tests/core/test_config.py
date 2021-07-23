@@ -14,7 +14,8 @@ def test_create_config_default():
 
 
 def test_create_config_development():
-    settings = Settings.from_env('development')
+    os.environ['PYTHON_ENV'] = 'development'
+    settings = Settings.from_env()
     assert settings.POSTGRES_SERVER == 'localhost'
     assert settings.POSTGRES_USER == 'postgres'
     assert settings.POSTGRES_PASSWORD == 'docker'
@@ -31,7 +32,8 @@ def test_create_config_production_1():
         'SECRET_KEY': '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
     }
     with patch.dict(os.environ, env_dict, clear=True):
-        settings = Settings.from_env('production')
+        os.environ['PYTHON_ENV'] = 'production'
+        settings = Settings.from_env()
         assert settings.SECRET_KEY == '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
         assert settings.POSTGRES_SERVER == 'localhost'
         assert settings.POSTGRES_USER == 'postgres'
@@ -50,7 +52,8 @@ def test_create_config_production_2():
         'SQLALCHEMY_DATABASE_URI': 'postgresql://xxxxxx:yyyyyy@localhost:5432/zzzzzzzz'
     }
     with patch.dict(os.environ, env_dict, clear=True):
-        settings = Settings.from_env('production')
+        os.environ['PYTHON_ENV'] = 'production'
+        settings = Settings.from_env()
         assert settings.SECRET_KEY == '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
         assert settings.POSTGRES_SERVER == 'localhost'
         assert settings.POSTGRES_USER == 'postgres'
@@ -61,8 +64,9 @@ def test_create_config_production_2():
 
 def test_create_config_config_not_found():
     env = 'xxxxxxxxxx'
+    os.environ['PYTHON_ENV'] = env
     try:
-        Settings.from_env(env)
+        Settings.from_env()
         assert False
 
     except Exception as err:

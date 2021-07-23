@@ -90,7 +90,7 @@ def sortimport():
 
 
 def test(only_cmd: bool = False) -> Optional[List[str]]:
-    cmd = ['PYTHONDONTWRITEBYTECODE=1 pytest -vv']
+    cmd = ['pytest -vvs']
     if not only_cmd:
         return shell_run(cmd)
     return cmd
