@@ -2,11 +2,11 @@ from typing import Any, Dict, List
 
 from fastapi import Depends, APIRouter, status
 
-from apiserver.users import docs, models, services
-from apiserver.core.schemas import ResponseOK
-from apiserver.users.schemas import UserOut, UserQuery, CreateUserIn, UpdateUserIn
-from apiserver.auth.middlewares import get_current_active_user
-from apiserver.core.exceptions.http import HTTPException
+from app.users import docs, models, services
+from app.core.schemas import ResponseOK
+from app.users.schemas import UserOut, UserQuery, CreateUserIn, UpdateUserIn
+from app.auth.middlewares import get_current_active_user
+from app.core.exceptions.http import HTTPException
 
 router = APIRouter(
     prefix='/users',

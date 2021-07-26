@@ -1,4 +1,4 @@
-from apiserver.core import schemas
+from app.core import schemas
 
 
 def test_to_camel_ok():

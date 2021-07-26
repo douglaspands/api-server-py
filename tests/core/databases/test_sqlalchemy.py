@@ -9,8 +9,8 @@ def test_module_ok(settings):
 
     expect_url = str(settings.SQLALCHEMY_DATABASE_URI).replace('tiger', '********')
 
-    with mock.patch('apiserver.core.config.settings', settings):
-        sqlalchemy = import_module('apiserver.core.databases.sqlalchemy')
+    with mock.patch('app.config.settings', settings):
+        sqlalchemy = import_module('app.core.databases.sqlalchemy')
         reload(sqlalchemy)
         assert isinstance(sqlalchemy.database, Database)
         assert isinstance(sqlalchemy.metadata, MetaData)
@@ -22,9 +22,9 @@ def test_module_error(settings):
 
     settings.SQLALCHEMY_DATABASE_URI = 'xxxxxxxxx'
 
-    with mock.patch('apiserver.core.config.settings', settings):
+    with mock.patch('app.config.settings', settings):
         try:
-            sqlalchemy = import_module('apiserver.core.databases.sqlalchemy')
+            sqlalchemy = import_module('app.core.databases.sqlalchemy')
             reload(sqlalchemy)
             assert False
         except BaseException:

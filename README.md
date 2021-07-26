@@ -14,7 +14,7 @@ Acessar a documentação da aplicação pelas urls:
 Algumas observações:
 - Na imagem contem a ferramenta [Alembic](https://alembic.sqlalchemy.org/en/latest/) para execução dos scripts de migrate;
 - A imagem da aplicação é preparada para o desenvolvimento, caso altere algum arquivo é reiniciado automaticamente;
-- Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 apiserver-postgres`
+- Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 app-postgres`
 
 ## DESENVOLVIMENTO
 Foi usado o Python `3.8` para desenvolvimento. 

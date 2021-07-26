@@ -1,12 +1,13 @@
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
+from pydantic import PostgresDsn
 from sqlalchemy import MetaData
 from fastapi.applications import FastAPI
 
-from apiserver.core.config import settings
-from apiserver.core.utils.eventloop import EventLoopThreadSafe
-from apiserver.core.databases.sqlalchemy import database as db
-from apiserver.core.databases.sqlalchemy import metadata as md
+from app.config import settings
+from app.core.utils.eventloop import EventLoopThreadSafe
+from app.core.databases.sqlalchemy import database as db
+from app.core.databases.sqlalchemy import metadata as md
 
 
 class AsyncDatabaseByApp(EventLoopThreadSafe):
@@ -23,7 +24,7 @@ class AsyncDatabaseByApp(EventLoopThreadSafe):
         return md
 
     @property
-    def sqlalchemy_url(self) -> str:
+    def sqlalchemy_url(self) -> Optional[Union[str, PostgresDsn]]:
         return settings.SQLALCHEMY_DATABASE_URI
 
     def connect(self) -> None:

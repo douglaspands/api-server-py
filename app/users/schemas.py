@@ -5,7 +5,7 @@ from pydantic import EmailStr, validator
 from pydantic.main import BaseModel
 from fastapi.param_functions import Query
 
-from apiserver.core.schemas import BaseConfig, BaseSchema
+from app.core.schemas import BaseConfig, BaseSchema
 
 
 class CreateUserIn(BaseSchema):

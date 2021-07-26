@@ -30,7 +30,7 @@ services:
             - apiserver-pgbouncer
         volumes:
             - ./scripts/start-reload.sh:/app/start.sh:ro
-            - ./apiserver:/app/apiserver
+            - ./app:/app/app
             - ./migrations:/app/migrations
 
     apiserver-pgbouncer:

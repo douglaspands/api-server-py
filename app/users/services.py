@@ -3,8 +3,8 @@ from typing import Any, Dict, List, Union, Optional
 import pydantic
 from fastapi.exceptions import HTTPException
 
-from apiserver.users import models, schemas
-from apiserver.core.utils.password import verify_password, get_password_hash
+from app.users import models, schemas
+from app.core.utils.password import verify_password, get_password_hash
 
 
 async def all_users(**kwargs: Any) -> List[models.User]:

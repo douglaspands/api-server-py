@@ -1,4 +1,4 @@
-from apiserver.core.utils.password import verify_password, get_password_hash
+from app.core.utils.password import verify_password, get_password_hash
 
 
 def test_get_password_hash_ok():

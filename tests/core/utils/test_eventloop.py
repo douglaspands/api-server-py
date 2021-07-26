@@ -2,13 +2,13 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from apiserver.core.utils.eventloop import EventLoopThreadSafe
+from app.core.utils.eventloop import EventLoopThreadSafe
 
 
 @pytest.mark.asyncio
 async def test_event_loop_stop_error():
     MockThread = MagicMock
-    with patch('apiserver.core.utils.eventloop.threading.Thread', MockThread):
+    with patch('app.core.utils.eventloop.threading.Thread', MockThread):
         event_loop = EventLoopThreadSafe()
         with pytest.raises(Exception) as excinfo:
             event_loop.stop()
@@ -18,7 +18,7 @@ async def test_event_loop_stop_error():
 @pytest.mark.asyncio
 async def test_event_loop_run_error():
     MockThread = MagicMock
-    with patch('apiserver.core.utils.eventloop.threading.Thread', MockThread):
+    with patch('app.core.utils.eventloop.threading.Thread', MockThread):
         event_loop = EventLoopThreadSafe()
         with pytest.raises(Exception) as excinfo:
             event_loop.run()
@@ -32,7 +32,7 @@ async def test_event_loop_run_coroutine_error():
         return True
 
     MockThread = MagicMock
-    with patch('apiserver.core.utils.eventloop.threading.Thread', MockThread):
+    with patch('app.core.utils.eventloop.threading.Thread', MockThread):
         event_loop = EventLoopThreadSafe()
         with pytest.raises(Exception) as excinfo:
             event_loop.run_coroutine(function())
@@ -42,7 +42,7 @@ async def test_event_loop_run_coroutine_error():
 @pytest.mark.asyncio
 async def test_event_loop_start_error():
     MockThread = MagicMock
-    with patch('apiserver.core.utils.eventloop.threading.Thread', MockThread):
+    with patch('app.core.utils.eventloop.threading.Thread', MockThread):
         event_loop = EventLoopThreadSafe()
         event_loop.start()
         with pytest.raises(Exception) as excinfo:

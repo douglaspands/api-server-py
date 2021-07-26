@@ -2,19 +2,19 @@ from unittest.mock import MagicMock, patch
 
 from sqlalchemy import MetaData
 
-from apiserver.core.utils.adba import AsyncDatabaseByApp
+from app.core.utils.adba import AsyncDatabaseByApp
 
 
 def test_adba_metadata(settings):
-    with patch('apiserver.core.utils.adba.settings', settings):
-        with patch('apiserver.core.utils.adba.EventLoopThreadSafe', MagicMock):
+    with patch('app.core.utils.adba.settings', settings):
+        with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
             adba = AsyncDatabaseByApp()
             assert isinstance(adba.metadata, MetaData)
 
 
 def test_adba_sqlalchemy_url(settings):
-    with patch('apiserver.core.utils.adba.settings', settings):
-        with patch('apiserver.core.utils.adba.EventLoopThreadSafe', MagicMock):
+    with patch('app.core.utils.adba.settings', settings):
+        with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
             adba = AsyncDatabaseByApp()
             assert adba.sqlalchemy_url == settings.SQLALCHEMY_DATABASE_URI
 
@@ -24,9 +24,9 @@ def test_adba_connect(settings):
         pass
     mm = MagicMock(async_func)
     mm.connect = async_func
-    with patch('apiserver.core.utils.adba.settings', settings):
-        with patch('apiserver.core.utils.adba.EventLoopThreadSafe', MagicMock):
-            with patch('apiserver.core.utils.adba.db', mm):
+    with patch('app.core.utils.adba.settings', settings):
+        with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
+            with patch('app.core.utils.adba.db', mm):
                 adba = AsyncDatabaseByApp()
                 adba.connect()
                 assert adba._has_connect
@@ -38,9 +38,9 @@ def test_adba_disconnect(settings):
     mm = MagicMock(async_func)
     mm.connect = async_func
     mm.disconnect = async_func
-    with patch('apiserver.core.utils.adba.settings', settings):
-        with patch('apiserver.core.utils.adba.EventLoopThreadSafe', MagicMock):
-            with patch('apiserver.core.utils.adba.db', mm):
+    with patch('app.core.utils.adba.settings', settings):
+        with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
+            with patch('app.core.utils.adba.db', mm):
                 adba = AsyncDatabaseByApp()
                 adba.connect()
                 assert adba._has_connect
@@ -61,8 +61,8 @@ def test_adba_decorator(settings, async_magic_mock_class):
     mm.disconnect = async_func
     mm.transaction.return_value = AsyncContextManagerMock()
 
-    with patch('apiserver.core.utils.adba.settings', settings):
-        with patch('apiserver.core.utils.adba.db', mm):
+    with patch('app.core.utils.adba.settings', settings):
+        with patch('app.core.utils.adba.db', mm):
             adba = AsyncDatabaseByApp()
 
             @adba.async_migration

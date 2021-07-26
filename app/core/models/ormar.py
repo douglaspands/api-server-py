@@ -5,7 +5,7 @@ from datetime import datetime
 
 import ormar
 
-from apiserver.core.databases.sqlalchemy import database, metadata
+from app.core.databases.sqlalchemy import database, metadata
 
 
 class BaseModelMeta(ormar.ModelMeta):

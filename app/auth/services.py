@@ -4,10 +4,10 @@ from jose import JWTError, jwt
 from fastapi import Depends, status
 from fastapi.security import OAuth2PasswordBearer
 
-from apiserver.users import models, services
-from apiserver.core.config import settings
-from apiserver.core.utils.password import verify_password
-from apiserver.core.exceptions.http import HTTPException
+from app.users import models, services
+from app.config import settings
+from app.core.utils.password import verify_password
+from app.core.exceptions.http import HTTPException
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
 

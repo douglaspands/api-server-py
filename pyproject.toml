@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "apiserver"
+name = "app"
 version = "0.1.0"
-description = "API SERVER REST"
+description = "Backend server for integrations."
 authors = ["Douglas Panhota <douglaspands@gmail.com>"]
 
 [tool.poetry.dependencies]

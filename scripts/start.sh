@@ -1,7 +1,7 @@
 #! /usr/bin/env sh
 set -e
 
-export APP_MODULE=${APP_MODULE:-"apiserver.main:create_app"} "()"
+export APP_MODULE=${APP_MODULE:-"app.api:create_app"} "()"
 export GUNICORN_CONF=${GUNICORN_CONF:-"/app/gunicorn_conf.py"}
 export WORKER_CLASS=${WORKER_CLASS:-"uvicorn.workers.UvicornWorker"}
 

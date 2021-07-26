@@ -1,6 +1,6 @@
 import ormar as orm
 
-from apiserver.core.models import ormar as model
+from app.core.models import ormar as model
 
 
 class User(model.BaseModel):

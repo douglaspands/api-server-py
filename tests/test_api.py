@@ -3,15 +3,15 @@ from unittest.mock import MagicMock, patch
 import pytest
 from fastapi import FastAPI
 
-from apiserver import main
+from app import api
 
 
 def test_create_app_instante(settings):
-    with patch('apiserver.main.settings', settings):
-        with patch('apiserver.main.openapi', MagicMock()):
-            with patch('apiserver.main.routers', MagicMock()):
-                with patch('apiserver.main.handlers', MagicMock()):
-                    app = main.create_app()
+    with patch('app.api.settings', settings):
+        with patch('app.api.openapi', MagicMock()):
+            with patch('app.api.routers', MagicMock()):
+                with patch('app.api.handlers', MagicMock()):
+                    app = api.create_app()
                     assert isinstance(app, FastAPI)
 
 
@@ -27,12 +27,12 @@ async def test_startup_event_ok(settings, async_magic_mock_class):
     mock_database = AsyncContextManagerMock()
     mock_database.connect = mock_connection
 
-    with patch('apiserver.main.settings', settings):
-        with patch('apiserver.main.openapi', MagicMock()):
-            with patch('apiserver.main.routers', MagicMock()):
-                with patch('apiserver.main.handlers', MagicMock()):
-                    with patch('apiserver.main.database', mock_database):
-                        app = main.create_app()
+    with patch('app.api.settings', settings):
+        with patch('app.api.openapi', MagicMock()):
+            with patch('app.api.routers', MagicMock()):
+                with patch('app.api.handlers', MagicMock()):
+                    with patch('app.api.database', mock_database):
+                        app = api.create_app()
 
                         await app.router.startup()
                         assert connection_result.get('ok', False)
@@ -50,12 +50,12 @@ async def test_shutdown_event_ok(settings, async_magic_mock_class):
     mock_database = AsyncContextManagerMock()
     mock_database.disconnect = mock_connection
 
-    with patch('apiserver.main.settings', settings):
-        with patch('apiserver.main.openapi', MagicMock()):
-            with patch('apiserver.main.routers', MagicMock()):
-                with patch('apiserver.main.handlers', MagicMock()):
-                    with patch('apiserver.main.database', mock_database):
-                        app = main.create_app()
+    with patch('app.api.settings', settings):
+        with patch('app.api.openapi', MagicMock()):
+            with patch('app.api.routers', MagicMock()):
+                with patch('app.api.handlers', MagicMock()):
+                    with patch('app.api.database', mock_database):
+                        app = api.create_app()
 
                         await app.router.shutdown()
                         assert connection_result.get('ok', False)
