@@ -33,7 +33,7 @@ async def list_users(query: UserQuery = Depends(),
             **docs.get_user)
 async def get_user(id: int,
                    current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
-    user = await services.get_user_by_id(id=id)
+    user = await services.get_user(id=id)
     if user:
         return ResponseOK(data=user)
     else:

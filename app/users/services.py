@@ -3,62 +3,36 @@ from typing import Any, Dict, List, Union, Optional
 import pydantic
 from fastapi.exceptions import HTTPException
 
-from app.users import models, schemas
+from app.users.models import User as UserModel
+from app.users.schemas import CreateUserIn, UpdateUserIn
 from app.core.utils.password import verify_password, get_password_hash
 
 
-async def all_users(**kwargs: Any) -> List[models.User]:
+async def all_users(**kwargs: Any) -> List[UserModel]:
     """Get all users.
 
     Returns:
-        List[models.User]: List of user data.
+        List[UserModel]: List of user data.
     """
-    return await models.User.objects.all(**kwargs)
+    return await UserModel.objects.all(**kwargs)
 
 
-async def get_user_by_id(id: int) -> Optional[models.User]:
-    """Get user by ID.
-
-    Args:
-        id (int): User ID.
+async def get_user(**kwargs: Any) -> Optional[UserModel]:
+    """Get first user by fields.
 
     Returns:
-        Optional[models.User]: User data if exist.
+        Optional[UserModel]: User data if exist.
     """
-    return await models.User.objects.get_or_none(id=id)
+    return await UserModel.objects.get_or_none(**kwargs)
 
 
-async def get_user_by_username(username: str) -> Optional[models.User]:
-    """Get user by username.
-
-    Args:
-        username (str): User username.
-
-    Returns:
-        Optional[models.User]: User data if exist.
-    """
-    return await models.User.objects.get_or_none(username=username)
-
-
-async def get_user(id: int) -> Optional[models.User]:
-    """Get user by ID.
-
-    Args:
-        id (int): User ID.
-
-    Returns:
-        Optional[models.User]: User data if exist.
-    """
-    return await models.User.objects.get_or_none(id=id)
-
-
-async def create_user(user_input: Union[Dict[str, Any], schemas.CreateUserIn]) -> models.User:
+async def create_user(user_input: Union[Dict[str, Any], CreateUserIn]) -> UserModel:
     """Create user.
 
     Args:
-        user_input (Union[Dict[str, Any], schemas.UserIn]): User data.
+        user_input (Union[Dict[str, Any], UserIn]): User data.
     Returns:
-        models.User: User created.
+        UserModel: User created.
     """
     values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
     values['username'] = values['email'].split('@')[0]
@@ -66,21 +40,21 @@ async def create_user(user_input: Union[Dict[str, Any], schemas.CreateUserIn]) -
     values['is_active'] = True
     del values['password_1']
     del values['password_2']
-    user = models.User(**values)
+    user = UserModel(**values)
     return await user.save()
 
 
-async def update_user(id: int, user_input: Union[Dict[str, Any], schemas.UpdateUserIn]) -> Optional[models.User]:
+async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) -> Optional[UserModel]:
     """Update user.
 
     Args:
         id (int): User ID.
-        user_input (Union[Dict[str, Any], schemas.UserIn]): User data for update.
+        user_input (Union[Dict[str, Any], UserIn]): User data for update.
 
     Returns:
-        Optional[models.User]: User updated.
+        Optional[UserModel]: User updated.
     """
-    user = await models.User.objects.get_or_none(id=id)
+    user = await UserModel.objects.get_or_none(id=id)
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
     values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
@@ -105,7 +79,7 @@ async def delete_user(id: int) -> bool:
     Returns:
         bool: True if remove successfully.
     """
-    user = await models.User.objects.get_or_none(id=id)
+    user = await UserModel.objects.get_or_none(id=id)
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
     await user.objects.delete()
