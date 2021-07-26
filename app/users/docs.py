@@ -3,7 +3,6 @@ from typing import Any, Dict
 
 
 list_users: Dict[str, Any] = {
-
     'name': 'List of users',
     'description': 'Get list of users.',
     'responses': {

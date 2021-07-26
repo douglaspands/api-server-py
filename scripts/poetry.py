@@ -63,7 +63,7 @@ def shell_run(command: Union[str, List[str]]):
 # ===================================================
 
 def deps():
-    cmd = 'docker-compose up -d app-postgres app-pgbouncer'
+    cmd = 'docker-compose up -d apiserver-postgres apiserver-pgbouncer'
     shell_run(cmd)
     sleep(2)
 

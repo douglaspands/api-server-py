@@ -9,7 +9,7 @@ def test_create_config_default():
     assert settings.POSTGRES_SERVER == 'localhost'
     assert settings.POSTGRES_USER == 'postgres'
     assert settings.POSTGRES_PASSWORD == 'docker'
-    assert settings.POSTGRES_DB == 'app'
+    assert settings.POSTGRES_DB == 'apiserver'
     assert settings.SECRET_KEY == '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
 
 
@@ -19,7 +19,7 @@ def test_create_config_development():
     assert settings.POSTGRES_SERVER == 'localhost'
     assert settings.POSTGRES_USER == 'postgres'
     assert settings.POSTGRES_PASSWORD == 'docker'
-    assert settings.POSTGRES_DB == 'app'
+    assert settings.POSTGRES_DB == 'apiserver'
     assert settings.SECRET_KEY == '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
 
 
@@ -28,7 +28,7 @@ def test_create_config_production_1():
         'POSTGRES_SERVER': 'localhost',
         'POSTGRES_USER': 'postgres',
         'POSTGRES_PASSWORD': 'docker',
-        'POSTGRES_DB': 'app',
+        'POSTGRES_DB': 'apiserver',
         'SECRET_KEY': '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
     }
     with patch.dict(os.environ, env_dict, clear=True):
@@ -38,8 +38,8 @@ def test_create_config_production_1():
         assert settings.POSTGRES_SERVER == 'localhost'
         assert settings.POSTGRES_USER == 'postgres'
         assert settings.POSTGRES_PASSWORD == 'docker'
-        assert settings.POSTGRES_DB == 'app'
-        assert str(settings.SQLALCHEMY_DATABASE_URI) == 'postgresql://postgres:docker@localhost:5432/app'
+        assert settings.POSTGRES_DB == 'apiserver'
+        assert str(settings.SQLALCHEMY_DATABASE_URI) == 'postgresql://postgres:docker@localhost:5432/apiserver'
 
 
 def test_create_config_production_2():
@@ -47,7 +47,7 @@ def test_create_config_production_2():
         'POSTGRES_SERVER': 'localhost',
         'POSTGRES_USER': 'postgres',
         'POSTGRES_PASSWORD': 'docker',
-        'POSTGRES_DB': 'app',
+        'POSTGRES_DB': 'apiserver',
         'SECRET_KEY': '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7',
         'SQLALCHEMY_DATABASE_URI': 'postgresql://xxxxxx:yyyyyy@localhost:5432/zzzzzzzz'
     }
@@ -58,7 +58,7 @@ def test_create_config_production_2():
         assert settings.POSTGRES_SERVER == 'localhost'
         assert settings.POSTGRES_USER == 'postgres'
         assert settings.POSTGRES_PASSWORD == 'docker'
-        assert settings.POSTGRES_DB == 'app'
+        assert settings.POSTGRES_DB == 'apiserver'
         assert settings.SQLALCHEMY_DATABASE_URI == 'postgresql://xxxxxx:yyyyyy@localhost:5432/zzzzzzzz'
 
 
