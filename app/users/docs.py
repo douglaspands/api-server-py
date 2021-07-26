@@ -1,5 +1,9 @@
 
-list_users = {
+from typing import Any, Dict
+
+
+list_users: Dict[str, Any] = {
+
     'name': 'List of users',
     'description': 'Get list of users.',
     'responses': {
@@ -7,7 +11,7 @@ list_users = {
     }
 }
 
-get_user = {
+get_user: Dict[str, Any] = {
     'name': 'Get User',
     'description': 'Get user by ID.',
     'responses': {
@@ -15,7 +19,7 @@ get_user = {
     }
 }
 
-update_user = {
+update_user: Dict[str, Any] = {
     'name': 'Update User',
     'description': 'Update user by ID.',
     'responses': {
@@ -23,12 +27,12 @@ update_user = {
     }
 }
 
-create_user = {
+create_user: Dict[str, Any] = {
     'name': 'Create User',
     'description': 'Create user.',
 }
 
-delete_user = {
+delete_user: Dict[str, Any] = {
     'name': 'Delete User',
     'description': 'Delete user.',
     'responses': {

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, TypeVar
 from datetime import datetime
 
 import ormar
@@ -13,6 +13,9 @@ class BaseModelMeta(ormar.ModelMeta):
     database = database
 
 
+T = TypeVar('T', bound='BaseModel')
+
+
 class BaseModel(ormar.Model):
     class Meta(BaseModelMeta):
         abstract = True
@@ -21,7 +24,7 @@ class BaseModel(ormar.Model):
     created_at: datetime = ormar.DateTime(default=datetime.utcnow)
     updated_at: datetime = ormar.DateTime(default=datetime.utcnow)
 
-    async def update(self, *args: Any, **kwargs: Any) -> BaseModel:
+    async def update(self: T, *args: Any, **kwargs: Any) -> T:
         self.updated_at = datetime.utcnow()
         return await super().update(*args, **kwargs)
 

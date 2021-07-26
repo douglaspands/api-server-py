@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 import secrets
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import PostgresDsn, BaseSettings, validator
 
@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     POSTGRES_USER: str
     POSTGRES_PASSWORD: str
     POSTGRES_DB: str
-    SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
+    SQLALCHEMY_DATABASE_URI: Optional[Union[PostgresDsn, str]] = None
 
     AUTH_TOKEN_URL: str = '/auth/v1/token'
 
