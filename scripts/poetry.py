@@ -144,9 +144,13 @@ def pycacheremove():
     count = 0
     for d in dirs:
         if REGEX_DIR.search(d):
-            shutil.rmtree(d)
-            count += 1
-    print(f'{count} folders have been removed')
+            try:
+                shutil.rmtree(d)
+                print(f'{d}:', 'removed')
+                count += 1
+            except Exception as err:
+                print(f'{d}:', str(err))
+    print(f"{count} '__pycache__' folders have been removed")
 
 
 def cmd_test():
