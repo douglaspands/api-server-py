@@ -1,4 +1,4 @@
-from apiserver.core.exceptions.http import HTTPException
+from app.core.exceptions.http import HTTPException
 
 
 def test_http_exception_raise():

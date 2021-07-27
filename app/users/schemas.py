@@ -5,7 +5,7 @@ from pydantic import EmailStr, validator
 from pydantic.main import BaseModel
 from fastapi.param_functions import Query
 
-from apiserver.core.schemas import BaseConfig, BaseSchema
+from app.core.schemas import BaseConfig, BaseSchema
 
 
 class CreateUserIn(BaseSchema):
@@ -72,7 +72,7 @@ class UpdateUserIn(BaseSchema):
             'username': {
                 'title': 'Username',
                 'description': 'Username.',
-                'example': 'joao.silva'
+                'example': 'joao_silva_2'
             },
             'is_active': {
                 'title': 'Active',
@@ -89,13 +89,13 @@ class UpdateUserIn(BaseSchema):
 
     @validator('password_new_1')
     def passwords_match_1(cls, v: Any, values: Any, **kwargs: Any) -> Any:
-        if 'password_old' not in values:
+        if not values.get('password_old'):
             raise ValueError('old password is required')
         return v
 
     @validator('password_new_2')
     def passwords_match_2(cls, v: Any, values: Any, **kwargs: Any) -> Any:
-        if 'password_new_1' not in values or v != values['password_new_1']:
+        if not values.get('password_new_1') or v != values['password_new_1']:
             raise ValueError('passwords do not match')
         return v
 

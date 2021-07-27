@@ -1,8 +1,8 @@
 from fastapi import Depends
 
-from apiserver.users.models import User
-from apiserver.auth.services import get_current_user
-from apiserver.core.exceptions.http import HTTPException
+from app.users.models import User
+from app.auth.services import get_current_user
+from app.core.exceptions.http import HTTPException
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:

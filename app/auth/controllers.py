@@ -3,11 +3,11 @@ from datetime import timedelta
 from fastapi import Depends, APIRouter, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from apiserver.auth import services
-from apiserver.core.config import settings
-from apiserver.auth.schemas import TokenOut
-from apiserver.auth.utils.token import create_access_token
-from apiserver.core.exceptions.http import HTTPException
+from app.auth import services
+from app.config import settings
+from app.auth.schemas import TokenOut
+from app.auth.utils.token import create_access_token
+from app.core.exceptions.http import HTTPException
 
 router = APIRouter(
     prefix='/auth',

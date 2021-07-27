@@ -2,11 +2,11 @@ from typing import Any, Dict, List
 
 from fastapi import Depends, APIRouter, status
 
-from apiserver.users import docs, models, services
-from apiserver.core.schemas import ResponseOK
-from apiserver.users.schemas import UserOut, UserQuery, CreateUserIn, UpdateUserIn
-from apiserver.auth.middlewares import get_current_active_user
-from apiserver.core.exceptions.http import HTTPException
+from app.users import docs, models, services
+from app.core.schemas import ResponseOK
+from app.users.schemas import UserOut, UserQuery, CreateUserIn, UpdateUserIn
+from app.auth.middlewares import get_current_active_user
+from app.core.exceptions.http import HTTPException
 
 router = APIRouter(
     prefix='/users',
@@ -33,7 +33,7 @@ async def list_users(query: UserQuery = Depends(),
             **docs.get_user)
 async def get_user(id: int,
                    current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
-    user = await services.get_user_by_id(id=id)
+    user = await services.get_user(id=id)
     if user:
         return ResponseOK(data=user)
     else:

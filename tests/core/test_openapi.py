@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from apiserver.core import openapi
+from app.core import openapi
 
 
 def test_init_app() -> None:

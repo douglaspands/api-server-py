@@ -24,7 +24,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app/
 
-COPY ./apiserver ./apiserver
+COPY ./app ./app
 COPY ./migrations ./migrations
 COPY ["scripts/start.sh", "scripts/prestart.sh", "scripts/gunicorn_conf.py", "alembic.ini", "./"]
 

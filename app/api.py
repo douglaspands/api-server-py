@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from apiserver.core import openapi, routers, handlers
-from apiserver.core.config import settings
-from apiserver.core.databases.sqlalchemy import database
+from app.core import openapi, routers, handlers
+from app.config import settings
+from app.core.databases.sqlalchemy import database
 
 
 def create_app() -> FastAPI:

@@ -1,7 +1,7 @@
 import os
 from unittest.mock import patch
 
-from apiserver.core.config import Settings
+from app.config import Settings
 
 
 def test_create_config_default():

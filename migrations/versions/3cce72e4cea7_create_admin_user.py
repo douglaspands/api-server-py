@@ -6,8 +6,8 @@ Create Date: 2021-07-20 11:51:27.485233
 
 """
 from migrations.adb import adb
-from apiserver.core.utils.password import get_password_hash
-from apiserver.users.models import User
+from app.core.utils.password import get_password_hash
+from app.users.models import User
 
 
 # revision identifiers, used by Alembic.

@@ -10,11 +10,11 @@ import pytest
 def test_basemodel_ok():
 
     class MockSetting:
-        SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:docker@localhost:5432/apiserver'
+        SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:docker@localhost:5432/app'
 
-    with patch('apiserver.core.config.settings', MockSetting) as mock_settings:
+    with patch('app.config.settings', MockSetting) as mock_settings:
 
-        from apiserver.core.models import ormar as model
+        from app.core.models import ormar as model
         reload(model)
 
         class Team(model.BaseModel):
@@ -35,19 +35,19 @@ def test_basemodel_ok():
 async def test_basemodel_update_ok():
 
     class MockSetting:
-        SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:docker@localhost:5432/apiserver'
+        SQLALCHEMY_DATABASE_URI = 'postgresql://postgres:docker@localhost:5432/app'
 
     async def mock_update(*args, **kwargs):
         pass
 
-    with patch('apiserver.core.config.settings', MockSetting) as mock_settings:
+    with patch('app.config.settings', MockSetting) as mock_settings:
 
         import ormar
         reload(ormar)
 
         with patch('ormar.Model.update', mock_update) as mock_orm:
 
-            from apiserver.core.models import ormar as model
+            from app.core.models import ormar as model
             reload(model)
 
             class Player(model.BaseModel):

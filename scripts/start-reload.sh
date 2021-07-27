@@ -1,7 +1,7 @@
 #! /usr/bin/env sh
 set -e
 
-export APP_MODULE=${APP_MODULE:-"apiserver.main:create_app"}
+export APP_MODULE=${APP_MODULE:-"app.api:create_app"}
 
 HOST=${HOST:-0.0.0.0}
 PORT=${PORT:-80}

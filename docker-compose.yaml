@@ -24,13 +24,14 @@ services:
             POSTGRES_PASSWORD: docker
             POSTGRES_DB: apiserver
             WORKERS_PER_CORE: 0.5
+            PYTHONDONTWRITEBYTECODE: 1
         # ports:
         #     - 8000:8000
         depends_on:
             - apiserver-pgbouncer
         volumes:
             - ./scripts/start-reload.sh:/app/start.sh:ro
-            - ./apiserver:/app/apiserver
+            - ./app:/app/app
             - ./migrations:/app/migrations
 
     apiserver-pgbouncer:

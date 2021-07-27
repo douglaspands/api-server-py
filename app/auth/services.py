@@ -4,10 +4,10 @@ from jose import JWTError, jwt
 from fastapi import Depends, status
 from fastapi.security import OAuth2PasswordBearer
 
-from apiserver.users import models, services
-from apiserver.core.config import settings
-from apiserver.core.utils.password import verify_password
-from apiserver.core.exceptions.http import HTTPException
+from app.users import models, services
+from app.config import settings
+from app.core.utils.password import verify_password
+from app.core.exceptions.http import HTTPException
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
 
@@ -22,7 +22,7 @@ async def authenticate_user(username: str, password: str) -> Optional[models.Use
     Returns:
         Optional[models.User]: User data.
     """
-    user = await services.get_user_by_username(username=username)
+    user = await services.get_user(username=username)
     if not user:
         return None
     if not verify_password(password, user.password):
@@ -53,7 +53,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user = await services.get_user_by_username(username=username)
+    user = await services.get_user(username=username)
     if user is None:
         raise credentials_exception
     return user

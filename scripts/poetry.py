@@ -71,7 +71,7 @@ def deps():
 def runserver():
     deps()
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
-    cmd = f'uvicorn --factory apiserver.main:create_app --port {port} --reload'
+    cmd = f'uvicorn --factory app.api:create_app --port {port} --reload'
     shell_run(cmd)
 
 
@@ -131,9 +131,9 @@ def requirements():
 def dbshell():
     deps()
     data = import_dockercompose()
-    dbenv = data['services']['apiserver-pgbouncer']['environment']
+    dbenv = data['services']['app-pgbouncer']['environment']
     dbenv['DB_HOST'] = 'localhost'
-    dbenv['DB_PORT'] = data['services']['apiserver-pgbouncer']['ports'][0].split(':')[0]
+    dbenv['DB_PORT'] = data['services']['app-pgbouncer']['ports'][0].split(':')[0]
     cmd = f"pgcli postgres://{dbenv['DB_USER']}:{dbenv['DB_PASSWORD']}@{dbenv['DB_HOST']}:{dbenv['DB_PORT']}/{dbenv['DB_NAME']}"
     shell_run(cmd)
 
@@ -144,16 +144,20 @@ def pycacheremove():
     count = 0
     for d in dirs:
         if REGEX_DIR.search(d):
-            shutil.rmtree(d)
-            count += 1
-    print(f'{count} folders have been removed')
+            try:
+                shutil.rmtree(d)
+                print(f'{d}:', 'removed')
+                count += 1
+            except Exception as err:
+                print(f'{d}:', str(err))
+    print(f"{count} '__pycache__' folders have been removed")
 
 
 def cmd_test():
     """Command for tests
     """
     data = import_dockercompose()
-    dbenv = data['services']['apiserver-pgbouncer']['environment']
+    dbenv = data['services']['app-pgbouncer']['environment']
     dbenv['DB_HOST'] = 'localhost'
-    dbenv['DB_PORT'] = data['services']['apiserver-pgbouncer']['ports'][0].split(':')[0]
+    dbenv['DB_PORT'] = data['services']['app-pgbouncer']['ports'][0].split(':')[0]
     print(dbenv)

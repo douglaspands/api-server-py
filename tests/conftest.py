@@ -2,7 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from apiserver.core.config import Settings
+from app.config import Settings
 
 
 @pytest.fixture
