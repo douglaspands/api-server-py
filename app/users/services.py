@@ -82,5 +82,5 @@ async def delete_user(id: int) -> bool:
     user = await UserModel.objects.get_or_none(id=id)
     if not user:
         raise HTTPException(status_code=404, detail='User not found')
-    await user.objects.delete()
+    await user.delete()
     return True

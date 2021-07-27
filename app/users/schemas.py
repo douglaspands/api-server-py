@@ -72,7 +72,7 @@ class UpdateUserIn(BaseSchema):
             'username': {
                 'title': 'Username',
                 'description': 'Username.',
-                'example': 'joao.silva'
+                'example': 'joao_silva_2'
             },
             'is_active': {
                 'title': 'Active',
