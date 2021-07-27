@@ -41,21 +41,16 @@ async def mock_model(async_magic_mock_class):
     async def mock_delete(**kwargs):
         return True
 
-    mockUserModel = async_magic_mock_class()
+    mockModel = async_magic_mock_class()
     mock_manager = async_magic_mock_class()
-    mock_manager.get_or_none = async_magic_mock_class()
-    mock_manager.delete = mock_delete
-    mockUserModel.objects = mock_manager
 
     async def mock_get(**kwargs):
-        return mockUserModel
+        return mockModel
 
-    mockUserModel = async_magic_mock_class()
-    mock_manager = async_magic_mock_class()
     mock_manager.get_or_none = mock_get
     mock_manager.delete = mock_delete
     mock_manager.save = mock_get
     mock_manager.update = mock_get
-    mockUserModel.objects = mock_manager
+    mockModel.objects = mock_manager
 
-    return mockUserModel
+    return mockModel

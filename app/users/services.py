@@ -30,7 +30,7 @@ async def create_user(user_input: Union[Dict[str, Any], CreateUserIn]) -> UserMo
     """Create user.
 
     Args:
-        user_input (Union[Dict[str, Any], UserIn]): User data.
+        user_input (Union[Dict[str, Any], CreateUserIn]): User data.
     Returns:
         UserModel: User created.
     """
@@ -49,7 +49,7 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) 
 
     Args:
         id (int): User ID.
-        user_input (Union[Dict[str, Any], UserIn]): User data for update.
+        user_input (Union[Dict[str, Any], UpdateUserIn]): User data for update.
 
     Returns:
         Optional[UserModel]: User updated.

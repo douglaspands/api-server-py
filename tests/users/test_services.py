@@ -127,25 +127,20 @@ async def test_get_user_by_username_no_content(async_magic_mock_class):
 
 @pytest.mark.asyncio
 async def test_delete_user_ok(mock_model):
-    async def mock_delete(**kwargs):
-        return True
 
-    mockUserModel = mock_model
-
-    with patch('app.users.services.UserModel', mockUserModel):
+    with patch('app.users.services.UserModel', mock_model):
         res = await services.delete_user(id=2)
         assert res is True
 
 
 @pytest.mark.asyncio
-async def test_delete_user_nok(async_magic_mock_class):
+async def test_delete_user_nok(mock_model):
     async def mock_all(**kwargs):
         return None
 
-    mockUserModel = async_magic_mock_class()
-    mockUserModel.objects.get_or_none = mock_all
+    mock_model.objects.get_or_none = mock_all
 
-    with patch('app.users.services.UserModel', mockUserModel):
+    with patch('app.users.services.UserModel', mock_model):
         try:
             await services.delete_user(id=2)
             assert False
