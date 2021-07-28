@@ -1,4 +1,4 @@
-"""Factory App."""
+"""Factory API App."""
 from fastapi import FastAPI
 
 from app.core import openapi, routers, handlers
