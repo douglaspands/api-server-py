@@ -1,3 +1,4 @@
+"""Users Services."""
 from typing import Any, Dict, List, Union, Optional
 
 import pydantic

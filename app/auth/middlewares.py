@@ -1,3 +1,4 @@
+"""Auth Middlewares."""
 from fastapi import Depends
 
 from app.users.models import User

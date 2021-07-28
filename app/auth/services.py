@@ -1,3 +1,4 @@
+"""Auth Services."""
 from typing import Optional
 
 from jose import JWTError, jwt
@@ -13,7 +14,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.A
 
 
 async def authenticate_user(username: str, password: str) -> Optional[models.User]:
-    """Authenticated user.
+    """Authenticater user.
 
     Args:
         username (str): Username.

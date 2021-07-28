@@ -1,3 +1,4 @@
+"""Users Controllers."""
 from typing import Any, Dict, List
 
 from fastapi import Depends, APIRouter, status

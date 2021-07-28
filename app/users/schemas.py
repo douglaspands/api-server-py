@@ -1,3 +1,4 @@
+"""Users Schemas."""
 import re
 from typing import Any, Optional
 
@@ -9,11 +10,15 @@ from app.core.schemas import BaseConfig, BaseSchema
 
 
 class CreateUserIn(BaseSchema):
+    """User create schema."""
+
     email: EmailStr
     password_1: str
     password_2: str
 
     class Config(BaseConfig):
+        """metadata."""
+
         fields = {
             'email': {
                 'title': 'Email',
@@ -34,12 +39,26 @@ class CreateUserIn(BaseSchema):
 
     @validator('password_2')
     def passwords_match(cls, v: Any, values: Any, **kwargs: Any) -> Any:
+        """Password match validator.
+
+        Args:
+            v (Any): Value of the password.
+            values (Any): Others attributes.
+
+        Raises:
+            ValueError: Passowrd do not match.
+
+        Returns:
+            Any: Password valid.
+        """
         if 'password_1' not in values or v != values['password_1']:
             raise ValueError('passwords do not match')
         return v
 
 
 class UpdateUserIn(BaseSchema):
+    """User update schema."""
+
     email: EmailStr
     password_old: Optional[str]
     password_new_1: Optional[str]
@@ -48,6 +67,8 @@ class UpdateUserIn(BaseSchema):
     is_active: bool
 
     class Config(BaseConfig):
+        """Metadata."""
+
         fields = {
             'email': {
                 'title': 'Email',
@@ -83,30 +104,69 @@ class UpdateUserIn(BaseSchema):
 
     @validator('username')
     def username_valid(cls, v: Any) -> Any:
+        """Username validator.
+
+        Args:
+            v (Any): Username value.
+
+        Raises:
+            ValueError: Username invalid.
+
+        Returns:
+            Any: Username valid.
+        """
         if not re.search(r'^[a-zA-Z0-9._]+$', v):
             raise ValueError('must be alphanumeric')
         return v
 
     @validator('password_new_1')
     def passwords_match_1(cls, v: Any, values: Any, **kwargs: Any) -> Any:
+        """Check if filled password_new_1 and password_old.
+
+        Args:
+            v (Any): Password value.
+            values (Any): Others attributes.
+
+        Raises:
+            ValueError: Password invalid.
+
+        Returns:
+            Any: Password valid.
+        """
         if not values.get('password_old'):
             raise ValueError('old password is required')
         return v
 
     @validator('password_new_2')
     def passwords_match_2(cls, v: Any, values: Any, **kwargs: Any) -> Any:
+        """Check if is same password_new_1 and password_new_2.
+
+        Args:
+            v (Any): Password value.
+            values (Any): Others attributes.
+
+        Raises:
+            ValueError: Password invalid.
+
+        Returns:
+            Any: Password valid.
+        """
         if not values.get('password_new_1') or v != values['password_new_1']:
             raise ValueError('passwords do not match')
         return v
 
 
 class UserOut(BaseSchema):
+    """User response schema."""
+
     id: int
     username: str
     email: str
     is_active: bool
 
     class Config(BaseConfig):
+        """Metadata."""
+
         fields = {
             'id': {
                 'title': 'User ID',
@@ -132,6 +192,8 @@ class UserOut(BaseSchema):
 
 
 class UserQuery(BaseModel):
+    """User querystring filters."""
+
     is_active: Optional[bool] = Query(None,
                                       title='Ask if is active users',
                                       description='List of the active users.')
