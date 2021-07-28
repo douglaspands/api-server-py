@@ -28,11 +28,11 @@ services:
             POSTGRES_PASSWORD: docker
             POSTGRES_DB: apiserver
             WORKERS_PER_CORE: 0.5
-        #     PYTHONDONTWRITEBYTECODE: 1
-        # volumes:
-        #     - ./scripts/start-reload.sh:/app/start.sh:ro
-        #     - ./app:/app/app
-        #     - ./migrations:/app/migrations
+            PYTHONDONTWRITEBYTECODE: 1
+        volumes:
+            - ./scripts/start-reload.sh:/app/start.sh:ro
+            - ./app:/app/app
+            - ./migrations:/app/migrations
 
     apiserver-pgbouncer:
         image: edoburu/pgbouncer:1.15.0
