@@ -59,10 +59,10 @@ pyenv install 3.8.10 && pyenv local 3.8.10
 - **poetry run makemigrations** : Cria migrations de acordo com as models da aplicação;
 - **poetry run requirements** : Constroi o arquivo de `requirements.txt` para utilização no `Dockerfile`;
 - **poetry run dbshell** : Abre a ferramenta `pgcli` conectada no banco de dados local;
-- **poetry run sortimport**: Organiza e classifica os imports do projeto;
-- **poetry run lint** : Verifica se o código não contem erros e/ou complexidade excessiva (em resumo, valida a qualidade do código);
+- **poetry run lint** : Verifica a qualidade do código;
 - **poetry run test** : Executa os testes unitarios e a cobertura de testes gerando o relatorio no `htmlcov/index.html`;
 - **poetry run build** : Executa os comandos `lint` e `test` na sequencia para verificação da qualidade do código e erros de teste;
+- **poetry run fiximports**: Organiza e classifica os imports do projeto;
 
 > Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts/poetry.py` onde estão os comandos reais.
 
@@ -92,3 +92,4 @@ Fontes que ajudaram (ou ajudarão) no desenvolvimento desse projeto:
 - [OpenBanking API Specifications](https://standards.openbanking.org.uk/api-specifications/)
 - [Domain Driven Design](https://martinfowler.com/tags/domain%20driven%20design.html)
 - [MailHog](https://github.com/mailhog/MailHog)
+- [interrogate](https://interrogate.readthedocs.io/en/latest/)

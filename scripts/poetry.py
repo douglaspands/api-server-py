@@ -2,9 +2,8 @@ import os
 import re
 import sys
 import shutil
-import platform
 from time import sleep
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union, Optional
 
 import toml
 import yaml
@@ -51,16 +50,17 @@ def list_all_dirs_files() -> Tuple[List[str], List[str]]:
     return listdirs, listfiles
 
 
-def shell_run(command: Union[str, List[str]]):
-    and_ = ' & ' if platform.system() == 'Windows' else ' && '
-    join_cmd = and_.join(command if isinstance(command, list) else [command])
-    print(f'$ {join_cmd}')
-    os.system(join_cmd)
+def shell_run(command: Union[str, List[str]]) -> None:
+    for cmd in (command if isinstance(command, list) else [command]):
+        print(f'$ {cmd}')
+        if os.system(cmd):
+            break
 
 
 # ===================================================
 # POETRY SCRIPTS
 # ===================================================
+
 
 def deps():
     cmd = 'docker-compose up -d apiserver-postgres apiserver-pgbouncer'
@@ -77,13 +77,15 @@ def runserver():
 
 def lint(only_cmd: bool = False) -> Optional[List[str]]:
     app_basename = get_app_basename()
-    cmd = [f'flake8 {app_basename}', f'mypy {app_basename}']
+    cmd = [f'flake8 {app_basename}',
+           f'mypy {app_basename}',
+           f'interrogate -c setup.cfg {app_basename}']
     if not only_cmd:
         return shell_run(cmd)
     return cmd
 
 
-def sortimport():
+def fiximports():
     app_basename = get_app_basename()
     cmd = f'isort {app_basename}'
     shell_run(cmd)
@@ -139,11 +141,11 @@ def dbshell():
 
 
 def pycacheremove():
-    REGEX_DIR = re.compile(r'^.+[\/]__pycache__$')
+    regex_dir = re.compile(r'^.+[\/]__pycache__$')
     dirs, files = list_all_dirs_files()
     count = 0
     for d in dirs:
-        if REGEX_DIR.search(d):
+        if regex_dir.search(d):
             try:
                 shutil.rmtree(d)
                 print(f'{d}:', 'removed')
