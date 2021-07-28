@@ -59,33 +59,42 @@ class AsyncDatabaseAdapter(EventLoopThreadSafe):
             self._has_connect = False
         self.stop()
 
-    def async_migration(self, func: Callable, atomic: bool = True) -> Callable:
+    def async_migration(self, atomic: bool = True) -> Callable:
         """Async database use decorator on sync functions.
 
         Args:
-            func (Callable): Function to be run.
             atomic (bool, optional): Run function with transaction context. Defaults to True.
 
         Returns:
             Callable: Function run with decorator context.
         """
-        def wrapper(*args: Any, **kwargs: Any) -> Optional[Any]:
-            """Decorator async to sync function."""
-            async def awrapper() -> Optional[Any]:
-                """Wrapper run async function."""
-                if atomic is True:
-                    async with self._database.transaction():
-                        res = await func(*args, **kwargs)
-                else:
-                    res = await func(*args, **kwargs)
-                return res
-            return self.run_coroutine(awrapper())
-        wrapper.__name__ = func.__name__
-        return wrapper
+        def decorator(func: Callable) -> Callable:
+            """Run function.
 
-    async def transaction(self) -> Transaction:
+            Args:
+                func (Callable): Function to be run.
+
+            Returns:
+                Callable: Function run with decorator context.
+            """
+            def wrapper(*args: Any, **kwargs: Any) -> Optional[Any]:
+                """Decorator async to sync function."""
+                async def awrapper() -> Optional[Any]:
+                    """Wrapper run async function."""
+                    if atomic is True:
+                        async with self.transaction():
+                            res = await func(*args, **kwargs)
+                    else:
+                        res = await func(*args, **kwargs)
+                    return res
+                return self.run_coroutine(awrapper())
+            wrapper.__name__ = func.__name__
+            return wrapper
+        return decorator
+
+    def transaction(self) -> Transaction:
         """Transaction context."""
-        return await self._database.transaction()
+        return self._database.transaction()
 
 
 __all__ = ('AsyncDatabaseAdapter',)
