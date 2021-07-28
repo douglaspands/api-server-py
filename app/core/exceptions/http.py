@@ -1,4 +1,9 @@
-class HTTPException(Exception):
+"""Core Exceptions."""
+
+
+class HttpError(Exception):
+    """Http Error."""
+
     def __init__(self, status_code: int, message: str = None) -> None:
         self.status_code = status_code
         self.error = message
@@ -8,4 +13,4 @@ class HTTPException(Exception):
         return f"{class_name}(status_code={self.status_code!r}, error={self.error!r})"
 
 
-__all__ = ('HTTPException',)
+__all__ = ('HttpError',)

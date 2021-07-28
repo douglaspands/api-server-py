@@ -8,7 +8,7 @@ from app.auth import services
 from app.config import settings
 from app.auth.schemas import TokenOut
 from app.auth.utils.token import create_access_token
-from app.core.exceptions.http import HTTPException
+from app.core.exceptions.http import HttpError
 
 router = APIRouter(
     prefix='/auth',
@@ -24,14 +24,14 @@ async def login_for_access_token(token_in: OAuth2PasswordRequestForm = Depends()
         token_in (OAuth2PasswordRequestForm, optional): User name and password. Defaults to Depends().
 
     Raises:
-        HTTPException: Unauthorize access.
+        HttpError: Unauthorize access.
 
     Returns:
         TokenOut: Bearer Token.
     """
     user = await services.authenticate_user(username=token_in.username, password=token_in.password)
     if not user:
-        raise HTTPException(
+        raise HttpError(
             status_code=status.HTTP_401_UNAUTHORIZED,
             message='Incorrect username or password',
         )

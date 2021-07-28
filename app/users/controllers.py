@@ -7,7 +7,7 @@ from app.users import docs, models, services
 from app.core.schemas import ResponseOK
 from app.users.schemas import UserOut, UserQuery, CreateUserIn, UpdateUserIn
 from app.auth.middlewares import get_current_active_user
-from app.core.exceptions.http import HTTPException
+from app.core.exceptions.http import HttpError
 
 router = APIRouter(
     prefix='/users',
@@ -25,7 +25,7 @@ async def list_users(query: UserQuery = Depends(),
     if users:
         return ResponseOK(data=users)
     else:
-        raise HTTPException(status_code=204)
+        raise HttpError(status_code=204)
 
 
 @router.get('/v1/users/{id}',
@@ -38,7 +38,7 @@ async def get_user(id: int,
     if user:
         return ResponseOK(data=user)
     else:
-        raise HTTPException(status_code=404)
+        raise HttpError(status_code=404)
 
 
 @router.put('/v1/users/{id}',
@@ -52,7 +52,7 @@ async def update_user(id: int,
     if user:
         return ResponseOK(data=user)
     else:
-        raise HTTPException(status_code=404)
+        raise HttpError(status_code=404)
 
 
 @router.post('/v1/users',
