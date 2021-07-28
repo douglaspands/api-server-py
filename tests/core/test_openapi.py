@@ -73,7 +73,8 @@ def test_custom_openapi_3_422_to_400(settings) -> None:
                                                                                           'type': 'string'}}},
                                               'HTTPBadRequest': {'title': 'HTTPBadRequest',
                                                                  'type': 'object',
-                                                                 'properties': {'error': {'title': 'Error Detail',
+                                                                 'properties': {'error': {'title': 'Error',
+                                                                                          'description': 'List of the validation errors.',
                                                                                           'type': 'array',
                                                                                           'items': {
                                                                                               '$ref': '#/components/schemas/ValidationError'}}}}}}}

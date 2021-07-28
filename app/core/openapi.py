@@ -1,4 +1,6 @@
 """Core OpenApi Docs."""
+import re
+import json
 from typing import Any, Dict
 
 from pydash import _
@@ -32,28 +34,41 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
             if _.get(openapi_schema, f'paths.{path}.{method}.responses.422.description') == 'Validation Error':
                 _.set(openapi_schema, f'paths.{path}.{method}.responses.400',
                       _.get(openapi_schema, f'paths.{path}.{method}.responses.422'))
-                _.set(openapi_schema, f'paths.{path}.{method}.responses.400.description', 'Bad Request')
-                _.set(openapi_schema, f'paths.{path}.{method}.responses.400.content.application/json.schema.$ref',
-                      '#/components/schemas/HTTPBadRequest')
                 _.get(openapi_schema, f'paths.{path}.{method}.responses').pop('422')
 
+    changes: Dict[str, str] = {}
+
+    changes['Validation Error'] = 'Bad Request'
+    changes['HTTPValidationError'] = 'HTTPBadRequest'
+
+    regex_name_with_dot = re.compile(r'(?<=\[)(\w+(\.\w+){1,})(?=\])')
+
     for schema in _.get(openapi_schema, 'components.schemas', []):
-        if _.get(openapi_schema, f'components.schemas.{schema}.properties.detail'):
+        title = _.get(openapi_schema, 'components.schemas').get(schema, {}).get('title', '')
+
+        if schema == 'HTTPValidationError':
             _.set(openapi_schema, f'components.schemas.{schema}.properties.error',
                   _.get(openapi_schema, f'components.schemas.{schema}.properties.detail'))
+            _.set(openapi_schema, f'components.schemas.{schema}.properties.error.title', 'Error')
+            _.set(openapi_schema, f'components.schemas.{schema}.properties.error.description',
+                  'List of the validation errors.')
             _.get(openapi_schema, f'components.schemas.{schema}.properties').pop('detail')
 
-    if _.get(openapi_schema, 'components.schemas.HTTPValidationError'):
-        _.set(openapi_schema,
-              'components.schemas.HTTPBadRequest',
-              _.get(openapi_schema, 'components.schemas.HTTPValidationError'))
-        _.set(openapi_schema,
-              'components.schemas.HTTPBadRequest.title',
-              'HTTPBadRequest')
-        _.set(openapi_schema,
-              'components.schemas.HTTPBadRequest.properties.error.title',
-              'Error Detail')
-        _.get(openapi_schema, 'components.schemas').pop('HTTPValidationError')
+        elif '_' in title:
+            new_title = _.camel_case(title)
+            new_title = new_title[:1].capitalize() + new_title[1:]
+            changes[title] = new_title
+
+        elif '.' in title:
+            name = regex_name_with_dot.findall(title)[0][0]
+            changes[title] = title.replace(name, name.split('.').pop())
+
+    openapi_text = json.dumps(openapi_schema)
+
+    for k, v in changes.items():
+        openapi_text = openapi_text.replace(k, v)
+
+    openapi_schema = json.loads(openapi_text)
 
     app.openapi_schema = openapi_schema
     return app.openapi_schema
