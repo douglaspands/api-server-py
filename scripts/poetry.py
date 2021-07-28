@@ -131,9 +131,9 @@ def requirements():
 def dbshell():
     deps()
     data = import_dockercompose()
-    dbenv = data['services']['app-pgbouncer']['environment']
+    dbenv = data['services']['apiserver-pgbouncer']['environment']
     dbenv['DB_HOST'] = 'localhost'
-    dbenv['DB_PORT'] = data['services']['app-pgbouncer']['ports'][0].split(':')[0]
+    dbenv['DB_PORT'] = data['services']['apiserver-pgbouncer']['ports'][0].split(':')[0]
     cmd = f"pgcli postgres://{dbenv['DB_USER']}:{dbenv['DB_PASSWORD']}@{dbenv['DB_HOST']}:{dbenv['DB_PORT']}/{dbenv['DB_NAME']}"
     shell_run(cmd)
 
@@ -157,7 +157,7 @@ def cmd_test():
     """Command for tests
     """
     data = import_dockercompose()
-    dbenv = data['services']['app-pgbouncer']['environment']
+    dbenv = data['services']['apiserver-pgbouncer']['environment']
     dbenv['DB_HOST'] = 'localhost'
-    dbenv['DB_PORT'] = data['services']['app-pgbouncer']['ports'][0].split(':')[0]
+    dbenv['DB_PORT'] = data['services']['apiserver-pgbouncer']['ports'][0].split(':')[0]
     print(dbenv)

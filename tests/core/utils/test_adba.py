@@ -2,20 +2,20 @@ from unittest.mock import MagicMock, patch
 
 from sqlalchemy import MetaData
 
-from app.core.utils.adba import AsyncDatabaseByApp
+from app.core.utils.adba import AsyncDatabaseAdapter
 
 
 def test_adba_metadata(settings):
     with patch('app.core.utils.adba.settings', settings):
         with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
-            adba = AsyncDatabaseByApp()
+            adba = AsyncDatabaseAdapter()
             assert isinstance(adba.metadata, MetaData)
 
 
 def test_adba_sqlalchemy_url(settings):
     with patch('app.core.utils.adba.settings', settings):
         with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
-            adba = AsyncDatabaseByApp()
+            adba = AsyncDatabaseAdapter()
             assert adba.sqlalchemy_url == settings.SQLALCHEMY_DATABASE_URI
 
 
@@ -27,7 +27,7 @@ def test_adba_connect(settings):
     with patch('app.core.utils.adba.settings', settings):
         with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
             with patch('app.core.utils.adba.db', mm):
-                adba = AsyncDatabaseByApp()
+                adba = AsyncDatabaseAdapter()
                 adba.connect()
                 assert adba._has_connect
 
@@ -41,7 +41,7 @@ def test_adba_disconnect(settings):
     with patch('app.core.utils.adba.settings', settings):
         with patch('app.core.utils.adba.EventLoopThreadSafe', MagicMock):
             with patch('app.core.utils.adba.db', mm):
-                adba = AsyncDatabaseByApp()
+                adba = AsyncDatabaseAdapter()
                 adba.connect()
                 assert adba._has_connect
                 adba.disconnect()
@@ -63,7 +63,7 @@ def test_adba_decorator(settings, async_magic_mock_class):
 
     with patch('app.core.utils.adba.settings', settings):
         with patch('app.core.utils.adba.db', mm):
-            adba = AsyncDatabaseByApp()
+            adba = AsyncDatabaseAdapter()
 
             @adba.async_migration
             async def async_func():

@@ -17,6 +17,10 @@ services:
         container_name: apiserver-fastapi
         build: .
         restart: on-failure
+        depends_on:
+            - apiserver-pgbouncer
+        # ports:
+        #     - 8000:8000
         environment:
             POSTGRES_SERVER: apiserver-pgbouncer
             POSTGRES_PORT: 5432
@@ -25,10 +29,6 @@ services:
             POSTGRES_DB: apiserver
             WORKERS_PER_CORE: 0.5
             PYTHONDONTWRITEBYTECODE: 1
-        # ports:
-        #     - 8000:8000
-        depends_on:
-            - apiserver-pgbouncer
         volumes:
             - ./scripts/start-reload.sh:/app/start.sh:ro
             - ./app:/app/app

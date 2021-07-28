@@ -1,3 +1,4 @@
+"""Factory API App."""
 from fastapi import FastAPI
 
 from app.core import openapi, routers, handlers
@@ -6,7 +7,7 @@ from app.core.databases.sqlalchemy import database
 
 
 def create_app() -> FastAPI:
-
+    """Create FastApi app."""
     app = FastAPI(
         openapi_url=f'{settings.API_PREFIX}/openapi.json',
         # docs_url=None,

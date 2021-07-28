@@ -1,3 +1,4 @@
+"""Core Routers Scan."""
 import logging
 from typing import List
 from importlib import import_module
@@ -10,7 +11,14 @@ logger = logging.getLogger(__name__)
 
 
 def init_app(app: FastAPI) -> List[APIRouter]:
+    """Configure routers in FastApi App.
 
+    Args:
+        app (FastAPI): FastAPI instance.
+
+    Returns:
+        List[APIRouter]: List of routers.
+    """
     routers: List[APIRouter] = []
     for router_path in settings.ROUTERS:
         try:

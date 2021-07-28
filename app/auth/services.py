@@ -1,3 +1,4 @@
+"""Auth Services."""
 from typing import Optional
 
 from jose import JWTError, jwt
@@ -7,13 +8,13 @@ from fastapi.security import OAuth2PasswordBearer
 from app.users import models, services
 from app.config import settings
 from app.core.utils.password import verify_password
-from app.core.exceptions.http import HTTPException
+from app.core.exceptions.http import HttpError
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
 
 
 async def authenticate_user(username: str, password: str) -> Optional[models.User]:
-    """Authenticated user.
+    """Authenticater user.
 
     Args:
         username (str): Username.
@@ -42,7 +43,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
     Returns:
         models.User: User data.
     """
-    credentials_exception = HTTPException(
+    credentials_exception = HttpError(
         status_code=status.HTTP_401_UNAUTHORIZED,
         message='Could not validate credentials',
     )

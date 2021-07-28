@@ -1,4 +1,5 @@
-from typing import Any, Callable, Optional, Union
+"""Core Async Database Adapter."""
+from typing import Any, Union, Callable, Optional
 
 from pydantic import PostgresDsn
 from sqlalchemy import MetaData
@@ -10,7 +11,8 @@ from app.core.databases.sqlalchemy import database as db
 from app.core.databases.sqlalchemy import metadata as md
 
 
-class AsyncDatabaseByApp(EventLoopThreadSafe):
+class AsyncDatabaseAdapter(EventLoopThreadSafe):
+    """Async database adapter for sync functions."""
 
     def __init__(self, app: Optional[FastAPI] = None) -> None:
         super().__init__()
@@ -21,13 +23,24 @@ class AsyncDatabaseByApp(EventLoopThreadSafe):
 
     @property
     def metadata(self) -> MetaData:
+        """Get metadata for domains models.
+
+        Returns:
+            MetaData: Database metadata.
+        """
         return md
 
     @property
     def sqlalchemy_url(self) -> Optional[Union[str, PostgresDsn]]:
+        """SQLAlchemy URL from database.
+
+        Returns:
+            Optional[Union[str, PostgresDsn]]: URL from database.
+        """
         return settings.SQLALCHEMY_DATABASE_URI
 
     def connect(self) -> None:
+        """Async database connect for sync functions."""
         async def wrapper() -> None:
             await self._database.connect()
         if self._has_connect is False:
@@ -35,6 +48,7 @@ class AsyncDatabaseByApp(EventLoopThreadSafe):
             self._has_connect = True
 
     def disconnect(self) -> None:
+        """Async database disconnect for sync functions."""
         async def wrapper() -> None:
             await self._database.disconnect()
         if self._has_connect is True:
@@ -43,8 +57,7 @@ class AsyncDatabaseByApp(EventLoopThreadSafe):
         self.stop()
 
     def async_migration(self, func: Callable) -> Callable:
-        """Asynchronous migration decorator.
-        """
+        """Async database use decorator on sync functions."""
         def wrapper(*args: Any, **kwargs: Any) -> Optional[Any]:
             async def awrapper() -> Optional[Any]:
                 async with self._database.transaction():
@@ -55,4 +68,4 @@ class AsyncDatabaseByApp(EventLoopThreadSafe):
         return wrapper
 
 
-__all__ = ('AsyncDatabaseByApp',)
+__all__ = ('AsyncDatabaseAdapter',)

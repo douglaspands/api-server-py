@@ -1,3 +1,4 @@
+"""Core OpenApi Docs."""
 from typing import Any, Dict
 
 from pydash import _
@@ -8,7 +9,14 @@ from app.config import settings
 
 
 def custom_openapi(app: FastAPI) -> Dict[str, Any]:
+    """Customize openapi docs.
 
+    Args:
+        app (FastAPI): FastApi instance.
+
+    Returns:
+        Dict[str, Any]: Openapi data.
+    """
     if app.openapi_schema:
         return app.openapi_schema
 
@@ -52,6 +60,11 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
 
 
 def init_app(app: FastAPI) -> None:
+    """Configure openapi docs in FastApi App.
+
+    Args:
+        app (FastAPI): FastAPI instance.
+    """
     setattr(app, 'openapi', lambda: custom_openapi(app))
 
 

@@ -1,6 +1,5 @@
-
+"""Users OpenApiDocs."""
 from typing import Any, Dict
-
 
 list_users: Dict[str, Any] = {
     'name': 'List of users',

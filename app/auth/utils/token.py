@@ -1,3 +1,4 @@
+"""Auth Utils."""
 from typing import Optional
 from datetime import datetime, timedelta
 

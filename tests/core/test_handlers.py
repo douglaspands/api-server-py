@@ -50,7 +50,7 @@ async def test_validation_exception_handler_400_bad_request_2():
 @pytest.mark.asyncio
 async def test_exception_handler_404_not_found():
     from app.core.handlers import init_app
-    from app.core.exceptions.http import HTTPException as CoreHTTPException
+    from app.core.exceptions.http import HttpError as CoreHTTPException
 
     app = FastAPI()
     init_app(app)
@@ -69,7 +69,7 @@ async def test_exception_handler_404_not_found():
 @pytest.mark.asyncio
 async def test_exception_handler_422_business_error():
     from app.core.handlers import init_app
-    from app.core.exceptions.http import HTTPException as CoreHTTPException
+    from app.core.exceptions.http import HttpError as CoreHTTPException
 
     app = FastAPI()
     init_app(app)
