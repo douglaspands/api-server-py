@@ -4,7 +4,7 @@ from datetime import timedelta
 from fastapi import Depends, APIRouter, status
 from fastapi.security import OAuth2PasswordRequestForm
 
-from app.auth import services
+from app.auth import docs, services
 from app.config import settings
 from app.auth.schemas import TokenOut
 from app.auth.utils.token import create_access_token
@@ -16,15 +16,15 @@ router = APIRouter(
 )
 
 
-@router.post('/v1/token', response_model=TokenOut)
-async def login_for_access_token(token_in: OAuth2PasswordRequestForm = Depends()) -> TokenOut:
-    """Login by username and password.
+@router.post('/v1/token', response_model=TokenOut, **docs.get_token)
+async def get_token(token_in: OAuth2PasswordRequestForm = Depends()) -> TokenOut:
+    """Get token for system access.
 
     Args:
-        token_in (OAuth2PasswordRequestForm, optional): User name and password. Defaults to Depends().
+        token_in (OAuth2PasswordRequestForm, optional): User data. Defaults to Depends().
 
     Raises:
-        HttpError: Unauthorize access.
+        HttpError: Unauthorized access.
 
     Returns:
         TokenOut: Bearer Token.
