@@ -18,10 +18,12 @@ def create_app() -> FastAPI:
 
     @app.on_event('startup')
     async def startup() -> None:
+        """Startup event of the API."""
         await database.connect()
 
     @app.on_event('shutdown')
     async def shutdown() -> None:
+        """Shutdown event of the API."""
         await database.disconnect()
 
     handlers.init_app(app)

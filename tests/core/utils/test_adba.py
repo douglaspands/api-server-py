@@ -48,24 +48,51 @@ def test_adba_disconnect(settings):
                 assert not adba._has_connect
 
 
-def test_adba_decorator(settings, async_magic_mock_class):
-
-    AsyncContextManagerMock = async_magic_mock_class
+def test_adba_decorator_atomic(settings, async_magic_mock_class):
     expect_result = (True, 'Text', 1)
 
     async def async_func():
         pass
 
-    mm = AsyncContextManagerMock()
+    mm = async_magic_mock_class()
     mm.connect = async_func
     mm.disconnect = async_func
-    mm.transaction.return_value = AsyncContextManagerMock()
+    mm.transaction.return_value = async_magic_mock_class()
 
     with patch('app.core.utils.adba.settings', settings):
         with patch('app.core.utils.adba.db', mm):
             adba = AsyncDatabaseAdapter()
 
-            @adba.async_migration
+            @adba.async_migration()
+            async def async_func():
+                return expect_result
+
+            adba.connect()
+            assert adba._has_connect
+
+            res = async_func()
+            assert res == expect_result
+
+            adba.disconnect()
+            assert not adba._has_connect
+
+
+def test_adba_decorator_noatomic(settings, async_magic_mock_class):
+    expect_result = (True, 'Text', 1)
+
+    async def async_func():
+        pass
+
+    mm = async_magic_mock_class()
+    mm.connect = async_func
+    mm.disconnect = async_func
+    mm.transaction.return_value = async_magic_mock_class()
+
+    with patch('app.core.utils.adba.settings', settings):
+        with patch('app.core.utils.adba.db', mm):
+            adba = AsyncDatabaseAdapter()
+
+            @adba.async_migration(atomic=False)
             async def async_func():
                 return expect_result
 
