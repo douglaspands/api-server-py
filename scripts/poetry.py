@@ -68,6 +68,11 @@ def deps():
     sleep(2)
 
 
+def generate_badge_coverage():
+    cmd = 'coverage-badge -f -o docs/badge_coverage.svg'
+    os.system(cmd)
+
+
 def runserver():
     deps()
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
@@ -94,13 +99,16 @@ def fiximports():
 def test(only_cmd: bool = False) -> Optional[List[str]]:
     cmd = ['PYTHONDONTWRITEBYTECODE=1 pytest -vvs']
     if not only_cmd:
-        return shell_run(cmd)
+        shell_run(cmd)
+        generate_badge_coverage()
+        return
     return cmd
 
 
 def build():
     cmd = lint(True) + test(True)
     shell_run(cmd)
+    generate_badge_coverage()
 
 
 def makemigrations():
