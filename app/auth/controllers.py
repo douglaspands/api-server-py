@@ -1,14 +1,14 @@
 """Auth Controllers."""
 from datetime import timedelta
 
-from fastapi import Depends, APIRouter, status
+from fastapi import Depends, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 
 from app.auth import docs, services
 from app.config import settings
 from app.auth.schemas import TokenOut
 from app.auth.utils.token import create_access_token
-from app.core.exceptions.http import HttpError
+from app.core.exceptions.http import HttpUnauthorizedError
 
 router = APIRouter(
     prefix='/auth',
@@ -24,17 +24,14 @@ async def get_token(token_in: OAuth2PasswordRequestForm = Depends()) -> TokenOut
         token_in (OAuth2PasswordRequestForm, optional): User data. Defaults to Depends().
 
     Raises:
-        HttpError: Unauthorized access.
+        HttpUnauthorizedError: Unauthorized access.
 
     Returns:
         TokenOut: Bearer Token.
     """
     user = await services.authenticate_user(username=token_in.username, password=token_in.password)
     if not user:
-        raise HttpError(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            message='Incorrect username or password',
-        )
+        raise HttpUnauthorizedError(message='Incorrect username or password')
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={'sub': user.username}, expires_delta=access_token_expires

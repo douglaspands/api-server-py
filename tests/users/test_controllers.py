@@ -2,12 +2,12 @@ from unittest.mock import patch
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from starlette.exceptions import HTTPException
 
 from app.core import handlers
 from app.users import controllers
 from app.users.models import User as UserModel
 from app.users.controllers import get_current_active_user
+from app.core.exceptions.generic import NotFoundError
 
 app = FastAPI()
 handlers.init_app(app)
@@ -221,6 +221,24 @@ def test_delete_user_ok(async_magic_mock_class, mock_current_active_user, fix_pa
         assert response.json() == {}
 
 
+def test_delete_user_not_found(async_magic_mock_class, mock_current_active_user, fix_params):
+
+    async def async_func(*args, **kwargs):
+        raise NotFoundError('User not found.')
+
+    app.dependency_overrides = {}
+    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+
+    mock_service = async_magic_mock_class()
+    mock_service.delete_user = async_func
+
+    with patch('app.users.controllers.services', mock_service):
+
+        response = client.delete('/users/v1/users/6', params=fix_params)
+
+        assert response.status_code == 404
+
+
 def test_get_user_ok(async_magic_mock_class, mock_current_active_user, fix_params):
 
     async def async_func(*args, **kwargs):
@@ -259,7 +277,7 @@ def test_get_user_not_found(async_magic_mock_class, mock_current_active_user, fi
 
     async def async_func(*args, **kwargs):
         assert kwargs.get('id') == 7
-        return None
+        raise NotFoundError('User not found.')
 
     app.dependency_overrides = {}
     app.dependency_overrides[get_current_active_user] = mock_current_active_user

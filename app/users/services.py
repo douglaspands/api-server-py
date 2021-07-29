@@ -1,12 +1,10 @@
 """Users Services."""
 from typing import Any, Dict, List, Union, Optional
 
-import pydantic
-from fastapi.exceptions import HTTPException
-
 from app.users.models import User as UserModel
 from app.users.schemas import CreateUserIn, UpdateUserIn
 from app.core.utils.password import verify_password, get_password_hash
+from app.core.exceptions.generic import NotFoundError, BusinessLogicError
 
 
 async def all_users(**kwargs: Any) -> List[UserModel]:
@@ -24,7 +22,12 @@ async def get_user(**kwargs: Any) -> Optional[UserModel]:
     Returns:
         Optional[UserModel]: User data if exist.
     """
-    return await UserModel.objects.get_or_none(**kwargs)
+    user = await UserModel.objects.get_or_none(**kwargs)
+
+    if not user:
+        raise NotFoundError('User not found.')
+
+    return user
 
 
 async def create_user(user_input: Union[Dict[str, Any], CreateUserIn]) -> UserModel:
@@ -32,10 +35,11 @@ async def create_user(user_input: Union[Dict[str, Any], CreateUserIn]) -> UserMo
 
     Args:
         user_input (Union[Dict[str, Any], CreateUserIn]): User data.
+
     Returns:
         UserModel: User created.
     """
-    values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
+    values = user_input.dict() if isinstance(user_input, CreateUserIn) else user_input
     values['username'] = values['email'].split('@')[0]
     values['password'] = get_password_hash(values['password_1'])
     values['is_active'] = True
@@ -56,18 +60,24 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) 
         Optional[UserModel]: User updated.
     """
     user = await UserModel.objects.get_or_none(id=id)
+
     if not user:
-        return user
-    values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
+        raise NotFoundError('User not found.')
+
+    values = user_input.dict() if isinstance(user_input, UpdateUserIn) else user_input
     if values.get('password_old'):
+
         if not verify_password(values['password_old'], user.password):
-            raise HTTPException(status_code=422, detail='Old password do not match')
+            raise BusinessLogicError('Old password do not match.')
+
         values['password'] = get_password_hash(values['password_new_1'])
         del values['password_old']
         del values['password_new_1']
         del values['password_new_2']
+
     for k, v in values.items():
         setattr(user, k, v)
+
     return await user.update()
 
 
@@ -81,7 +91,9 @@ async def delete_user(id: int) -> Optional[bool]:
         Optional[bool]: True if remove successfully.
     """
     user = await UserModel.objects.get_or_none(id=id)
+
     if not user:
-        return user
+        raise NotFoundError('User not found.')
+
     await user.delete()
     return True

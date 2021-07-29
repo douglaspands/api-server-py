@@ -2,14 +2,14 @@
 from typing import Any, Dict, List, Optional
 
 from fastapi import Query, Depends, APIRouter, status
-from starlette.exceptions import HTTPException
 
 from app.users import docs, services
 from app.core.schemas import ResponseOK
 from app.users.models import User as UserModel
 from app.users.schemas import UserOut, CreateUserIn, UpdateUserIn
 from app.auth.middlewares import get_current_active_user
-from app.core.exceptions.http import HttpError
+from app.core.exceptions.http import HttpNotFoundError, HttpNoContentError, HttpUnprocessableEntityError
+from app.core.exceptions.generic import NotFoundError, BusinessLogicError
 
 router = APIRouter(
     prefix='/users',
@@ -48,7 +48,7 @@ async def list_users(query: Dict[str, Any] = Depends(query_params),
         current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
     Raises:
-        HttpError: Result empty.
+        HttpNoContentError: List of users is empty.
 
     Returns:
         ResponseOK[List[UserOut]]: List of users.
@@ -57,7 +57,7 @@ async def list_users(query: Dict[str, Any] = Depends(query_params),
     if users:
         return ResponseOK(data=users)
     else:
-        raise HttpError(status_code=204)
+        raise HttpNoContentError()
 
 
 @router.get('/v1/users/{id}',
@@ -73,16 +73,16 @@ async def get_user(id: int,
         current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
     Raises:
-        HttpError: User not found.
+        HttpNotFoundError: User not found.
 
     Returns:
         ResponseOK[UserOut]: User data.
     """
-    user = await services.get_user(id=id)
-    if user:
+    try:
+        user = await services.get_user(id=id)
         return ResponseOK(data=user)
-    else:
-        raise HttpError(status_code=404)
+    except NotFoundError:
+        raise HttpNotFoundError()
 
 
 @router.put('/v1/users/{id}',
@@ -100,20 +100,19 @@ async def update_user(id: int,
         current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
     Raises:
-        HttpError: user not found.
+        HttpNotFoundError: User not found.
+        HttpUnprocessableEntityError: Business logic error.
 
     Returns:
         ResponseOK[UserOut]: User data updated.
     """
     try:
         user = await services.update_user(id=id, user_input=user_input)
-        if user:
-            return ResponseOK(data=user)
-        else:
-            raise HttpError(status_code=404)
-
-    except HTTPException as http_error:
-        raise http_error
+        return ResponseOK(data=user)
+    except NotFoundError:
+        raise HttpNotFoundError()
+    except BusinessLogicError as error:
+        raise HttpUnprocessableEntityError(str(error))
 
 
 @router.post('/v1/users',
@@ -146,13 +145,17 @@ async def delete_user(id: int,
         id (int): User ID.
         current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
+    Raises:
+        HttpNotFoundError: User not found.
+
     Returns:
         Dict[str, Any]: Data empty.
     """
-    is_deleted = await services.delete_user(id=id)
-    if not is_deleted:
-        raise HttpError(status_code=404)
-    return {}
+    try:
+        await services.delete_user(id=id)
+        return {}
+    except NotFoundError:
+        raise HttpNotFoundError()
 
 
 __all__ = ('router',)

@@ -3,7 +3,7 @@ from fastapi import Depends
 
 from app.users.models import User
 from app.auth.services import get_current_user
-from app.core.exceptions.http import HttpError
+from app.core.exceptions.http import HttpForbiddenError
 
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
@@ -13,13 +13,13 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
         current_user (User, optional): Current user. Defaults to Depends(get_current_user).
 
     Raises:
-        HttpError: Inactive user.
+        HttpForbiddenError: Inactive user.
 
     Returns:
         User: User data.
     """
     if current_user.is_active is False:
-        raise HttpError(status_code=400, message='Inactive user')
+        raise HttpForbiddenError(message='Inactive user')
     return current_user
 
 
