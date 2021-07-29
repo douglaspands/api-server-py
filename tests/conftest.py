@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.config import Settings
+from app.users.models import User as UserModel
 
 
 @pytest.fixture
@@ -34,3 +35,23 @@ def async_magic_mock_class():
             return self.aexit_return
 
     return AsyncContextManagerMock
+
+
+@pytest.fixture
+def mock_current_active_user():
+    async def mock_get_current_active_user(*args, **kwargs):
+        um = UserModel(
+            email="jonh.roberts@email.com",
+            password="123456",
+            username="jonh.roberts",
+            is_active=True
+        )
+        um.id = 2
+        return um
+
+    return mock_get_current_active_user
+
+
+@pytest.fixture
+def fix_params():
+    return {'args': '', 'kwargs': ''}

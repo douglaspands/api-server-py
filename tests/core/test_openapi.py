@@ -13,12 +13,33 @@ def test_custom_openapi_1(settings) -> None:
     app = FastAPI()
     res = openapi.custom_openapi(app)
     assert res == {
-        'info': {
-            'description': settings.SERVER_DESCRIPTION,
-            'title': settings.SERVER_TITLE,
-            'version': settings.SERVER_VERSION},
-        'openapi': '3.0.2',
-        'paths': {}}
+        "components": {
+            "schemas": {
+                "HTTPUnprocessableEntity": {
+                    "description": "Http unprocessable entity error.",
+                    "properties": {
+                        "error": {
+                            "description": "Error message description.",
+                            "title": "Error",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "error"
+                    ],
+                    "title": "HTTPUnprocessableEntity",
+                    "type": "object"
+                }
+            }
+        },
+        "info": {
+            "description": "OpenAPI schema",
+            "title": "API Manager",
+            "version": "1.0.0"
+        },
+        "openapi": "3.0.2",
+        "paths": {}
+    }
 
 
 def test_custom_openapi_2_yet_load(settings) -> None:
@@ -26,13 +47,33 @@ def test_custom_openapi_2_yet_load(settings) -> None:
     openapi.custom_openapi(app)
     res = openapi.custom_openapi(app)
     assert res == {
-        'info': {
-            'description': settings.SERVER_DESCRIPTION,
-            'title': settings.SERVER_TITLE,
-            'version': settings.SERVER_VERSION},
-        'openapi': '3.0.2',
-        'paths': {}}
-
+        "components": {
+            "schemas": {
+                "HTTPUnprocessableEntity": {
+                    "description": "Http unprocessable entity error.",
+                    "properties": {
+                        "error": {
+                            "description": "Error message description.",
+                            "title": "Error",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "error"
+                    ],
+                    "title": "HTTPUnprocessableEntity",
+                    "type": "object"
+                }
+            }
+        },
+        "info": {
+            "description": "OpenAPI schema",
+            "title": "API Manager",
+            "version": "1.0.0"
+        },
+        "openapi": "3.0.2",
+        "paths": {}
+    }
 
 def test_custom_openapi_3_422_to_400(settings) -> None:
     app = FastAPI()
@@ -43,38 +84,109 @@ def test_custom_openapi_3_422_to_400(settings) -> None:
 
     res = openapi.custom_openapi(app)
 
-    assert res == {'openapi': '3.0.2',
-                   'info': {'description': settings.SERVER_DESCRIPTION,
-                            'title': settings.SERVER_TITLE,
-                            'version': settings.SERVER_VERSION},
-                   'paths': {
-                       '/test/{id}': {
-                           'get': {'summary': 'Controller',
-                                   'operationId': 'controller_test__id__get',
-                                   'parameters': [{'required': True,
-                                                   'schema': {'title': 'Id',
-                                                              'type': 'integer'},
-                                                   'name': 'id',
-                                                   'in': 'path'}],
-                                   'responses': {'200': {'description': 'Successful Response',
-                                                         'content': {'application/json': {'schema': {}}}},
-                                                 '400': {'description': 'Bad Request',
-                                                         'content': {'application/json': {'schema': {
-                                                             '$ref': '#/components/schemas/HTTPBadRequest'}}}}}}}},
-                   'components': {'schemas': {'ValidationError': {'title': 'ValidationError',
-                                                                  'required': ['loc', 'msg', 'type'],
-                                                                  'type': 'object',
-                                                                  'properties': {'loc': {'title': 'Location',
-                                                                                         'type': 'array',
-                                                                                         'items': {'type': 'string'}},
-                                                                                 'msg': {'title': 'Message',
-                                                                                         'type': 'string'},
-                                                                                 'type': {'title': 'Error Type',
-                                                                                          'type': 'string'}}},
-                                              'HTTPBadRequest': {'title': 'HTTPBadRequest',
-                                                                 'type': 'object',
-                                                                 'properties': {'error': {'title': 'Error',
-                                                                                          'description': 'List of the validation errors.',
-                                                                                          'type': 'array',
-                                                                                          'items': {
-                                                                                              '$ref': '#/components/schemas/ValidationError'}}}}}}}
+    assert res == {
+        "components": {
+            "schemas": {
+                "HTTPBadRequest": {
+                    "properties": {
+                        "error": {
+                            "description": "List of the validation errors.",
+                            "items": {
+                                "$ref": "#/components/schemas/ValidationError"
+                            },
+                            "title": "Error",
+                            "type": "array"
+                        }
+                    },
+                    "title": "HTTPBadRequest",
+                    "type": "object"
+                },
+                "HTTPUnprocessableEntity": {
+                    "description": "Http unprocessable entity error.",
+                    "properties": {
+                        "error": {
+                            "description": "Error message description.",
+                            "title": "Error",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "error"
+                    ],
+                    "title": "HTTPUnprocessableEntity",
+                    "type": "object"
+                },
+                "ValidationError": {
+                    "properties": {
+                        "loc": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "title": "Location",
+                            "type": "array"
+                        },
+                        "msg": {
+                            "title": "Message",
+                            "type": "string"
+                        },
+                        "type": {
+                            "title": "Error Type",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "loc",
+                        "msg",
+                        "type"
+                    ],
+                    "title": "ValidationError",
+                    "type": "object"
+                }
+            }
+        },
+        "info": {
+            "description": "OpenAPI schema",
+            "title": "API Manager",
+            "version": "1.0.0"
+        },
+        "openapi": "3.0.2",
+        "paths": {
+            "/test/{id}": {
+                "get": {
+                    "operationId": "controller_test__id__get",
+                    "parameters": [
+                        {
+                            "in": "path",
+                            "name": "id",
+                            "required": True,
+                            "schema": {
+                                "title": "Id",
+                                "type": "integer"
+                            }
+                        }
+                    ],
+                    "responses": {
+                        "200": {
+                            "content": {
+                                "application/json": {
+                                    "schema": {}
+                                }
+                            },
+                            "description": "Successful Response"
+                        },
+                        "400": {
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "$ref": "#/components/schemas/HTTPBadRequest"
+                                    }
+                                }
+                            },
+                            "description": "Bad Request"
+                        }
+                    },
+                    "summary": "Controller"
+                }
+            }
+        }
+    }

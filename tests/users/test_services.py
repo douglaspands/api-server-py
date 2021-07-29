@@ -1,4 +1,3 @@
-from app.users.schemas import CreateUserIn, UpdateUserIn
 from datetime import datetime
 from unittest.mock import patch
 
@@ -7,6 +6,8 @@ from fastapi.exceptions import HTTPException
 
 from app.users import services
 from app.users.models import User as UserModel
+from app.users.schemas import CreateUserIn, UpdateUserIn
+from app.core.exceptions.generic import BusinessLogicError, NotFoundError
 
 
 @pytest.mark.asyncio
@@ -19,10 +20,10 @@ async def test_allusers_with_content(async_magic_mock_class):
             is_active=True
         )]
 
-    mockUserModel = async_magic_mock_class()
-    mockUserModel.objects.all = mock_all
+    mock_user_model = async_magic_mock_class()
+    mock_user_model.objects.all = mock_all
 
-    with patch('app.users.services.UserModel', mockUserModel):
+    with patch('app.users.services.UserModel', mock_user_model):
         users = await services.all_users()
         assert len(users) == 1
         assert users[0].email == "jonh.roberts@email.com"
@@ -38,10 +39,10 @@ async def test_allusers_no_content(async_magic_mock_class):
     async def mock_all(*args, **kwargs):
         return []
 
-    mockUserModel = async_magic_mock_class()
-    mockUserModel.objects.all = mock_all
+    mock_user_model = async_magic_mock_class()
+    mock_user_model.objects.all = mock_all
 
-    with patch('app.users.services.UserModel', mockUserModel):
+    with patch('app.users.services.UserModel', mock_user_model):
         users = await services.all_users()
         assert len(users) == 0
 
@@ -59,10 +60,10 @@ async def test_get_user_by_id_with_content(async_magic_mock_class):
         user.id = pk
         return user
 
-    mockUserModel = async_magic_mock_class()
-    mockUserModel.objects.get_or_none = mock_all
+    mock_user_model = async_magic_mock_class()
+    mock_user_model.objects.get_or_none = mock_all
 
-    with patch('app.users.services.UserModel', mockUserModel):
+    with patch('app.users.services.UserModel', mock_user_model):
         user = await services.get_user(id=2)
         assert user.id == 2
         assert user.email == "jonh.roberts@email.com"
@@ -78,12 +79,17 @@ async def test_get_user_by_id_no_content(async_magic_mock_class):
     async def mock_all(**kwargs):
         return None
 
-    mockUserModel = async_magic_mock_class()
-    mockUserModel.objects.get_or_none = mock_all
+    mock_user_model = async_magic_mock_class()
+    mock_user_model.objects.get_or_none = mock_all
 
-    with patch('app.users.services.UserModel', mockUserModel):
-        user = await services.get_user(id=3)
-        assert user is None
+    with patch('app.users.services.UserModel', mock_user_model):
+        try:
+            await services.get_user(id=3)
+            assert False
+        except NotFoundError:
+            assert True
+        except BaseException:
+            assert False
 
 
 @pytest.mark.asyncio
@@ -99,10 +105,10 @@ async def test_get_user_by_username_with_content(async_magic_mock_class):
         user.id = 2
         return user
 
-    mockUserModel = async_magic_mock_class()
-    mockUserModel.objects.get_or_none = mock_all
+    mock_user_model = async_magic_mock_class()
+    mock_user_model.objects.get_or_none = mock_all
 
-    with patch('app.users.services.UserModel', mockUserModel):
+    with patch('app.users.services.UserModel', mock_user_model):
         username = 'jonh.roberts'
         user = await services.get_user(username=username)
         assert user.id == 2
@@ -119,12 +125,17 @@ async def test_get_user_by_username_no_content(async_magic_mock_class):
     async def mock_all(**kwargs):
         return None
 
-    mockUserModel = async_magic_mock_class()
-    mockUserModel.objects.get_or_none = mock_all
+    mock_user_model = async_magic_mock_class()
+    mock_user_model.objects.get_or_none = mock_all
 
-    with patch('app.users.services.UserModel', mockUserModel):
-        user = await services.get_user(username="xpto.xpto")
-        assert user is None
+    with patch('app.users.services.UserModel', mock_user_model):
+        try:
+            await services.get_user(username="xpto.xpto")
+            assert False
+        except NotFoundError:
+            assert True
+        except BaseException:
+            assert False
 
 
 @pytest.mark.asyncio
@@ -134,14 +145,14 @@ async def test_delete_user_ok(async_magic_mock_class):
         return True
 
     async def mock_all(**kwargs):
-        mockModel = async_magic_mock_class()
-        mockModel.delete = mock_delete
-        return mockModel
+        mock_model = async_magic_mock_class()
+        mock_model.delete = mock_delete
+        return mock_model
 
-    mockModel = async_magic_mock_class()
-    mockModel.objects.get_or_none = mock_all
+    mock_model = async_magic_mock_class()
+    mock_model.objects.get_or_none = mock_all
 
-    with patch('app.users.services.UserModel', mockModel):
+    with patch('app.users.services.UserModel', mock_model):
         res = await services.delete_user(id=2)
         assert res is True
 
@@ -151,15 +162,15 @@ async def test_delete_user_nok(async_magic_mock_class):
     async def mock_all(**kwargs):
         return None
 
-    mockModel = async_magic_mock_class()
-    mockModel.objects.get_or_none = mock_all
+    mock_model = async_magic_mock_class()
+    mock_model.objects.get_or_none = mock_all
 
-    with patch('app.users.services.UserModel', mockModel):
+    with patch('app.users.services.UserModel', mock_model):
         try:
             await services.delete_user(id=2)
             assert False
-        except HTTPException as err:
-            assert err.detail == 'User not found'
+        except NotFoundError as err:
+            assert str(err) == 'User not found.'
         except BaseException:
             assert False
 
@@ -183,8 +194,8 @@ async def test_create_user_ok_1(async_magic_mock_class):
         "password_2": "123456",
     }
 
-    with patch('app.users.services.UserModel', async_magic_mock_class) as mockModel:
-        mockModel.save = mock_save
+    with patch('app.users.services.UserModel', async_magic_mock_class) as mock_model:
+        mock_model.save = mock_save
         user = await services.create_user(user_input)
         assert user.id == 2
         assert user.email == user_input["email"]
@@ -213,15 +224,14 @@ async def test_create_user_ok_2(async_magic_mock_class):
     }
     user_input_schema = CreateUserIn(**user_input)
 
-    with patch('app.users.services.UserModel', async_magic_mock_class) as mockModel:
-        mockModel.save = mock_save
+    with patch('app.users.services.UserModel', async_magic_mock_class) as mock_model:
+        mock_model.save = mock_save
         user = await services.create_user(user_input_schema)
         assert user.id == 2
         assert user.email == user_input["email"]
         assert len(user.password) > 0
         assert user.username == user_input["email"].split("@")[0]
         assert user.is_active is True
-
 
 
 @pytest.mark.asyncio
@@ -250,16 +260,15 @@ async def test_update_user_pass_invalid(async_magic_mock_class):
         "password_new_2": "123456",
     }
 
-    with patch('app.users.services.UserModel', async_magic_mock_class) as mockModel:
+    with patch('app.users.services.UserModel', async_magic_mock_class) as mock_model:
         with patch('app.users.services.verify_password', return_value=False):
-            mockModel.objects = async_magic_mock_class()
-            mockModel.objects.get_or_none = mock_get_or_none
+            mock_model.objects = async_magic_mock_class()
+            mock_model.objects.get_or_none = mock_get_or_none
             try:
                 await services.update_user(user_id, user_input)
                 assert False
-            except HTTPException as err:
-                assert err.status_code == 422
-                assert err.detail == 'Old password do not match'
+            except BusinessLogicError as err:
+                assert str(err) == 'Old password do not match.'
             except BaseException:
                 assert False
 
@@ -279,15 +288,14 @@ async def test_update_user_not_found(async_magic_mock_class):
         "password_new_2": "123456",
     }
 
-    with patch('app.users.services.UserModel', async_magic_mock_class) as mockModel:
-        mockModel.objects = async_magic_mock_class()
-        mockModel.objects.get_or_none = mock_get_or_none
+    with patch('app.users.services.UserModel', async_magic_mock_class) as mock_model:
+        mock_model.objects = async_magic_mock_class()
+        mock_model.objects.get_or_none = mock_get_or_none
         try:
             await services.update_user(user_id, user_input)
             assert False
-        except HTTPException as err:
-            assert err.status_code == 404
-            assert err.detail == 'User not found'
+        except NotFoundError as err:
+            assert str(err) == 'User not found.'
         except BaseException:
             assert False
 
@@ -324,10 +332,10 @@ async def test_update_user_ok_1(async_magic_mock_class):
         "is_active": True
     }
 
-    with patch('app.users.services.UserModel', async_magic_mock_class) as mockModel:
+    with patch('app.users.services.UserModel', async_magic_mock_class) as mock_model:
         with patch('app.users.services.verify_password', return_value=True):
-            mockModel.objects = async_magic_mock_class()
-            mockModel.objects.get_or_none = mock_get_or_none
+            mock_model.objects = async_magic_mock_class()
+            mock_model.objects.get_or_none = mock_get_or_none
             user = await services.update_user(user_id, user_input)
             assert user.id == user_id
             assert user.email == user_input["email"]
@@ -369,10 +377,10 @@ async def test_update_user_ok_2(async_magic_mock_class):
     }
     user_input_schema = UpdateUserIn(**user_input)
 
-    with patch('app.users.services.UserModel', async_magic_mock_class) as mockModel:
+    with patch('app.users.services.UserModel', async_magic_mock_class) as mock_model:
         with patch('app.users.services.verify_password', return_value=True):
-            mockModel.objects = async_magic_mock_class()
-            mockModel.objects.get_or_none = mock_get_or_none
+            mock_model.objects = async_magic_mock_class()
+            mock_model.objects.get_or_none = mock_get_or_none
             user = await services.update_user(user_id, user_input_schema)
             assert user.id == user_id
             assert user.email == user_input["email"]

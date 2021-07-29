@@ -1,13 +1,15 @@
 """Users Controllers."""
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
-from fastapi import Depends, APIRouter, status
+from fastapi import Query, Depends, APIRouter, status
 
-from app.users import docs, models, services
+from app.users import docs, services
 from app.core.schemas import ResponseOK
-from app.users.schemas import UserOut, UserQuery, CreateUserIn, UpdateUserIn
+from app.users.models import User as UserModel
+from app.users.schemas import UserOut, CreateUserIn, UpdateUserIn
 from app.auth.middlewares import get_current_active_user
-from app.core.exceptions.http import HttpError
+from app.core.exceptions.http import HttpNotFoundError, HttpNoContentError, HttpUnprocessableEntityError
+from app.core.exceptions.generic import NotFoundError, BusinessLogicError
 
 router = APIRouter(
     prefix='/users',
@@ -15,29 +17,47 @@ router = APIRouter(
 )
 
 
+async def query_params(is_active: Optional[bool] = Query(None,
+                                                         title='Ask if is active users',
+                                                         description='List of the active users.')
+                       ) -> Dict[str, Any]:
+    """Query parameters for users filter.
+
+    Args:
+        is_active (Optional[bool], optional): User active filter. Defaults to None.
+
+    Returns:
+        Dict[str, Any]: [description]
+    """
+    query = {}
+    if is_active is not None:
+        query['is_active'] = is_active
+    return query
+
+
 @router.get('/v1/users',
             status_code=status.HTTP_200_OK,
             response_model=ResponseOK[List[UserOut]],
             **docs.list_users)
-async def list_users(query: UserQuery = Depends(),
-                     current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[List[UserOut]]:
+async def list_users(query: Dict[str, Any] = Depends(query_params),
+                     current_user: UserModel = Depends(get_current_active_user)) -> ResponseOK[List[UserOut]]:
     """Get list of users.
 
     Args:
-        query (UserQuery, optional): Querystring filters. Defaults to Depends().
-        current_user (models.User, optional): User data from token. Defaults to Depends(get_current_active_user).
+        query (Dict[str, Any]): Querystring filters.
+        current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
     Raises:
-        HttpError: Result empty.
+        HttpNoContentError: List of users is empty.
 
     Returns:
         ResponseOK[List[UserOut]]: List of users.
     """
-    users = await services.all_users(**query.dict(exclude_none=True))
+    users = await services.all_users(**query)
     if users:
         return ResponseOK(data=users)
     else:
-        raise HttpError(status_code=204)
+        raise HttpNoContentError()
 
 
 @router.get('/v1/users/{id}',
@@ -45,24 +65,24 @@ async def list_users(query: UserQuery = Depends(),
             response_model=ResponseOK[UserOut],
             **docs.get_user)
 async def get_user(id: int,
-                   current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
+                   current_user: UserModel = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
     """Get user.
 
     Args:
         id (int): User ID.
-        current_user (models.User, optional): User data from token. Defaults to Depends(get_current_active_user).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
     Raises:
-        HttpError: User not found.
+        HttpNotFoundError: User not found.
 
     Returns:
         ResponseOK[UserOut]: User data.
     """
-    user = await services.get_user(id=id)
-    if user:
+    try:
+        user = await services.get_user(id=id)
         return ResponseOK(data=user)
-    else:
-        raise HttpError(status_code=404)
+    except NotFoundError:
+        raise HttpNotFoundError()
 
 
 @router.put('/v1/users/{id}',
@@ -71,25 +91,28 @@ async def get_user(id: int,
             **docs.update_user)
 async def update_user(id: int,
                       user_input: UpdateUserIn,
-                      current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
+                      current_user: UserModel = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
     """Update user.
 
     Args:
         id (int): User ID.
         user_input (UpdateUserIn): User data update.
-        current_user (models.User, optional): User data from token. Defaults to Depends(get_current_active_user).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
     Raises:
-        HttpError: user not found.
+        HttpNotFoundError: User not found.
+        HttpUnprocessableEntityError: Business logic error.
 
     Returns:
         ResponseOK[UserOut]: User data updated.
     """
-    user = await services.update_user(id=id, user_input=user_input)
-    if user:
+    try:
+        user = await services.update_user(id=id, user_input=user_input)
         return ResponseOK(data=user)
-    else:
-        raise HttpError(status_code=404)
+    except NotFoundError:
+        raise HttpNotFoundError()
+    except BusinessLogicError as error:
+        raise HttpUnprocessableEntityError(str(error))
 
 
 @router.post('/v1/users',
@@ -97,12 +120,12 @@ async def update_user(id: int,
              response_model=ResponseOK[UserOut],
              **docs.create_user)
 async def create_user(user_input: CreateUserIn,
-                      current_user: models.User = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
+                      current_user: UserModel = Depends(get_current_active_user)) -> ResponseOK[UserOut]:
     """Create user.
 
     Args:
         user_input (CreateUserIn): User data.
-        current_user (models.User, optional): User data from token. Defaults to Depends(get_current_active_user).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
 
     Returns:
         ResponseOK[UserOut]: User data created.
@@ -115,18 +138,24 @@ async def create_user(user_input: CreateUserIn,
                status_code=status.HTTP_200_OK,
                **docs.delete_user)
 async def delete_user(id: int,
-                      current_user: models.User = Depends(get_current_active_user)) -> Dict[str, Any]:
+                      current_user: UserModel = Depends(get_current_active_user)) -> Dict[str, Any]:
     """Remove user.
 
     Args:
         id (int): User ID.
-        current_user (models.User, optional): User data from token. Defaults to Depends(get_current_active_user).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(get_current_active_user).
+
+    Raises:
+        HttpNotFoundError: User not found.
 
     Returns:
         Dict[str, Any]: Data empty.
     """
-    await services.delete_user(id=id)
-    return {}
+    try:
+        await services.delete_user(id=id)
+        return {}
+    except NotFoundError:
+        raise HttpNotFoundError()
 
 
 __all__ = ('router',)

@@ -3,8 +3,6 @@ import re
 from typing import Any, Optional
 
 from pydantic import EmailStr, validator
-from pydantic.main import BaseModel
-from fastapi.param_functions import Query
 
 from app.core.schemas import BaseConfig, BaseSchema
 
@@ -191,12 +189,4 @@ class UserOut(BaseSchema):
         }
 
 
-class UserQuery(BaseModel):
-    """User querystring filters."""
-
-    is_active: Optional[bool] = Query(None,
-                                      title='Ask if is active users',
-                                      description='List of the active users.')
-
-
-__all__ = ('CreateUserIn', 'UpdateUserIn', 'UserOut', 'UserQuery')
+__all__ = ('CreateUserIn', 'UpdateUserIn', 'UserOut',)

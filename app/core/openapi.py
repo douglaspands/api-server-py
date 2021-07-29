@@ -9,6 +9,20 @@ from fastapi.openapi.utils import get_openapi
 
 from app.config import settings
 
+HTTP_UNPROCESSABLE_ENTITY = {
+    "title": "HTTPUnprocessableEntity",
+    "description": "Http unprocessable entity error.",
+    "required": ["error"],
+    "type": "object",
+    "properties": {
+        "error": {
+            "title": "Error",
+            "description": "Error message description.",
+            "type": "string"
+        },
+    }
+}
+
 
 def custom_openapi(app: FastAPI) -> Dict[str, Any]:
     """Customize openapi docs.
@@ -42,6 +56,8 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
     changes['HTTPValidationError'] = 'HTTPBadRequest'
 
     regex_name_with_dot = re.compile(r'(?<=\[)(\w+(\.\w+){1,})(?=\])')
+
+    _.set(openapi_schema, 'components.schemas.HTTPUnprocessableEntity', HTTP_UNPROCESSABLE_ENTITY)
 
     for schema in _.get(openapi_schema, 'components.schemas', []):
         title = _.get(openapi_schema, 'components.schemas').get(schema, {}).get('title', '')
