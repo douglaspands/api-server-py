@@ -1,7 +1,12 @@
 # API SERVER PY -- EM DESENVOLVIMENTO
+<p>
+<img src="./docs/badge_interrogate.svg">
+<img src="./docs/badge_coverage.svg">
+</p>
+
 Servidor de API REST desenvolvido em FastAPI/Python.
 
-## INICIAR A APLICAÇÃO
+### INICIAR A APLICAÇÃO
 
 Vamos iniciar a aplicação com o Docker e Docker Compose, vamos executar o seguinte comando:
 ```bash
@@ -16,14 +21,14 @@ Algumas observações:
 - A imagem da aplicação é preparada para o desenvolvimento, caso altere algum arquivo é reiniciado automaticamente;
 - Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 apiserver-postgres`
 
-## DESENVOLVIMENTO
+### DESENVOLVIMENTO
 Foi usado o Python `3.8` para desenvolvimento. 
 > Python 3.8 foi a escolha devido a melhor compatibilidade entre todas as ferramentas e dependencias utilizadas. Foi identificado algumas incompatibilidades com a versão 3.9, mas acredito que seja algo temporario.
 
-### DOCKER E DOCKER-COMPOSE
+#### DOCKER E DOCKER-COMPOSE
 A instalação varia de acordo com o sistema operacional, então aconselho verificar no site do [Docker](https://docs.docker.com/).
 
-### LINUX/UBUNTU
+#### LINUX/UBUNTU
 Minha preferencia é desenvolver a aplicação no `Linux/Ubuntu` ou no `WSL2/Ubuntu`.
 Para isso é necessario a instalação de algumas dependencias no Ubuntu:
 
@@ -47,7 +52,7 @@ libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-d
 curl https://pyenv.run | bash
 ```
 
-### POETRY - AUTOMATIZAÇÕES
+#### POETRY - AUTOMATIZAÇÕES
 Segue abaixo comandos para facilitar o desenvolvimento e a utilização de ferramentas:
 
 - **poetry install** : (SOMENTE NA PRIMEIRA VEZ) Vai instalar todas as dependencias (inclusive de desenvolvimento). Antes de executar, eu construi o ambiente com o `Pyenv`:
@@ -67,7 +72,7 @@ pyenv install 3.8.10 && pyenv local 3.8.10
 > Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts/poetry.py` onde estão os comandos reais.
 
 
-## FONTES
+###  FONTES
 
 Fontes que ajudaram (ou ajudarão) no desenvolvimento desse projeto:
 
