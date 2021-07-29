@@ -1,7 +1,7 @@
 # API SERVER PY -- EM DESENVOLVIMENTO
 <p>
-<img src="./docs/badge_interrogate.svg">
-<img src="./docs/badge_coverage.svg">
+<a href="https://interrogate.readthedocs.io/en/latest/"><img src="./docs/badge_interrogate.svg"></a>
+<a href="https://pytest-cov.readthedocs.io/en/latest/readme.html"><img src="./docs/badge_coverage.svg"></a>
 </p>
 
 Servidor de API REST desenvolvido em FastAPI/Python.
