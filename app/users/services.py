@@ -57,7 +57,7 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) 
     """
     user = await UserModel.objects.get_or_none(id=id)
     if not user:
-        raise HTTPException(status_code=404, detail='User not found')
+        return user
     values = user_input.dict() if isinstance(user_input, pydantic.BaseModel) else user_input
     if values.get('password_old'):
         if not verify_password(values['password_old'], user.password):
@@ -71,17 +71,17 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) 
     return await user.update()
 
 
-async def delete_user(id: int) -> bool:
+async def delete_user(id: int) -> Optional[bool]:
     """Delete user.
 
     Args:
         id (int): User ID.
 
     Returns:
-        bool: True if remove successfully.
+        Optional[bool]: True if remove successfully.
     """
     user = await UserModel.objects.get_or_none(id=id)
     if not user:
-        raise HTTPException(status_code=404, detail='User not found')
+        return user
     await user.delete()
     return True

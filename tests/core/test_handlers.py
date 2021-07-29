@@ -63,7 +63,7 @@ async def test_exception_handler_404_not_found():
         response = await ac.get('/users/1')
 
     assert response.status_code == 404
-    assert response.json() == None
+    assert response.json() is None
 
 
 @pytest.mark.asyncio

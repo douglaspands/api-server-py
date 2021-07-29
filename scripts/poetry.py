@@ -92,7 +92,7 @@ def fiximports():
 
 
 def test(only_cmd: bool = False) -> Optional[List[str]]:
-    cmd = ['pytest -vvs']
+    cmd = ['PYTHONDONTWRITEBYTECODE=1 pytest -vvs']
     if not only_cmd:
         return shell_run(cmd)
     return cmd
