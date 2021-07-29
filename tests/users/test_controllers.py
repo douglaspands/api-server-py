@@ -7,7 +7,7 @@ from app.core import handlers
 from app.users import controllers
 from app.users.models import User as UserModel
 from app.users.controllers import get_current_active_user
-from app.core.exceptions.generic import NotFoundError
+from app.core.exceptions.generic import BusinessLogicError, NotFoundError
 
 app = FastAPI()
 handlers.init_app(app)
@@ -288,5 +288,104 @@ def test_get_user_not_found(async_magic_mock_class, mock_current_active_user, fi
     with patch('app.users.controllers.services', mock_service):
 
         response = client.get('/users/v1/users/7', params=fix_params)
+
+        assert response.status_code == 404
+
+
+def test_update_user_ok(async_magic_mock_class, mock_current_active_user, fix_params):
+
+    async def async_func(*args, **kwargs):
+        user_id = kwargs.get('id')
+        user_input = kwargs.get('user_input')
+        user1 = UserModel(
+            email=user_input.email,
+            password='*****',
+            username=user_input.username,
+            is_active=True
+        )
+        user1.id = user_id
+        return user1
+
+    app.dependency_overrides = {}
+    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+
+    mock_service = async_magic_mock_class()
+    mock_service.update_user = async_func
+
+    with patch('app.users.controllers.services', mock_service):
+
+        user_id = 4
+
+        payload = {
+            "username": "abcd.efgh",
+            "email": "abcd.efgh@email.com",
+            "isActive": True
+        }
+        expect_response = payload.copy()
+        expect_response['id'] = user_id
+        expect_response['username'] = payload['username']
+        expect_response['isActive'] = True
+
+        response = client.put(f'/users/v1/users/{user_id}', params=fix_params, json=payload)
+
+        assert response.status_code == 200
+        assert response.json() == {"data": expect_response}
+
+
+def test_update_user_business_error(async_magic_mock_class, mock_current_active_user, fix_params):
+
+    async def async_func(*args, **kwargs):
+        raise BusinessLogicError('Password not matched.')
+
+    app.dependency_overrides = {}
+    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+
+    mock_service = async_magic_mock_class()
+    mock_service.update_user = async_func
+
+    with patch('app.users.controllers.services', mock_service):
+
+        user_id = 4
+
+        payload = {
+            "username": "abcd.efgh",
+            "email": "abcd.efgh@email.com",
+            "isActive": True,
+            "passwordOld": "123456",
+            "passwordNew1": "654321",
+            "passwordNew2": "654321",
+        }
+
+        response = client.put(f'/users/v1/users/{user_id}', params=fix_params, json=payload)
+
+        assert response.status_code == 422
+        assert response.json() == {"error": "Password not matched."}
+
+
+def test_update_user_not_found(async_magic_mock_class, mock_current_active_user, fix_params):
+
+    async def async_func(*args, **kwargs):
+        raise NotFoundError('User not found.')
+
+    app.dependency_overrides = {}
+    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+
+    mock_service = async_magic_mock_class()
+    mock_service.update_user = async_func
+
+    with patch('app.users.controllers.services', mock_service):
+
+        user_id = 4
+
+        payload = {
+            "username": "abcd.efgh",
+            "email": "abcd.efgh@email.com",
+            "isActive": True,
+            "passwordOld": "123456",
+            "passwordNew1": "654321",
+            "passwordNew2": "654321",
+        }
+
+        response = client.put(f'/users/v1/users/{user_id}', params=fix_params, json=payload)
 
         assert response.status_code == 404

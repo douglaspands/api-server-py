@@ -1,3 +1,6 @@
+import json
+from unittest.mock import patch
+
 from fastapi import FastAPI
 
 from app.core import openapi
@@ -74,6 +77,7 @@ def test_custom_openapi_2_yet_load(settings) -> None:
         "openapi": "3.0.2",
         "paths": {}
     }
+
 
 def test_custom_openapi_3_422_to_400(settings) -> None:
     app = FastAPI()
@@ -190,3 +194,43 @@ def test_custom_openapi_3_422_to_400(settings) -> None:
             }
         }
     }
+
+
+def test_custom_api_class_with_dot():
+    app = FastAPI()
+
+    def mock_open_api(*args, **kwargs):
+        return {
+            'components': {
+                'schemas': {
+                    'test_with_dots': {
+                        'title': 'ResponseOK[List[app.users.schemas.UserOut]]'
+                    }
+                }
+            }
+        }
+
+    with patch('app.core.openapi.get_openapi', mock_open_api):
+        res = openapi.custom_openapi(app)
+
+    assert 'ResponseOK[List[UserOut]]' in str(json.dumps(res))
+
+
+def test_custom_api_class_with_underscore():
+    app = FastAPI()
+
+    def mock_open_api(*args, **kwargs):
+        return {
+            'components': {
+                'schemas': {
+                    'test_with_underscore': {
+                        'title': 'user_out'
+                    }
+                }
+            }
+        }
+
+    with patch('app.core.openapi.get_openapi', mock_open_api):
+        res = openapi.custom_openapi(app)
+
+    assert 'UserOut' in str(json.dumps(res))

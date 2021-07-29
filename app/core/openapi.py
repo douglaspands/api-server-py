@@ -43,7 +43,7 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
         routes=app.routes,
     )
 
-    for path in openapi_schema['paths']:
+    for path in openapi_schema.get('paths', {}):
         for method in _.get(openapi_schema, f'paths.{path}', []):
             if _.get(openapi_schema, f'paths.{path}.{method}.responses.422.description') == 'Validation Error':
                 _.set(openapi_schema, f'paths.{path}.{method}.responses.400',
@@ -59,7 +59,7 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
 
     _.set(openapi_schema, 'components.schemas.HTTPUnprocessableEntity', HTTP_UNPROCESSABLE_ENTITY)
 
-    for schema in _.get(openapi_schema, 'components.schemas', []):
+    for schema in _.get(openapi_schema, 'components.schemas', {}):
         title = _.get(openapi_schema, 'components.schemas').get(schema, {}).get('title', '')
 
         if schema == 'HTTPValidationError':
