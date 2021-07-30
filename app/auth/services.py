@@ -2,18 +2,19 @@
 from typing import Optional
 
 from jose import JWTError, jwt
-from fastapi import Depends, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 
-from app.users import models, services
+from app.users import services
 from app.config import settings
+from app.users.models import User as UserModel
 from app.core.utils.password import verify_password
-from app.core.exceptions.http import HttpError
+from app.core.exceptions.http import HttpUnauthorizedError
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
 
 
-async def authenticate_user(username: str, password: str) -> Optional[models.User]:
+async def authenticate_user(username: str, password: str) -> Optional[UserModel]:
     """Authenticater user.
 
     Args:
@@ -21,17 +22,21 @@ async def authenticate_user(username: str, password: str) -> Optional[models.Use
         password (str): Password.
 
     Returns:
-        Optional[models.User]: User data.
+        Optional[UserModel]: User data.
     """
-    user = await services.get_user(username=username)
-    if not user:
+    try:
+        user = await services.get_user(username=username)
+        if verify_password(password, user.password):
+            return user
+
+    except BaseException:
+        pass
+
+    finally:
         return None
-    if not verify_password(password, user.password):
-        return None
-    return user
 
 
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
+async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserModel:
     """Get current user.
 
     Args:
@@ -41,23 +46,24 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> models.User:
         credentials_exception: Token is invalid.
 
     Returns:
-        models.User: User data.
+        UserModel: User data.
     """
-    credentials_exception = HttpError(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        message='Could not validate credentials',
-    )
+    credentials_exception = HttpUnauthorizedError('Could not validate credentials')
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         username: str = payload.get('sub')
-        if username is None:
+
+        if not username:
             raise credentials_exception
+
+        user = await services.get_user(username=username)
+        return user
+
     except JWTError:
         raise credentials_exception
-    user = await services.get_user(username=username)
-    if user is None:
-        raise credentials_exception
-    return user
+
+    except BaseException:
+        return None
 
 
 __all__ = ('authenticate_user', 'get_current_user')

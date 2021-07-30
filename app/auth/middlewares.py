@@ -20,6 +20,7 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     """
     if current_user.is_active is False:
         raise HttpForbiddenError(message='Inactive user')
+
     return current_user
 
 
