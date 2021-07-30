@@ -11,7 +11,7 @@ from app.core.exceptions.http import HttpForbiddenError, HttpUnauthorizedError
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
 
 
-async def check_authentication(token: str = Depends(oauth2_scheme)) -> UserModel:
+async def authentication(token: str = Depends(oauth2_scheme)) -> UserModel:
     """Check authentication user.
 
     Args:
@@ -37,4 +37,4 @@ async def check_authentication(token: str = Depends(oauth2_scheme)) -> UserModel
     return user
 
 
-__all__ = ('check_authentication',)
+__all__ = ('authentication',)

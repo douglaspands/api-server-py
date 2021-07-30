@@ -7,7 +7,7 @@ from app.users import docs, services
 from app.core.schemas import ResponseOK
 from app.users.models import User as UserModel
 from app.users.schemas import UserOut, CreateUserIn, UpdateUserIn
-from app.auth.middlewares import check_authentication
+from app.auth.middlewares import authentication
 from app.core.exceptions.http import HttpNotFoundError, HttpNoContentError, HttpUnprocessableEntityError
 from app.core.exceptions.generic import NotFoundError, BusinessLogicError
 
@@ -40,12 +40,12 @@ async def query_params(is_active: Optional[bool] = Query(None,
             response_model=ResponseOK[List[UserOut]],
             **docs.list_users)
 async def list_users(query: Dict[str, Any] = Depends(query_params),
-                     current_user: UserModel = Depends(check_authentication)) -> ResponseOK[List[UserOut]]:
+                     current_user: UserModel = Depends(authentication)) -> ResponseOK[List[UserOut]]:
     """Get list of users.
 
     Args:
         query (Dict[str, Any]): Querystring filters.
-        current_user (UserModel, optional): User data from token. Defaults to Depends(check_authentication).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(authentication).
 
     Raises:
         HttpNoContentError: List of users is empty.
@@ -65,12 +65,12 @@ async def list_users(query: Dict[str, Any] = Depends(query_params),
             response_model=ResponseOK[UserOut],
             **docs.get_user)
 async def get_user(id: int,
-                   current_user: UserModel = Depends(check_authentication)) -> ResponseOK[UserOut]:
+                   current_user: UserModel = Depends(authentication)) -> ResponseOK[UserOut]:
     """Get user.
 
     Args:
         id (int): User ID.
-        current_user (UserModel, optional): User data from token. Defaults to Depends(check_authentication).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(authentication).
 
     Raises:
         HttpNotFoundError: User not found.
@@ -91,13 +91,13 @@ async def get_user(id: int,
             **docs.update_user)
 async def update_user(id: int,
                       user_input: UpdateUserIn,
-                      current_user: UserModel = Depends(check_authentication)) -> ResponseOK[UserOut]:
+                      current_user: UserModel = Depends(authentication)) -> ResponseOK[UserOut]:
     """Update user.
 
     Args:
         id (int): User ID.
         user_input (UpdateUserIn): User data update.
-        current_user (UserModel, optional): User data from token. Defaults to Depends(check_authentication).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(authentication).
 
     Raises:
         HttpNotFoundError: User not found.
@@ -120,12 +120,12 @@ async def update_user(id: int,
              response_model=ResponseOK[UserOut],
              **docs.create_user)
 async def create_user(user_input: CreateUserIn,
-                      current_user: UserModel = Depends(check_authentication)) -> ResponseOK[UserOut]:
+                      current_user: UserModel = Depends(authentication)) -> ResponseOK[UserOut]:
     """Create user.
 
     Args:
         user_input (CreateUserIn): User data.
-        current_user (UserModel, optional): User data from token. Defaults to Depends(check_authentication).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(authentication).
 
     Returns:
         ResponseOK[UserOut]: User data created.
@@ -138,12 +138,12 @@ async def create_user(user_input: CreateUserIn,
                status_code=status.HTTP_200_OK,
                **docs.delete_user)
 async def delete_user(id: int,
-                      current_user: UserModel = Depends(check_authentication)) -> Dict[str, Any]:
+                      current_user: UserModel = Depends(authentication)) -> Dict[str, Any]:
     """Remove user.
 
     Args:
         id (int): User ID.
-        current_user (UserModel, optional): User data from token. Defaults to Depends(check_authentication).
+        current_user (UserModel, optional): User data from token. Defaults to Depends(authentication).
 
     Raises:
         HttpNotFoundError: User not found.

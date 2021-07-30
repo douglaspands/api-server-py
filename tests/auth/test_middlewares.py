@@ -3,14 +3,14 @@ from unittest.mock import patch
 import pytest
 
 from app.users.models import User as UserModel
-from app.auth.middlewares import check_authentication
+from app.auth.middlewares import authentication
 from app.auth.utils.token import create_access_token
 from app.core.exceptions.http import HttpForbiddenError, HttpUnauthorizedError
 from app.core.exceptions.generic import NotFoundError
 
 
 @pytest.mark.asyncio
-async def test_check_authentication_success_1(settings):
+async def test_authentication_success_1(settings):
 
     async def mock_get_user(*args, **kwargs):
         user1 = UserModel(
@@ -28,14 +28,14 @@ async def test_check_authentication_success_1(settings):
 
             mock_service.get_user = mock_get_user
             token_input = await create_access_token({'sub': 'unit.test'})
-            user = await check_authentication(token_input)
+            user = await authentication(token_input)
 
     assert user.username == "jonh.roberts"
     assert user.is_active is True
 
 
 @pytest.mark.asyncio
-async def test_check_authentication_fail_1(settings):
+async def test_authentication_fail_1(settings):
 
     async def mock_get_user(*args, **kwargs):
         user1 = UserModel(
@@ -55,7 +55,7 @@ async def test_check_authentication_fail_1(settings):
             token_input = await create_access_token({'sub': 'unit.test'})
 
             try:
-                await check_authentication(token_input)
+                await authentication(token_input)
 
             except HttpForbiddenError as err:
                 assert str(err) == 'Inactive user.'
@@ -65,7 +65,7 @@ async def test_check_authentication_fail_1(settings):
 
 
 @pytest.mark.asyncio
-async def test_check_authentication_fail_2(settings):
+async def test_authentication_fail_2(settings):
 
     async def mock_get_user(*args, **kwargs):
         raise NotFoundError('User not found.')
@@ -78,7 +78,7 @@ async def test_check_authentication_fail_2(settings):
             token_input = await create_access_token({'sub': 'unit.test'})
 
             try:
-                await check_authentication(token_input)
+                await authentication(token_input)
                 assert False
 
             except HttpUnauthorizedError as err:
