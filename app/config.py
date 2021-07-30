@@ -28,10 +28,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     SQLALCHEMY_DATABASE_URI: Optional[Union[PostgresDsn, str]] = None
 
-    AUTH_TOKEN_URL: str = '/auth/v1/token'
-
     @validator('SQLALCHEMY_DATABASE_URI', pre=True, allow_reuse=True)
-    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
+    def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Union[str, PostgresDsn]:
         """PostgreSQL Url.
 
         Args:
@@ -39,7 +37,7 @@ class Settings(BaseSettings):
             values (Dict[str, Any]): Others values.
 
         Returns:
-            Any: Return url connection.
+            Union[str, PostgresDsn]: Return url connection.
         """
         if isinstance(v, str):
             return v
@@ -56,6 +54,8 @@ class Settings(BaseSettings):
         'auth.controllers',
         'users.controllers'
     ]
+
+    AUTH_TOKEN_URL: str = '/auth/v1/token'
 
     class Config:
         """Metadata."""
@@ -84,5 +84,6 @@ class Settings(BaseSettings):
 
 
 settings = Settings.from_env()
+
 
 __all__ = ('settings', 'Settings')

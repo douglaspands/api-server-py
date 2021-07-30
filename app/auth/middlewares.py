@@ -25,14 +25,14 @@ async def check_authentication(token: str = Depends(oauth2_scheme)) -> UserModel
         UserModel: User data.
     """
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user = await user_service.get_user(username=payload.get('sub'))
 
-    except BaseException:
-        raise HttpUnauthorizedError('Could not validate credentials')
+    except Exception:
+        raise HttpUnauthorizedError('Could not validate credentials.')
 
     if not user.is_active:
-        raise HttpForbiddenError(message='Inactive user')
+        raise HttpForbiddenError('Inactive user.')
 
     return user
 
