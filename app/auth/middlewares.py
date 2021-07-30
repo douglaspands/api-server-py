@@ -1,27 +1,40 @@
 """Auth Middlewares."""
+from jose import jwt
 from fastapi import Depends
+from fastapi.security import OAuth2PasswordBearer
 
-from app.users.models import User
-from app.auth.services import get_current_user
-from app.core.exceptions.http import HttpForbiddenError
+from app.users import services as user_service
+from app.config import settings
+from app.users.models import User as UserModel
+from app.core.exceptions.http import HttpForbiddenError, HttpUnauthorizedError
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
 
 
-async def get_current_active_user(current_user: User = Depends(get_current_user)) -> User:
-    """Get current active user.
+async def check_authentication(token: str = Depends(oauth2_scheme)) -> UserModel:
+    """Check authentication user.
 
     Args:
-        current_user (User, optional): Current user. Defaults to Depends(get_current_user).
+        token (str, optional): Current token. Defaults to Depends(oauth2_scheme).
 
     Raises:
+        HttpUnauthorizedError: Unauthorized access.
         HttpForbiddenError: Inactive user.
 
     Returns:
-        User: User data.
+        UserModel: User data.
     """
-    if current_user.is_active is False:
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        user = await user_service.get_user(username=payload.get('sub'))
+
+    except BaseException:
+        raise HttpUnauthorizedError('Could not validate credentials')
+
+    if not user.is_active:
         raise HttpForbiddenError(message='Inactive user')
 
-    return current_user
+    return user
 
 
-__all__ = ('get_current_active_user',)
+__all__ = ('check_authentication',)
