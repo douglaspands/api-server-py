@@ -1,10 +1,10 @@
-# API SERVER PY -- EM DESENVOLVIMENTO
+# API SERVER PY
 <p>
 <a href="https://interrogate.readthedocs.io/en/latest/"><img src="./docs/badge_interrogate.svg"></a>
 <a href="https://pytest-cov.readthedocs.io/en/latest/readme.html"><img src="./docs/badge_coverage.svg"></a>
 </p>
 
-Servidor de API REST desenvolvido em FastAPI/Python.
+Servidor de API REST desenvolvido em Python e PostgreSQL utilizando: FastAPI, Gunicorn/Uvicorn, ORMAR, Alembic e Poetry.
 
 ### INICIAR A APLICAÇÃO
 
@@ -20,6 +20,14 @@ Algumas observações:
 - Na imagem contem a ferramenta [Alembic](https://alembic.sqlalchemy.org/en/latest/) para execução dos scripts de migrate;
 - A imagem da aplicação é preparada para o desenvolvimento, caso altere algum arquivo é reiniciado automaticamente;
 - Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 apiserver-postgres`
+
+### PROXIMAS METAS
+
+- [x] Teste unitario e 100% cobertura (Pytest);
+- [ ] Testes orientado a comportamento (Behave)
+- [ ] Processamento de tarefas assincronas (Celery);
+- [ ] Processamento de tarefas agendadas (Celery Beat);
+- [ ] Validação de escopo do token OAUTH2;
 
 ### DESENVOLVIMENTO
 Foi usado o Python `3.8` para desenvolvimento. 
