@@ -39,7 +39,7 @@ async def get_token(token_in: OAuth2PasswordRequestForm = Depends()) -> TokenOut
         return TokenOut(access_token=access_token)
 
     except BaseException:
-        raise HttpUnauthorizedError(message='Incorrect username or password')
+        raise HttpUnauthorizedError(message='Incorrect username or password.')
 
 
 __all__ = ('router',)
