@@ -59,11 +59,11 @@ class AsyncDatabaseAdapter(EventLoopThreadSafe):
             self._has_connect = False
         self.stop()
 
-    def async_migration(self, atomic: bool = True) -> Callable:
+    def async_migration(self, atomic: bool = False) -> Callable:
         """Async database use decorator on sync functions.
 
         Args:
-            atomic (bool, optional): Run function with transaction context. Defaults to True.
+            atomic (bool, optional): Run function with transaction context. Defaults to False.
 
         Returns:
             Callable: Function run with decorator context.
