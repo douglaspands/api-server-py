@@ -1,5 +1,6 @@
-from app.users import schemas
 from pydantic.error_wrappers import ValidationError
+
+from app.users import schemas
 
 
 def test_createuserin_password_invalid():
@@ -97,3 +98,22 @@ def test_updateuserin_valid():
         assert True
     except BaseException:
         assert False
+
+
+def test_userout_valid():
+    user_out = schemas.UserOut(
+        id=1,
+        username='unit.test',
+        email='unit.test@email.com',
+        is_active=True
+    )
+    assert user_out.id == 1
+    assert user_out.email == 'unit.test@email.com'
+    assert user_out.username == 'unit.test'
+    assert user_out.is_active is True
+    assert user_out.dict(by_alias=True) == {
+        'id': 1,
+        'email': 'unit.test@email.com',
+        'username': 'unit.test',
+        'isActive': True
+    }

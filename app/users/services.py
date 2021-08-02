@@ -1,5 +1,5 @@
 """Users Services."""
-from typing import Any, Dict, List, Union, Optional
+from typing import Any, Dict, List, Union
 
 from app.users.models import User as UserModel
 from app.users.schemas import CreateUserIn, UpdateUserIn
@@ -16,11 +16,11 @@ async def all_users(**kwargs: Any) -> List[UserModel]:
     return await UserModel.objects.all(**kwargs)
 
 
-async def get_user(**kwargs: Any) -> Optional[UserModel]:
+async def get_user(**kwargs: Any) -> UserModel:
     """Get first user by fields.
 
     Returns:
-        Optional[UserModel]: User data if exist.
+        UserModel: User data if exist.
     """
     user = await UserModel.objects.get_or_none(**kwargs)
 
@@ -49,7 +49,7 @@ async def create_user(user_input: Union[Dict[str, Any], CreateUserIn]) -> UserMo
     return await user.save()
 
 
-async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) -> Optional[UserModel]:
+async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) -> UserModel:
     """Update user.
 
     Args:
@@ -57,7 +57,7 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) 
         user_input (Union[Dict[str, Any], UpdateUserIn]): User data for update.
 
     Returns:
-        Optional[UserModel]: User updated.
+        UserModel: User updated.
     """
     user = await UserModel.objects.get_or_none(id=id)
 
@@ -81,14 +81,14 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) 
     return await user.update()
 
 
-async def delete_user(id: int) -> Optional[bool]:
+async def delete_user(id: int) -> bool:
     """Delete user.
 
     Args:
         id (int): User ID.
 
     Returns:
-        Optional[bool]: True if remove successfully.
+        bool: True if remove successfully.
     """
     user = await UserModel.objects.get_or_none(id=id)
 

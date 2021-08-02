@@ -2,12 +2,11 @@ from datetime import datetime
 from unittest.mock import patch
 
 import pytest
-from fastapi.exceptions import HTTPException
 
 from app.users import services
 from app.users.models import User as UserModel
 from app.users.schemas import CreateUserIn, UpdateUserIn
-from app.core.exceptions.generic import BusinessLogicError, NotFoundError
+from app.core.exceptions.generic import NotFoundError, BusinessLogicError
 
 
 @pytest.mark.asyncio

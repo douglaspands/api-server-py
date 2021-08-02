@@ -29,14 +29,17 @@ async def get_token(token_in: OAuth2PasswordRequestForm = Depends()) -> TokenOut
     Returns:
         TokenOut: Bearer Token.
     """
-    user = await services.authenticate_user(username=token_in.username, password=token_in.password)
-    if not user:
-        raise HttpUnauthorizedError(message='Incorrect username or password')
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={'sub': user.username}, expires_delta=access_token_expires
-    )
-    return TokenOut(access_token=access_token)
+    try:
+        user = await services.authenticate_user(username=token_in.username, password=token_in.password)
+
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = await create_access_token(
+            data={'sub': user.username}, expires_delta=access_token_expires
+        )
+        return TokenOut(access_token=access_token)
+
+    except BaseException:
+        raise HttpUnauthorizedError(message='Incorrect username or password.')
 
 
 __all__ = ('router',)

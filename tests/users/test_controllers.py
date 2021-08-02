@@ -6,8 +6,8 @@ from fastapi.testclient import TestClient
 from app.core import handlers
 from app.users import controllers
 from app.users.models import User as UserModel
-from app.users.controllers import get_current_active_user
-from app.core.exceptions.generic import BusinessLogicError, NotFoundError
+from app.users.controllers import authentication
+from app.core.exceptions.generic import NotFoundError, BusinessLogicError
 
 app = FastAPI()
 handlers.init_app(app)
@@ -39,7 +39,7 @@ def test_list_users_empty(async_magic_mock_class, mock_current_active_user, fix_
         return []
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.all_users = async_func
@@ -59,7 +59,7 @@ def test_list_users_query_valid_1(async_magic_mock_class, mock_current_active_us
         return []
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.all_users = async_func
@@ -80,7 +80,7 @@ def test_list_users_query_valid_2(async_magic_mock_class, mock_current_active_us
         return []
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.all_users = async_func
@@ -101,7 +101,7 @@ def test_list_users_query_invalid(async_magic_mock_class, mock_current_active_us
         return []
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.all_users = async_func
@@ -135,7 +135,7 @@ def test_list_users_ok(async_magic_mock_class, mock_current_active_user, fix_par
         return [user1, user2]
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.all_users = async_func
@@ -177,7 +177,7 @@ def test_create_user_ok(async_magic_mock_class, mock_current_active_user, fix_pa
         return user1
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.create_user = async_func
@@ -208,7 +208,7 @@ def test_delete_user_ok(async_magic_mock_class, mock_current_active_user, fix_pa
         return True
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.delete_user = async_func
@@ -227,7 +227,7 @@ def test_delete_user_not_found(async_magic_mock_class, mock_current_active_user,
         raise NotFoundError('User not found.')
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.delete_user = async_func
@@ -253,7 +253,7 @@ def test_get_user_ok(async_magic_mock_class, mock_current_active_user, fix_param
         return user1
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.get_user = async_func
@@ -280,7 +280,7 @@ def test_get_user_not_found(async_magic_mock_class, mock_current_active_user, fi
         raise NotFoundError('User not found.')
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.get_user = async_func
@@ -307,7 +307,7 @@ def test_update_user_ok(async_magic_mock_class, mock_current_active_user, fix_pa
         return user1
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.update_user = async_func
@@ -338,7 +338,7 @@ def test_update_user_business_error(async_magic_mock_class, mock_current_active_
         raise BusinessLogicError('Password not matched.')
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.update_user = async_func
@@ -368,7 +368,7 @@ def test_update_user_not_found(async_magic_mock_class, mock_current_active_user,
         raise NotFoundError('User not found.')
 
     app.dependency_overrides = {}
-    app.dependency_overrides[get_current_active_user] = mock_current_active_user
+    app.dependency_overrides[authentication] = mock_current_active_user
 
     mock_service = async_magic_mock_class()
     mock_service.update_user = async_func
