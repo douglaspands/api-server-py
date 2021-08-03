@@ -7,7 +7,6 @@
 Servidor de API REST desenvolvido em Python e PostgreSQL utilizando: FastAPI, Gunicorn/Uvicorn, ORMAR, Alembic e Poetry.
 
 ### INICIAR A APLICAÇÃO
-
 Vamos iniciar a aplicação com o Docker e Docker Compose, vamos executar o seguinte comando:
 ```bash
 docker-compose up -d
@@ -21,10 +20,22 @@ Algumas observações:
 - A imagem da aplicação é preparada para o desenvolvimento, caso altere algum arquivo é reiniciado automaticamente;
 - Da para acompanhar as querys executadas no PostgreSQL executando o comando: `docker logs --follow --tail=1 apiserver-postgres`
 
-### PROXIMAS METAS
-
-- [x] Teste unitario e 100% cobertura (Pytest);
-- [ ] Testes orientado a comportamento (Behave)
+### METAS
+- [x] Criar e configurar automações (Poetry);
+- [x] Construção do CRUD de usuarios (FastAPI);
+- [x] ORM assincrono (ORMAR);
+- [x] Aplicando frameworks de boas praticas nas APIs (OpenBanking+Blueprint);
+- [x] Construção do login simples e validação dele nas rotas (JWT);
+- [x] Centralizar configurações da aplicação (Pydantic);
+- [x] Configurar script de migrations e construir adaptador assincrono (Alembic+ORMAR);
+- [x] Configurar servidores http e de aplicação (NginX+Gunicorn+Uvicorn);
+- [x] Conteinerizar a aplicação (Docker+Docker-Compose);
+- [x] Configurar aplicação e banco de dados para funcionar em modo de desenvolvimento;
+- [x] Gerenciador de conexões com o Banco de Dados (PgBouncer);
+- [x] Cliente de banco de dados para desenvolvimento (psql+pgcli);
+- [x] Configurar e aplicar linters de qualidade de codigo (Flake8+Mypy+Interrogate)
+- [x] Teste unitario e cobertura (Pytest+Coverage);
+- [ ] Testes orientado a comportamento (Behave);
 - [ ] Processamento de tarefas assincronas (Celery);
 - [ ] Processamento de tarefas agendadas (Celery Beat);
 - [ ] Validação de escopo do token OAUTH2;
@@ -76,12 +87,10 @@ pyenv install 3.8.10 && pyenv local 3.8.10
 - **poetry run test** : Executa os testes unitarios e a cobertura de testes gerando o relatorio no `htmlcov/index.html`;
 - **poetry run build** : Executa os comandos `lint` e `test` na sequencia para verificação da qualidade do código e erros de teste;
 - **poetry run fiximports**: Organiza e classifica os imports do projeto;
-
 > Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts/poetry.py` onde estão os comandos reais.
 
 
 ###  FONTES
-
 Fontes que ajudaram (ou ajudarão) no desenvolvimento desse projeto:
 
 - [Python](https://www.python.org/)
@@ -93,6 +102,7 @@ Fontes que ajudaram (ou ajudarão) no desenvolvimento desse projeto:
 - [pytest-asyncio](https://github.com/pytest-dev/pytest-asyncio)
 - [pytest-cov](https://github.com/pytest-dev/pytest-cov)
 - [behave-restful](https://github.com/behave-restful/behave-restful)
+- [behave-html-formatter](https://github.com/behave-contrib/behave-html-formatter)
 - [Poetry](https://python-poetry.org/)
 - [Pyenv](https://github.com/pyenv/pyenv)
 - [Docker](https://docs.docker.com/)
