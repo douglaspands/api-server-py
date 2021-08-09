@@ -18,7 +18,7 @@ idna==3.2; python_full_version >= "3.6.1" and python_version >= "3.6"
 importlib-metadata==4.6.3; python_version < "3.8" and python_version >= "3.6"
 mako==1.1.4; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.6.0"
 markupsafe==2.0.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.6"
-ormar==0.10.15; python_version >= "3.6"
+ormar==0.10.16; python_version >= "3.6"
 passlib==1.7.4
 psycopg2-binary==2.9.1; python_version >= "3.6"
 pyasn1==0.4.8; python_version >= "3.5" and python_version < "4"

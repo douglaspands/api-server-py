@@ -96,7 +96,7 @@ def fiximports():
     shell_run(cmd)
 
 
-def test(only_cmd: bool = False) -> Optional[List[str]]:
+def testunit(only_cmd: bool = False) -> Optional[List[str]]:
     cmd = ['PYTHONDONTWRITEBYTECODE=1 pytest -vvs']
     if not only_cmd:
         shell_run(cmd)
@@ -105,8 +105,13 @@ def test(only_cmd: bool = False) -> Optional[List[str]]:
     return cmd
 
 
+def testbehavior():
+    cmd = ['behave']
+    shell_run(cmd)
+
+
 def build():
-    cmd = lint(True) + test(True)
+    cmd = lint(True) + testunit(True)
     shell_run(cmd)
     generate_badge_coverage()
 

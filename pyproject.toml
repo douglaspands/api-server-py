@@ -35,6 +35,8 @@ flake8-isort = "^4.0.0"
 interrogate = "^1.4.0"
 requests = "^2.26.0"
 coverage-badge = "^1.0.1"
+behave = "^1.2.6"
+behave-restful = "^0.4.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -43,7 +45,8 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 runserver = "scripts.poetry:runserver"
 lint = "scripts.poetry:lint"
-test = "scripts.poetry:test"
+testunit = "scripts.poetry:testunit"
+testbehavior = "scripts.poetry:testbehavior"
 build = "scripts.poetry:build"
 fiximports = "scripts.poetry:fiximports"
 migrate = "scripts.poetry:migrate"
