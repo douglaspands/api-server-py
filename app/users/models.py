@@ -10,7 +10,7 @@ class User(model.BaseModel):
     class Meta(model.BaseModelMeta):
         """Metadata."""
 
-        tablename: str = 'users'
+        tablename: str = "users"
 
     email: str = orm.String(max_length=255, unique=True)
     password: str = orm.String(max_length=255)
@@ -18,4 +18,4 @@ class User(model.BaseModel):
     is_active: bool = orm.Boolean()
 
 
-__all__ = ('User',)
+__all__ = ("User",)

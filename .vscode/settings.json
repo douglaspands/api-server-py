@@ -1,5 +1,7 @@
 {
     "python.linting.mypyEnabled": false,
     "python.linting.enabled": true,
-    "python.linting.flake8Enabled": true
+    "python.formatting.provider": "black",
+    "python.linting.flake8Enabled": true,  
+    "python.linting.flake8Path": ".venv/bin/pflake8",
 }

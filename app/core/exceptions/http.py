@@ -22,7 +22,7 @@ class HttpNoContentError(HttpError):
     status_code: int = status.HTTP_204_NO_CONTENT
 
     def __init__(self) -> None:
-        super().__init__(self.status_code, '')
+        super().__init__(self.status_code, "")
 
 
 class HttpUnauthorizedError(HttpError):
@@ -49,7 +49,7 @@ class HttpNotFoundError(HttpError):
     status_code: int = status.HTTP_404_NOT_FOUND
 
     def __init__(self) -> None:
-        super().__init__(self.status_code, '')
+        super().__init__(self.status_code, "")
 
 
 class HttpUnprocessableEntityError(HttpError):
@@ -61,9 +61,11 @@ class HttpUnprocessableEntityError(HttpError):
         super().__init__(self.status_code, message)
 
 
-__all__ = ('HttpError',
-           'HttpNoContentError',
-           'HttpUnauthorizedError',
-           'HttpForbiddenError',
-           'HttpNotFoundError',
-           'HttpUnprocessableEntityError')
+__all__ = (
+    "HttpError",
+    "HttpNoContentError",
+    "HttpUnauthorizedError",
+    "HttpForbiddenError",
+    "HttpNotFoundError",
+    "HttpUnprocessableEntityError",
+)

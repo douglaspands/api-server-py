@@ -11,12 +11,12 @@ from app.auth.utils.token import create_access_token
 from app.core.exceptions.http import HttpUnauthorizedError
 
 router = APIRouter(
-    prefix='/auth',
-    tags=['auth'],
+    prefix="/auth",
+    tags=["auth"],
 )
 
 
-@router.post('/v1/token', response_model=TokenOut, **docs.get_token)
+@router.post("/v1/token", response_model=TokenOut, **docs.get_token)
 async def get_token(token_in: OAuth2PasswordRequestForm = Depends()) -> TokenOut:
     """Get token for system access.
 
@@ -33,13 +33,11 @@ async def get_token(token_in: OAuth2PasswordRequestForm = Depends()) -> TokenOut
         user = await services.authenticate_user(username=token_in.username, password=token_in.password)
 
         access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        access_token = await create_access_token(
-            data={'sub': user.username}, expires_delta=access_token_expires
-        )
+        access_token = await create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
         return TokenOut(access_token=access_token)
 
     except BaseException:
-        raise HttpUnauthorizedError(message='Incorrect username or password.')
+        raise HttpUnauthorizedError(message="Incorrect username or password.")
 
 
-__all__ = ('router',)
+__all__ = ("router",)

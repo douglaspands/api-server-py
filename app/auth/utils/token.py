@@ -19,9 +19,9 @@ async def create_access_token(data: Dict[str, Any], expires_delta: Optional[time
     """
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
-    to_encode.update({'exp': expire})
+    to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(claims=to_encode, key=settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 
-__all__ = ('create_access_token',)
+__all__ = ("create_access_token",)

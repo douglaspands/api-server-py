@@ -25,7 +25,7 @@ async def get_user(**kwargs: Any) -> UserModel:
     user = await UserModel.objects.get_or_none(**kwargs)
 
     if not user:
-        raise NotFoundError('User not found.')
+        raise NotFoundError("User not found.")
 
     return user
 
@@ -40,11 +40,11 @@ async def create_user(user_input: Union[Dict[str, Any], CreateUserIn]) -> UserMo
         UserModel: User created.
     """
     values = user_input.dict() if isinstance(user_input, CreateUserIn) else user_input
-    values['username'] = values['email'].split('@')[0]
-    values['password'] = get_password_hash(values['password_1'])
-    values['is_active'] = True
-    del values['password_1']
-    del values['password_2']
+    values["username"] = values["email"].split("@")[0]
+    values["password"] = get_password_hash(values["password_1"])
+    values["is_active"] = True
+    del values["password_1"]
+    del values["password_2"]
     user = UserModel(**values)
     return await user.save()
 
@@ -62,18 +62,18 @@ async def update_user(id: int, user_input: Union[Dict[str, Any], UpdateUserIn]) 
     user = await UserModel.objects.get_or_none(id=id)
 
     if not user:
-        raise NotFoundError('User not found.')
+        raise NotFoundError("User not found.")
 
     values = user_input.dict() if isinstance(user_input, UpdateUserIn) else user_input
-    if values.get('password_old'):
+    if values.get("password_old"):
 
-        if not verify_password(values['password_old'], user.password):
-            raise BusinessLogicError('Old password do not match.')
+        if not verify_password(values["password_old"], user.password):
+            raise BusinessLogicError("Old password do not match.")
 
-        values['password'] = get_password_hash(values['password_new_1'])
-        del values['password_old']
-        del values['password_new_1']
-        del values['password_new_2']
+        values["password"] = get_password_hash(values["password_new_1"])
+        del values["password_old"]
+        del values["password_new_1"]
+        del values["password_new_2"]
 
     for k, v in values.items():
         setattr(user, k, v)
@@ -93,7 +93,7 @@ async def delete_user(id: int) -> bool:
     user = await UserModel.objects.get_or_none(id=id)
 
     if not user:
-        raise NotFoundError('User not found.')
+        raise NotFoundError("User not found.")
 
     await user.delete()
     return True
