@@ -16,7 +16,7 @@ class BaseModelMeta(ormar.ModelMeta):
     database = database
 
 
-T = TypeVar('T', bound='BaseModel')
+T = TypeVar("T", bound="BaseModel")
 
 
 class BaseModel(ormar.Model):
@@ -41,4 +41,7 @@ class BaseModel(ormar.Model):
         return await super().update(*args, **kwargs)
 
 
-__all__ = ('BaseModelMeta', 'BaseModel',)
+__all__ = (
+    "BaseModelMeta",
+    "BaseModel",
+)

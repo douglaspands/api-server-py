@@ -28,11 +28,11 @@ def init_app(app: FastAPI) -> None:
         """
         content: Dict[str, Any] = {}
         if isinstance(exc, RequestValidationError):
-            content['error'] = exc.errors()
-            if getattr(exc, 'body', None):
-                content['body'] = exc.body
+            content["error"] = exc.errors()
+            if getattr(exc, "body", None):
+                content["body"] = exc.body
         else:
-            content['error'] = exc.detail
+            content["error"] = exc.detail
         return content
 
     @app.exception_handler(RequestValidationError)
@@ -80,10 +80,10 @@ def init_app(app: FastAPI) -> None:
         Returns:
             JSONResponse: Json data for core error.
         """
-        data: Dict[str, Any] = {'status_code': exc.status_code}
-        if getattr(exc, 'error', None):
-            data['content'] = jsonable_encoder({'error': exc.error})
+        data: Dict[str, Any] = {"status_code": exc.status_code}
+        if getattr(exc, "error", None):
+            data["content"] = jsonable_encoder({"error": exc.error})
         return JSONResponse(**data)
 
 
-__all__ = ('init_app',)
+__all__ = ("init_app",)

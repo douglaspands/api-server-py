@@ -12,15 +12,14 @@ from app.core.exceptions.http import HttpNotFoundError, HttpNoContentError, Http
 from app.core.exceptions.generic import NotFoundError, BusinessLogicError
 
 router = APIRouter(
-    prefix='/users',
-    tags=['users'],
+    prefix="/users",
+    tags=["users"],
 )
 
 
-async def query_params(is_active: Optional[bool] = Query(None,
-                                                         title='Ask if is active users',
-                                                         description='List of the active users.')
-                       ) -> Dict[str, Any]:
+async def query_params(
+    is_active: Optional[bool] = Query(None, title="Ask if is active users", description="List of the active users.")
+) -> Dict[str, Any]:
     """Query parameters for users filter.
 
     Args:
@@ -31,16 +30,14 @@ async def query_params(is_active: Optional[bool] = Query(None,
     """
     query = {}
     if is_active is not None:
-        query['is_active'] = is_active
+        query["is_active"] = is_active
     return query
 
 
-@router.get('/v1/users',
-            status_code=status.HTTP_200_OK,
-            response_model=ResponseOK[List[UserOut]],
-            **docs.list_users)
-async def list_users(query: Dict[str, Any] = Depends(query_params),
-                     current_user: UserModel = Depends(authentication)) -> ResponseOK[List[UserOut]]:
+@router.get("/v1/users", status_code=status.HTTP_200_OK, response_model=ResponseOK[List[UserOut]], **docs.list_users)
+async def list_users(
+    query: Dict[str, Any] = Depends(query_params), current_user: UserModel = Depends(authentication)
+) -> ResponseOK[List[UserOut]]:
     """Get list of users.
 
     Args:
@@ -60,12 +57,8 @@ async def list_users(query: Dict[str, Any] = Depends(query_params),
         raise HttpNoContentError()
 
 
-@router.get('/v1/users/{id}',
-            status_code=status.HTTP_200_OK,
-            response_model=ResponseOK[UserOut],
-            **docs.get_user)
-async def get_user(id: int,
-                   current_user: UserModel = Depends(authentication)) -> ResponseOK[UserOut]:
+@router.get("/v1/users/{id}", status_code=status.HTTP_200_OK, response_model=ResponseOK[UserOut], **docs.get_user)
+async def get_user(id: int, current_user: UserModel = Depends(authentication)) -> ResponseOK[UserOut]:
     """Get user.
 
     Args:
@@ -85,13 +78,10 @@ async def get_user(id: int,
         raise HttpNotFoundError()
 
 
-@router.put('/v1/users/{id}',
-            status_code=status.HTTP_200_OK,
-            response_model=ResponseOK[UserOut],
-            **docs.update_user)
-async def update_user(id: int,
-                      user_input: UpdateUserIn,
-                      current_user: UserModel = Depends(authentication)) -> ResponseOK[UserOut]:
+@router.put("/v1/users/{id}", status_code=status.HTTP_200_OK, response_model=ResponseOK[UserOut], **docs.update_user)
+async def update_user(
+    id: int, user_input: UpdateUserIn, current_user: UserModel = Depends(authentication)
+) -> ResponseOK[UserOut]:
     """Update user.
 
     Args:
@@ -115,12 +105,10 @@ async def update_user(id: int,
         raise HttpUnprocessableEntityError(str(error))
 
 
-@router.post('/v1/users',
-             status_code=status.HTTP_201_CREATED,
-             response_model=ResponseOK[UserOut],
-             **docs.create_user)
-async def create_user(user_input: CreateUserIn,
-                      current_user: UserModel = Depends(authentication)) -> ResponseOK[UserOut]:
+@router.post("/v1/users", status_code=status.HTTP_201_CREATED, response_model=ResponseOK[UserOut], **docs.create_user)
+async def create_user(
+    user_input: CreateUserIn, current_user: UserModel = Depends(authentication)
+) -> ResponseOK[UserOut]:
     """Create user.
 
     Args:
@@ -134,11 +122,8 @@ async def create_user(user_input: CreateUserIn,
     return ResponseOK(data=user)
 
 
-@router.delete('/v1/users/{id}',
-               status_code=status.HTTP_200_OK,
-               **docs.delete_user)
-async def delete_user(id: int,
-                      current_user: UserModel = Depends(authentication)) -> Dict[str, Any]:
+@router.delete("/v1/users/{id}", status_code=status.HTTP_200_OK, **docs.delete_user)
+async def delete_user(id: int, current_user: UserModel = Depends(authentication)) -> Dict[str, Any]:
     """Remove user.
 
     Args:
@@ -158,4 +143,4 @@ async def delete_user(id: int,
         raise HttpNotFoundError()
 
 
-__all__ = ('router',)
+__all__ = ("router",)

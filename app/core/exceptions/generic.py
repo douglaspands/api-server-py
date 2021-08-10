@@ -6,7 +6,7 @@ class BaseError(Exception):
     """Base Error."""
 
     def __init__(self, message: str, code: Optional[str] = None) -> None:
-        self.code = code or 'error'
+        self.code = code or "error"
         self.message = message
         super().__init__(self.message)
 
@@ -29,6 +29,4 @@ class BusinessLogicError(BaseError):
         super().__init__(message=message, code=code)
 
 
-__all__ = ('BaseError',
-           'NotFoundError',
-           'BusinessLogicError')
+__all__ = ("BaseError", "NotFoundError", "BusinessLogicError")

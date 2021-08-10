@@ -8,7 +8,7 @@ from app.config import settings
 from app.users.models import User as UserModel
 from app.core.exceptions.http import HttpForbiddenError, HttpUnauthorizedError
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f'{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_PREFIX}{settings.AUTH_TOKEN_URL}")
 
 
 async def authentication(token: str = Depends(oauth2_scheme)) -> UserModel:
@@ -26,15 +26,15 @@ async def authentication(token: str = Depends(oauth2_scheme)) -> UserModel:
     """
     try:
         payload = jwt.decode(token=token, key=settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        user = await user_service.get_user(username=payload.get('sub'))
+        user = await user_service.get_user(username=payload.get("sub"))
 
     except Exception:
-        raise HttpUnauthorizedError('Could not validate credentials.')
+        raise HttpUnauthorizedError("Could not validate credentials.")
 
     if not user.is_active:
-        raise HttpForbiddenError('Inactive user.')
+        raise HttpForbiddenError("Inactive user.")
 
     return user
 
 
-__all__ = ('authentication',)
+__all__ = ("authentication",)

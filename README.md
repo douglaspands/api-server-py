@@ -35,6 +35,7 @@ Algumas observações:
 - [x] Cliente de banco de dados para desenvolvimento (psql+pgcli);
 - [x] Configurar e aplicar linters de qualidade de codigo (Flake8+Mypy+Interrogate)
 - [x] Teste unitario e cobertura (Pytest+Coverage);
+- [x] Unificando configurações do projeto (PEP-518);
 - [ ] Testes orientado a comportamento (Behave);
 - [ ] Processamento de tarefas assincronas (Celery);
 - [ ] Processamento de tarefas agendadas (Celery Beat);
@@ -87,6 +88,7 @@ pyenv install 3.8.10 && pyenv local 3.8.10
 - **poetry run test** : Executa os testes unitarios e a cobertura de testes gerando o relatorio no `htmlcov/index.html`;
 - **poetry run build** : Executa os comandos `lint` e `test` na sequencia para verificação da qualidade do código e erros de teste;
 - **poetry run fiximports**: Organiza e classifica os imports do projeto;
+- **poetry run codeformatter**: Formata o código do projeto usando o `black`;
 > Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts/poetry.py` onde estão os comandos reais.
 
 
@@ -116,3 +118,7 @@ Fontes que ajudaram (ou ajudarão) no desenvolvimento desse projeto:
 - [Domain Driven Design](https://martinfowler.com/tags/domain%20driven%20design.html)
 - [MailHog](https://github.com/mailhog/MailHog)
 - [interrogate](https://interrogate.readthedocs.io/en/latest/)
+- [Changelog](https://keepachangelog.com/en/1.1.0/)
+- [PEP-8](https://www.python.org/dev/peps/pep-0008/)
+- [PEP-257](https://www.python.org/dev/peps/pep-0257/)
+- [PEP-518](https://www.python.org/dev/peps/pep-0518/)

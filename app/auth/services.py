@@ -17,8 +17,8 @@ async def authenticate_user(username: str, password: str) -> UserModel:
     """
     user = await user_service.get_user(username=username)
     if not verify_password(password, user.password):
-        raise BusinessLogicError('Password do not match.')
+        raise BusinessLogicError("Password do not match.")
     return user
 
 
-__all__ = ('authenticate_user',)
+__all__ = ("authenticate_user",)

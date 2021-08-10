@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "app"
-version = "0.2.0"
+version = "0.3.0"
 description = "Backend server for integrations."
 authors = ["Douglas Panhota <douglaspands@gmail.com>"]
 
@@ -18,11 +18,9 @@ pydash = "^5.0.1"
 gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
-autopep8 = "^1.5.7"
 toml = "^0.10.2"
 pytest-asyncio = "^0.15.1"
 pytest-cov = "^2.12.1"
-flake8 = "^3.9.2"
 pgcli = "^3.1.0"
 ipdb = "^0.13.9"
 PyYAML = "^5.4.1"
@@ -30,11 +28,14 @@ httpx = "^0.18.2"
 mypy = "^0.910"
 sqlalchemy-stubs = "^0.4"
 isort = "^5.9.2"
-pep8-naming = "^0.12.0"
-flake8-isort = "^4.0.0"
 interrogate = "^1.4.0"
 requests = "^2.26.0"
 coverage-badge = "^1.0.1"
+black = "^21.7b0"
+flake8 = "^3.9.2"
+flake8-isort = "^4.0.0"
+pep8-naming = "^0.12.1"
+pyproject-flake8 = "^0.0.1-alpha.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -46,9 +47,62 @@ lint = "scripts.poetry:lint"
 test = "scripts.poetry:test"
 build = "scripts.poetry:build"
 fiximports = "scripts.poetry:fiximports"
+codeformatter = "scripts.poetry:codeformatter"
 migrate = "scripts.poetry:migrate"
 makemigrations = "scripts.poetry:makemigrations"
 requirements = "scripts.poetry:requirements"
 dbshell = "scripts.poetry:dbshell"
 pycacheremove = "scripts.poetry:pycacheremove"
 cmd_test = "scripts.poetry:cmd_test"
+
+[tool.flake8]
+ignore = ["D104", "D105", "D107", "D203", "D403", "W503", "W504"]
+exclude = ["tests", ".git", "__pycache__", "docs/source/conf.py", "old", "build", "dist", ".venv", "scripts", "migrations"]
+max-complexity = 10
+max-line-length = 120
+show-source = "1"
+classmethod-decorators = ["classmethod", "validator"]
+
+[tool.mypy]
+plugins = ["pydantic.mypy", "sqlmypy"]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+exclude = "__pycache__"
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = true
+ignore-semiprivate = false
+ignore-private = false
+ignore-property-decorators = false
+ignore-module = false
+ignore-nested-functions = false
+ignore-nested-classes = true
+ignore-setters = false
+fail-under = 100
+exclude = ["setup.py", "docs", "build"]
+ignore-regex = ["^get$", "^mock_.*", ".*BaseClass.*"]
+verbose = 2
+quiet = false
+whitelist-regex = []
+color = true
+generate-badge = "docs/badge_interrogate.svg"
+badge-format = "svg"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+atomic = true
+line_length = 120
+multi_line_output = 3
+length_sort = true
+skip = ["migrations", ".venv", "scripts"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = "tests"
+python_files = "test_*.py"
+addopts = "--cov=app --cov-report html --cov-report term --cov-fail-under=90"
