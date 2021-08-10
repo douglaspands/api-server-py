@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "app"
-version = "0.3.0"
+version = "0.3.1"
 description = "Backend server for integrations."
 authors = ["Douglas Panhota <douglaspands@gmail.com>"]
 
@@ -46,6 +46,7 @@ runserver = "scripts.poetry:runserver"
 lint = "scripts.poetry:lint"
 test = "scripts.poetry:test"
 build = "scripts.poetry:build"
+dockerbuild = "scripts.poetry:dockerbuild"
 fiximports = "scripts.poetry:fiximports"
 codeformatter = "scripts.poetry:codeformatter"
 migrate = "scripts.poetry:migrate"

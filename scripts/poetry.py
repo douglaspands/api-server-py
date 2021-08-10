@@ -141,9 +141,12 @@ def migrate():
     shell_run(cmd)
 
 
-def requirements():
+def requirements(only_cmd: bool = False) -> Optional[List[str]]:
     cmd = "poetry export -f requirements.txt --without-hashes --output requirements.txt"
-    shell_run(cmd)
+    if not only_cmd:
+        shell_run(cmd)
+        return
+    return cmd
 
 
 def dbshell():
@@ -154,6 +157,11 @@ def dbshell():
     dbenv["DB_PORT"] = data["services"]["apiserver-pgbouncer"]["ports"][0].split(":")[0]
     cmd = (f"pgcli postgres://{dbenv['DB_USER']}:{dbenv['DB_PASSWORD']}@"
            f"{dbenv['DB_HOST']}:{dbenv['DB_PORT']}/{dbenv['DB_NAME']}")
+    shell_run(cmd)
+
+
+def dockerbuild():
+    cmd = [requirements(True), "docker-compose build"]
     shell_run(cmd)
 
 

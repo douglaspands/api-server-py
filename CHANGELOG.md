@@ -1,21 +1,29 @@
 # Changelog
 Todas as notas de alteração deste projeto vão ser documentadas neste arquivo.
 
-O formato é baseado no [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-e este projeto adere o [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+O formato é baseado no [Mantenha um Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
+e este projeto adere o [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 
-## [Unreleased]
+## [Não publicado]
 - Construção do motor de testes orientado a comportamento (BDD/Behave);
 - Construção do motor de processamento de tarefas assincronas (Celery);
 - Construção do motor de processamento de tarefas agendadas (Celery Beat);
 - Criação e configuração de escopos do token OAUTH2;
 
+
+## [0.3.1] - 2021-08-10
+### Adicionado
+- Script `poetry run dockerbuild` para geração do requirements.txt e imagem docker da aplicação;
+
+### Modificado
+- `CHANGELOG.md` em português;
+
 ## [0.3.0] - 2021-08-10
-### Added
+### Adicionado
 - Foi adicionado o framework de formatação `black` para formatação de código;
 - Inclusão do arquivo `CHANGELOG.md`;
 
-### Changed
+### Modificado
 - Foi instalado o wrapper `pflake8` para facilitar a movimentação das configurações do `flake8` que estão no `setup.cfg` para o `pyproject.toml`;
 - Foi movimentado todas as configurações do arquivo `setup.cfg` para o `pyproject.toml`;
