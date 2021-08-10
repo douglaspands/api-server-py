@@ -8,4 +8,7 @@ database = databases.Database(str(settings.SQLALCHEMY_DATABASE_URI))
 metadata = sqlalchemy.MetaData()
 
 
-__all__ = ('database', 'metadata',)
+__all__ = (
+    "database",
+    "metadata",
+)

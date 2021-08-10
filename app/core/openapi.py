@@ -15,12 +15,8 @@ HTTP_UNPROCESSABLE_ENTITY = {
     "required": ["error"],
     "type": "object",
     "properties": {
-        "error": {
-            "title": "Error",
-            "description": "Error message description.",
-            "type": "string"
-        },
-    }
+        "error": {"title": "Error", "description": "Error message description.", "type": "string"},
+    },
 }
 
 
@@ -43,41 +39,50 @@ def custom_openapi(app: FastAPI) -> Dict[str, Any]:
         routes=app.routes,
     )
 
-    for path in openapi_schema.get('paths', {}):
-        for method in _.get(openapi_schema, f'paths.{path}', []):
-            if _.get(openapi_schema, f'paths.{path}.{method}.responses.422.description') == 'Validation Error':
-                _.set(openapi_schema, f'paths.{path}.{method}.responses.400',
-                      _.get(openapi_schema, f'paths.{path}.{method}.responses.422'))
-                _.get(openapi_schema, f'paths.{path}.{method}.responses').pop('422')
+    for path in openapi_schema.get("paths", {}):
+        for method in _.get(openapi_schema, f"paths.{path}", []):
+            if _.get(openapi_schema, f"paths.{path}.{method}.responses.422.description") == "Validation Error":
+                _.set(
+                    openapi_schema,
+                    f"paths.{path}.{method}.responses.400",
+                    _.get(openapi_schema, f"paths.{path}.{method}.responses.422"),
+                )
+                _.get(openapi_schema, f"paths.{path}.{method}.responses").pop("422")
 
     changes: Dict[str, str] = {}
 
-    changes['Validation Error'] = 'Bad Request'
-    changes['HTTPValidationError'] = 'HTTPBadRequest'
+    changes["Validation Error"] = "Bad Request"
+    changes["HTTPValidationError"] = "HTTPBadRequest"
 
-    regex_name_with_dot = re.compile(r'(?<=\[)(\w+(\.\w+){1,})(?=\])')
+    regex_name_with_dot = re.compile(r"(?<=\[)(\w+(\.\w+){1,})(?=\])")
 
-    _.set(openapi_schema, 'components.schemas.HTTPUnprocessableEntity', HTTP_UNPROCESSABLE_ENTITY)
+    _.set(openapi_schema, "components.schemas.HTTPUnprocessableEntity", HTTP_UNPROCESSABLE_ENTITY)
 
-    for schema in _.get(openapi_schema, 'components.schemas', {}):
-        title = _.get(openapi_schema, 'components.schemas').get(schema, {}).get('title', '')
+    for schema in _.get(openapi_schema, "components.schemas", {}):
+        title = _.get(openapi_schema, "components.schemas").get(schema, {}).get("title", "")
 
-        if schema == 'HTTPValidationError':
-            _.set(openapi_schema, f'components.schemas.{schema}.properties.error',
-                  _.get(openapi_schema, f'components.schemas.{schema}.properties.detail'))
-            _.set(openapi_schema, f'components.schemas.{schema}.properties.error.title', 'Error')
-            _.set(openapi_schema, f'components.schemas.{schema}.properties.error.description',
-                  'List of the validation errors.')
-            _.get(openapi_schema, f'components.schemas.{schema}.properties').pop('detail')
+        if schema == "HTTPValidationError":
+            _.set(
+                openapi_schema,
+                f"components.schemas.{schema}.properties.error",
+                _.get(openapi_schema, f"components.schemas.{schema}.properties.detail"),
+            )
+            _.set(openapi_schema, f"components.schemas.{schema}.properties.error.title", "Error")
+            _.set(
+                openapi_schema,
+                f"components.schemas.{schema}.properties.error.description",
+                "List of the validation errors.",
+            )
+            _.get(openapi_schema, f"components.schemas.{schema}.properties").pop("detail")
 
-        elif '_' in title:
+        elif "_" in title:
             new_title = _.camel_case(title)
             new_title = new_title[:1].capitalize() + new_title[1:]
             changes[title] = new_title
 
-        elif '.' in title:
+        elif "." in title:
             name = regex_name_with_dot.findall(title)[0][0]
-            changes[title] = title.replace(name, name.split('.').pop())
+            changes[title] = title.replace(name, name.split(".").pop())
 
     openapi_text = json.dumps(openapi_schema)
 
@@ -96,7 +101,7 @@ def init_app(app: FastAPI) -> None:
     Args:
         app (FastAPI): FastAPI instance.
     """
-    setattr(app, 'openapi', lambda: custom_openapi(app))
+    setattr(app, "openapi", lambda: custom_openapi(app))
 
 
-__all__ = ('init_app',)
+__all__ = ("init_app",)

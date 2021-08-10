@@ -4,7 +4,7 @@ from typing import Generic, TypeVar
 from pydantic import Field, BaseModel
 from pydantic.generics import GenericModel
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def to_camel(string: str) -> str:
@@ -16,7 +16,7 @@ def to_camel(string: str) -> str:
     Returns:
         str: Text camel case.
     """
-    return ''.join(word.capitalize() if n > 0 else word for n, word in enumerate(string.split('_')))
+    return "".join(word.capitalize() if n > 0 else word for n, word in enumerate(string.split("_")))
 
 
 class BaseConfig:
@@ -38,7 +38,7 @@ class BaseSchema(BaseModel):
 class ResponseOK(GenericModel, Generic[T]):
     """Response schema for result ok."""
 
-    data: T = Field(..., title='Envelope', description='Data envelope.')
+    data: T = Field(..., title="Envelope", description="Data envelope.")
 
 
-__all__ = ('ResponseOK', 'BaseSchema', 'BaseConfig', 'to_camel')
+__all__ = ("ResponseOK", "BaseSchema", "BaseConfig", "to_camel")
