@@ -6,11 +6,10 @@ e este projeto adere o [Versionamento Semântico](https://semver.org/lang/pt-BR/
 
 
 ## [Não publicado]
-- Construção do motor de testes orientado a comportamento (BDD/Behave);
-- Construção do motor de processamento de tarefas assincronas (Celery);
-- Construção do motor de processamento de tarefas agendadas (Celery Beat);
-- Criação e configuração de escopos do token OAUTH2;
 
+### Adicionado
+- Construção do motor de testes orientado a comportamento (BDD/Behave);
+- BDD Feature do dominio de usuarios;
 
 ## [0.3.1] - 2021-08-10
 ### Adicionado
