@@ -89,6 +89,7 @@ pyenv install 3.8.10 && pyenv local 3.8.10
 - **poetry run build** : Executa os comandos `lint` e `test` na sequencia para verificação da qualidade do código e erros de teste;
 - **poetry run fiximports**: Organiza e classifica os imports do projeto;
 - **poetry run codeformatter**: Formata o código do projeto usando o `black`;
+- **poetry run coverageview**: Visualizar cobertura de testes no navegador (se possivel);
 > Comandos inspirados no framework Django. Porem no container não estarão disponiveis, aconselho olhar o arquivo `scripts/poetry.py` onde estão os comandos reais.
 
 

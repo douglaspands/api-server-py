@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import shutil
+import subprocess
 from time import sleep
 from typing import Any, Dict, List, Tuple, Union, Optional
 
@@ -61,6 +62,21 @@ def shell_run(command: Union[str, List[str]]) -> bool:
     return res
 
 
+def view_file(filepath: str):
+    appnames = ("open", "wslview")
+    not_found = "NOT_FOUND"
+    if cache.get("app_open", not_found) == not_found:
+        for app in appnames:
+            cmd = f"which {app}".split(" ")
+            if subprocess.run(cmd, capture_output=True).returncode == 0:
+                cache["app_open"] = app
+                break
+        cache["app_open"] = cache["app_open"] if cache.get("app_open", not_found) != not_found else None
+    if cache.get("app_open", not_found) != not_found:
+        cmd = cache["app_open"] + f" {filepath}"
+        os.system(cmd)
+
+
 # ===================================================
 # POETRY SCRIPTS
 # ===================================================
@@ -104,27 +120,34 @@ def codeformatter():
     shell_run(cmd)
 
 
+def coverageview(open_: bool = True):
+    filepath = "htmlcov/index.html"
+    if open_:
+        view_file(filepath=filepath)
+    message = "Saved coverage to {path}".format(path=os.path.join(os.getcwd(), filepath))
+    print(message)
+
+
 def testunit(only_cmd: bool = False) -> Optional[List[str]]:
-    cmd = ['PYTHONDONTWRITEBYTECODE=1 pytest -vvs']
+    cmd = ["PYTHONDONTWRITEBYTECODE=1 pytest -vvs"]
     if not only_cmd:
         if shell_run(cmd):
             generate_badge_coverage()
+            coverageview()
         return
     return cmd
 
 
 def testbehavior():
-    cmd = ['behave']
+    cmd = ["behave"]
     shell_run(cmd)
 
 
 def build():
     cmd = lint(True) + testunit(True)
-    shell_run(cmd)
-    generate_badge_coverage()
-    cmd = lint(True) + testunit(True)
     if shell_run(cmd):
         generate_badge_coverage()
+        coverageview(False)
 
 
 def makemigrations():
@@ -163,8 +186,10 @@ def dbshell():
     dbenv = data["services"]["apiserver-pgbouncer"]["environment"]
     dbenv["DB_HOST"] = "localhost"
     dbenv["DB_PORT"] = data["services"]["apiserver-pgbouncer"]["ports"][0].split(":")[0]
-    cmd = (f"pgcli postgres://{dbenv['DB_USER']}:{dbenv['DB_PASSWORD']}@"
-           f"{dbenv['DB_HOST']}:{dbenv['DB_PORT']}/{dbenv['DB_NAME']}")
+    cmd = (
+        f"pgcli postgres://{dbenv['DB_USER']}:{dbenv['DB_PASSWORD']}@"
+        f"{dbenv['DB_HOST']}:{dbenv['DB_PORT']}/{dbenv['DB_NAME']}"
+    )
     shell_run(cmd)
 
 
